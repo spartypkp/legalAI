@@ -1,6 +1,6 @@
-config.py/
-testing.py/
-database.ini/
-California.html/
+/config.py
+/testing.py
+/database.ini
+/California.html
 scrapedData/
-testPSQLConnection.py/
+/testPSQLConnection.py
