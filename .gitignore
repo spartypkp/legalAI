@@ -5,3 +5,6 @@
 scrapedData/
 /testPSQLConnection.py
 /.DS_Store
+/id.txt
+/embeddingErrorLog.txt
+/duplicateKeys.txt
