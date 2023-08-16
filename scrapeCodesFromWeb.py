@@ -6,48 +6,59 @@ import requests
 import json
 import re
 import calculateTokens
-import embedCodes
 import psycopg2
 
 CODE_SELECTION = "https://leginfo.legislature.ca.gov/faces/codes.xhtml"
 FULL_PATH =  "https://leginfo.legislature.ca.gov"
-DONE = ["PROB", "CONS", "BPC", "CIV", "CCP", "CORP", "COM", "EDC", "ELEC", "EVID", "FAM","FIN", "FGC","FAC","GOV", "HNC","HSC","INS","LAB","MVC","PEN", "PROB", "PCC", "PRC", "PUC"]
+
+
+DIR = os.path.dirname(os.path.realpath(__file__))
 GLOBAL_ID = 0
 
 # Total tokens: 44,132,506
 # $4.4 cost total
 # Current max usage: 250k tokens per mimute
 # 176 minutes total needed
-# 178,941 Unique IDs
+# 178, 581 unique IDs
 
 def main():
+    GLOBAL_ID = get_ID()
     html_scraper()
 
 def html_scraper():
+    
     sections = open("sections", "r")
     currentCode = None
     for line in sections:
         if line[0] == "#":
             split = line.split("-")
             currentCode = split[-1].strip()
-            print("Working on current code: {}".format(currentCode))
+            print("Starting to scrape all text from California Legal Code: {}".format(currentCode))
         else:
-            if currentCode in DONE:
-                continue
+            # Temporary for scraping in chunks
+            
+            #if currentCode in DONE:
+                #continue
             scrape(line, "{}".format(currentCode))
+
+            print("Finishided scraping Code: {}. Started at ID {} , ended at ID {}".format(currentCode, get_ID(), GLOBAL_ID))
+            set_ID(GLOBAL_ID)
 
 
 def scrape(link, fileName):
+    
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             dct = scrape_sections_per_code({}, link, fileName)
-        with open('{}.txt'.format(fileName), 'w') as convert_file:
+        with open('{}/scrapedData/{}.txt'.format(DIR, fileName), 'w') as convert_file:
             convert_file.write(json.dumps(dct))
         convert_file.close()
+        # Temporary
     except Exception as exc:
         print("Could not scrape articles for code {}".format(fileName))
         print(exc)
+        exit(1)
 
 
 def getHTMLdocument(url):
@@ -71,8 +82,9 @@ def scrape_sections_per_code(dct, current, code):
 
     soup = BeautifulSoup("".join(getHTMLdocument(current)), "lxml")
     # Key: Int - unique id, Value: List: sectionTags
-    # [ID, Code, Division, Title, Part, Chapter, Article, Section, isCodeDescription, text, addendum, embedding, link]
-    # 12 length
+    # [ID: 0, Code: 1, Division: 2, Title: 3, Part:4, Chapter: 5, Article: 6, Section: 7,
+    #  isCodeDescription: 8, text: 9, addendum: 10, embedding: 11, link: 12]
+    # 13 length
     sectionTags = ["", code, "", "", "", "", "", "", "", "", "", "", ""]
     for link in soup.find_all('a'):
         path = link.get('href')
@@ -95,6 +107,8 @@ def scrape_sections_per_code(dct, current, code):
     return dct
 
 def split_sections(dct, sectionTags, text):
+    # [ID: 0, Code: 1, Division: 2, Title: 3, Part:4, Chapter: 5, Article: 6, Section: 7,
+    #  isCodeDescription: 8, text: 9, addendum: 10, embedding: 11, link: 12]
     global GLOBAL_ID
 
     indexes = [m.start() for m in re.finditer('\u00a0\u00a0', text)]
@@ -129,30 +143,28 @@ def split_sections(dct, sectionTags, text):
                     localSectionTags[7] = sectionID
                     localSectionTags[9] = sectionText
                     localSectionTags[10] = addendum
-                    localSectionTags[11] = ""
-                    try:
-                        localSectionTags[11] = embedCodes.get_embedding(sectionText)
-                    except Exception:
-                        print("Error embedding for id: {}".format(local_id))
-                    key = "{}{}{}{}{}{}{}".format(localSectionTags[1], localSectionTags[2],
-                                                      localSectionTags[3], localSectionTags[4], localSectionTags[5],
-                                                      localSectionTags[6],localSectionTags[7])
+                    localSectionTags[11] = []
+
+                    key = create_key(localSectionTags[1:8])
+
                     if key in dct.keys():
-                        print("Key {}, new ID {} duplicates old ID {}".format(key, local_id, dct[key][0]))
-                        print("Current link: {}".format(localSectionTags[12]) )
                         if sectionText == dct[key][9]:
-                            print("Text is exact match.")
                             return
                         else:
-                            key = key + ".001"
-                            print("Text mismatch. New key for newer ID is: {}".format(key))
+                            newKey = key + "(Cont.)"
+                            file = open("duplicateKeys.txt","a")
+                            file.write("({},{},{})\n".format(newKey, key, sectionTags[12]))
+                            file.close()
+                            key = newKey
                             
                     localSectionTags[0] = local_id
                     GLOBAL_ID += 1
 
+
                     dct[key] = localSectionTags
-                    sectionID = text[i+1:current_index]
+                    sectionID = text[i+1:current_index-1]
                     break
+
     sectionText = "{} {}".format(sectionID, text[left:]).strip()
     addendum_index = get_addendum_index(sectionText)
 
@@ -167,24 +179,21 @@ def split_sections(dct, sectionTags, text):
     localSectionTags[7] = sectionID
     localSectionTags[9] = sectionText
     localSectionTags[10] = addendum
-    localSectionTags[11] = ""
-    try:
-        localSectionTags[11] = embedCodes.get_embedding(sectionText)
-    except Exception:
-        print("Error embedding for id: {}".format(local_id))
+    localSectionTags[11] = []
 
-    key = "{}{}{}{}{}{}{}".format(localSectionTags[1], localSectionTags[2],
-                                  localSectionTags[3], localSectionTags[4], localSectionTags[5],
-                                  localSectionTags[6], localSectionTags[7])
+    key = create_key(localSectionTags[1:8])
+    
+    
     if key in dct.keys():
-        print("Key {}, new ID {} duplicates old ID {}".format(key, local_id, dct[key][0]))
-        print("Current link: {}".format(localSectionTags[12]) )
         if sectionText == dct[key][9]:
-            print("Text is exact match.")
             return
         else:
-            key = key + ".001"
-            print("Text mismatch. New key for newer ID is: {}".format(key))
+            newKey = key + "(Cont.)"
+            file = open("duplicateKeys.txt","a")
+            file.write("({},{},{})\n".format(newKey, key, sectionTags[12]))
+            file.close()
+            key = newKey
+
     localSectionTags[0] = local_id
     GLOBAL_ID += 1
 
@@ -219,6 +228,20 @@ def get_tags_from_link(path, sectionTags):
             sectionTags[i] = "0"
 
     return codeDescription
+
+def create_key(lst):
+    return "{}#{}#{}#{}#{}#{}#{}".format(*lst)
+
+def get_ID():
+    with open("id.txt", "r") as get_file:
+        ID = int(get_file.read())
+    get_file.close()
+    return ID
+
+def set_ID(newID):
+    with open("id.txt", "w") as set_file:
+        set_file.write(str(newID))
+    set_file.close()
 
 if __name__ == '__main__':
     main()
