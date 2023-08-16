@@ -1,6 +1,7 @@
 # legalAI (Name subject to change)
+created by Will Diamond 
 
-##### 1. What is legalAI?
+#### 1. What is legalAI?
 LegalAI is a passion project which strives to explore and simplify the complexities of obtaining legal information. For US citizens it can be incredibly difficult to find answers to simple legal questions such as "is marijuana legal in california?". The top google search result for this question returns "Today, cannabis is legal in California for both medicinal and adult (recreational) use." Seems simple enough, but often a user would like to know more specific rules, limitations, and caveats which cannot be easily found. For more complex legal questions a top level google search is not nearly enough, instead prompting you to seek help from a legal professional. If you are committed to finding an answer you can attempt to search through the official California Legislative Code, although unless you have a degree in law, (I don't) it's probably not worth your time because of the inherent complexity.
 
 The idea of legalAI is to use Machine Learning and AI principles to construct a program which can help a user find any legal information they need. LegalAI will be able to quickly answer simple questions while maintaining the ability to show the user specific rules, limitations, and caveats pertaining to the question. Through a discourse with legalAI, a user should be able to narrow down and find the exact information they need without having to exactly know the legal definitions and requirements. LegalAI will be able to directly cite sources from the California Legal Code and show exact text upon request. LegalAI has the knowledge of the entire California Legal Code and can answer questions of any complexity.
@@ -27,9 +28,9 @@ Possible refinements to my strategy include using GPT 3.5 to automatically summa
 
 #### 5.Open-source projects that the developers independently modify or expand should be contained in a section on “desired collaboration” in the readme.md file. How should problems be handled? How should developers advance the changes?
     Will update later.
-# 6. Known bugs and any bug fixes
+#### 6. Known bugs and any bug fixes
     A lot. Will update later.
-# 7. FAQ section with all previously asked questions
+#### 7. FAQ section with all previously asked questions
     Will update later. Please reach out to me on LinkedIn if you have any questions, I would love to talk about the project! Please hire me.
-# 8. Copyright and licensing information
+#### 8. Copyright and licensing information
     Will update later.
