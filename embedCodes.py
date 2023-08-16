@@ -16,7 +16,7 @@ def main():
         embed_Codes(code)
         print("Finished embedding for code {}".format(code))
 
-# TODO: Write fn description
+# Obsolete. Now called in parseToPostgres.
 def embed_Codes(code):
     with open("{}/scrapedData/{}.txt", "r") as text_file:
         rawText = text_file.read()
@@ -25,12 +25,13 @@ def embed_Codes(code):
 
     file = open("embeddingErrorLog.txt", "a")
     for key, value in textDct.items():
-        embed = []
+        embed = None
         try:
             embed = get_embedding(value[9])
         except Exception as e:
             
             file.write("({})\n".format(key))
+        embed = None
     file.close()
         
     with open("{}/scrapedData/{}.txt", "w") as out_file:
