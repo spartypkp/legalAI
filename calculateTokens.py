@@ -1,11 +1,27 @@
 import tiktoken
 import openai
 import json
+import embedCodes
+import config
+import os
+
+DIR = os.path.dirname(os.path.realpath(__file__))
 
 codes = ["BPC","CCP","CIV","COM","CONS","CORP","EDC","ELEC","EVID","FAC","FAM","FGC","FIN","GOV","HNC","HSC","INS","LAB","MVC","PCC","PEN","PRC","PROB","PUC","RTC","SHC","UIC","VEH","WAT","WIC"]
 
 def main():
-    find_big_tokens()
+    openai.api_key = config.spartypkp_openai_key
+    with open("{}/scrapedData/{}.txt".format(DIR, "BPC"), "r") as text_file:
+        rawText = text_file.read()
+        texts = json.loads(rawText)
+    text_file.close()
+    text = texts["BPC#9#0#0#3#2#23320"]
+    print(text)
+    exit(1)
+    embedding = openai.Embedding.create(input=[text], model="text-embedding-ada-002")
+    embed = embedding["data"][0]["embedding"]
+    tokens = embedding["usage"]["total_tokens"]
+   
     # DENOTES NEW SECTION
     # \u00a0\u00a0
 
