@@ -38,9 +38,10 @@ def embed_Codes(code):
     out_file.close()
 
 # Need tweaking on the min and max parameters.
-@retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(6))
+@retry(wait=wait_random_exponential(min=1, max=2), stop=stop_after_attempt(6))
 def get_embedding(text, model="text-embedding-ada-002"):
-    return openai.Embedding.create(input=[text], model=model)["data"][0]["embedding"]
+    embed = openai.Embedding.create(input=[text], model=model)
+    return embed["data"][0]["embedding"], embed["usage"]["total_tokens"]
 
 if __name__ == '__main__':
     main()
