@@ -7,7 +7,7 @@ The idea of legalAI is to use Machine Learning and AI principles to construct a 
 
 The ultimate goal of the current iteration of legalAI is to create an AI chatbot capable of conversing with a user, summarizing and extracting relevant text, and answering all legal questions with legal information to the best of its ability. All source material is directly scraped from the official California Legislature Legal Code. Exact text can be provided, along with citations, and instructions on how to find the information on the official documentation itself. In uncertain times it's difficult to fully understand all your rights as a citizen of the United States. LegalAI's goal is to be a tool for everyday citizens to provide accurate legal information easily, quickly, and with the ability to answer questions about every official piece of legislation that affects you.
 
-# 2. Project Status
+#### 2. Project Status
    Legal AI is still in early development. So far, the entirety of the California Legal Code has been scraped from the official .gov documentation. Using python, the data is read in, cleaned, and features are extracted from the raw text. Each piece of legislation is separated by a multitude of hierarchiecal identifiers. In descending order it goes: Code identifier, Division, Title, Part, Chapter, Article, Section. 
    Below is a random example for the Food and Agriculture Code (FAC).
    FAC - Division 22 - Title 0 - Part 2 - Chapter 9.5 - Article 6 - Section 71123: Every person who handles rice in any quantity shall keep a complete and accurate record of all transactions involving the purchase or sale of rice and shall submit the record to the commission in the time and manner specified by the commission....
@@ -16,16 +16,16 @@ The section is the smallest way to divide a legislative code and is therefore th
   Currently, I am working on the implementation of searching for specific relevant text using cosine search on vector embeddings. Next, these embeddings can be fed to GPT 3.5 in a prompt in order to help answer a user's legal question.
 Possible refinements to my strategy include using GPT 3.5 to automatically summarize and categorize entire Articles, Chapters, and even Divisions into "common" language. Embedding these summary and "common translations" will allow for a user's question to be searched on these instead. More analysis will have to be done on the accuracy of using GPT 3.5 summaries/translations as embeddings themselves. The project currently stands as an investigation into how AI can conduct a unique combination of search, recommendation, and classification. Everything is subject to change, so check back in for updates on the direction and scope of the project!
 
-# 3. A guide to installation and use
+#### 3. A guide to installation and use
    TO DO: I'm a very junior programmer.
-# 4. A list of technology used and any links to further information related to this technology
+#### 4. A list of technology used and any links to further information related to this technology
    Built in Python 3.8.9 in Visual Studio Code. Major python packages: psycopg2, openai, tokenify, beautifulSoup.
    - TODO: More version information
    PostgreSQL is used to store the database after scraping and cleaning.
    - TODO: More version information
    OpenAI: OpenAI is used to get text embeddings from the text-embeddings-ada-02 model. GPT 3.5 Turbo (maybe 4.0) will be used in the near future to incorporate embeddings into requests for legal information.
 
-# 5.Open-source projects that the developers independently modify or expand should be contained in a section on “desired collaboration” in the readme.md file. How should problems be handled? How should developers advance the changes?
+#### 5.Open-source projects that the developers independently modify or expand should be contained in a section on “desired collaboration” in the readme.md file. How should problems be handled? How should developers advance the changes?
     Will update later.
 # 6. Known bugs and any bug fixes
     A lot. Will update later.
