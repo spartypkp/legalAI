@@ -38,11 +38,16 @@ def embed_Codes(code):
         out_file.write(json.dumps(textDct))
     out_file.close()
 
-# Need tweaking on the min and max parameters.
+# Return both the embedding and number of tokens
 @retry(wait=wait_random_exponential(min=1, max=2), stop=stop_after_attempt(6))
-def get_embedding(text, model="text-embedding-ada-002"):
+def get_embedding_and_token(text, model="text-embedding-ada-002"):
     embed = openai.Embedding.create(input=[text], model=model)
     return embed["data"][0]["embedding"], embed["usage"]["total_tokens"]
+
+# Return just the embedding
+@retry(wait=wait_random_exponential(min=1, max=2), stop=stop_after_attempt(6))
+def get_embedding(text, model="text-embedding-ada-002"):
+    return openai.Embedding.create(input=[text],model=model)["data"][0]["embedding"]
 
 if __name__ == '__main__':
     main()
