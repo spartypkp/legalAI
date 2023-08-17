@@ -1,8 +1,8 @@
 import json
 import psycopg2
-import testPSQLConnection as psqlCon
+import getPSQLConn as psqlCon
 import os
-from embedCodes import get_embedding
+from embedCodes import get_embedding_and_token
 from calculateTokens import num_tokens_from_string
 DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -46,7 +46,7 @@ def read_from_file(code, code_list):
         embed = None
         totalTokens = 0
         try:
-            embed, totalTokens = get_embedding(sectionTags[10])
+            embed, totalTokens = get_embedding_and_token(sectionTags[10])
         except Exception as e:
             errorLog.write("({})\n".format(key))
         
