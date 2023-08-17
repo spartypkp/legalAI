@@ -17,9 +17,7 @@ GLOBAL_ID = 0
 
 # Total tokens: 44,132,506
 # $4.4 cost total
-# Current max usage: 250k tokens per mimute
-# 176 minutes total needed
-# 178, 581 unique IDs
+# 178, 580 unique IDs
 
 def main():
     GLOBAL_ID = get_ID()
