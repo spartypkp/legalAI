@@ -50,5 +50,8 @@ def num_tokens_from_string(string):
     num_tokens = len(encoding.encode(string))
     return num_tokens
 
+
+    
+
 if __name__ == "__main__":
     main()
