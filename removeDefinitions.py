@@ -4,10 +4,14 @@ import re
 
 def main():
     
+    print("[TAX LIMITATION]".split("-"))
+    '''
     newText, topLevel, category = remove_manually(text)
     print("Text belongs to no higher section: ",topLevel)
     print("Category", category)
     print(newText)
+    '''
+    
 
     #1803511 token not including output
 
