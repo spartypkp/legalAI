@@ -30,8 +30,6 @@ def main():
         cleaned_text[row_lst[0]] = newText
         add_to_header_dictionary(header_dct, row_lst, range_dict)
 
-    for key in header_dct.keys():
-        header_dct[key][1] = list(header_dct[key][1])
         
     with open("cleanedRowsToUpdate.txt", "w") as clean_file:
         clean_file.write(json.dumps(cleaned_text))
@@ -52,46 +50,42 @@ def add_to_header_dictionary(header_dct, row, range_dict):
     #print("Code:{}, {}".format(code, row[9]))
 
     if code not in header_dct:
-        header_dct[code] = [{}, set(), None, None]
-    for k,v in range_dict.items():
-        header_dct[code][1].add(v[0])
+        header_dct[code] = [{}, None, None, None, [], "code"]
     # A default dict would be so much better here but I am stubborn
     if title not in header_dct[code][0]:
-        header_dct[code][0][title] = [{}, None, None, None]
+        header_dct[code][0][title] = [{}, None, None, None, [], "title"]
     if "title" in range_dict and header_dct[code][0][title][1] is None:
         header_dct[code][0][title][1] = range_dict["title"][0]
         header_dct[code][0][title][2] = range_dict["title"][1]
         header_dct[code][0][title][3] = range_dict["title"][2]
     
-    
     if division not in header_dct[code][0][title][0]:
-        header_dct[code][0][title][0][division] = [{}, None, None, None]
-    
+        header_dct[code][0][title][0][division] = [{}, None, None, None, [], "division"]
     if "division" in range_dict and header_dct[code][0][title][0][division][1] is None:
         header_dct[code][0][title][0][division][1] = range_dict["division"][0]
         header_dct[code][0][title][0][division][2] = range_dict["division"][1]
         header_dct[code][0][title][0][division][3] = range_dict["division"][2]
 
     if part not in header_dct[code][0][title][0][division][0]:
-        header_dct[code][0][title][0][division][0][part] = [{}, None, None, None]
+        header_dct[code][0][title][0][division][0][part] = [{}, None, None, None, [], "part"]
     if "part" in range_dict and header_dct[code][0][title][0][division][0][part][1] is None:
         header_dct[code][0][title][0][division][0][part][1] = range_dict["part"][0]
         header_dct[code][0][title][0][division][0][part][2] = range_dict["part"][1]
         header_dct[code][0][title][0][division][0][part][3] = range_dict["part"][2]
     # This is getting ridculous
     if chapter not in header_dct[code][0][title][0][division][0][part][0]:
-        header_dct[code][0][title][0][division][0][part][0][chapter] = [{}, None, None, None]
+        header_dct[code][0][title][0][division][0][part][0][chapter] = [{}, None, None, None, [], "chapter"]
     if "chapter" in range_dict and header_dct[code][0][title][0][division][0][part][0][chapter][1] is None:
         header_dct[code][0][title][0][division][0][part][0][chapter][1] = range_dict["chapter"][0]
         header_dct[code][0][title][0][division][0][part][0][chapter][2] = range_dict["chapter"][1]
         header_dct[code][0][title][0][division][0][part][0][chapter][3] = range_dict["chapter"][2]
     # Fuck my life
     if article not in header_dct[code][0][title][0][division][0][part][0][chapter][0]:
-        header_dct[code][0][title][0][division][0][part][0][chapter][0][article] = [None, None, None]
+        header_dct[code][0][title][0][division][0][part][0][chapter][0][article] = [None, None, None, None, [], "article"]
     if "article" in range_dict and header_dct[code][0][title][0][division][0][part][0][chapter][0][article][1] is None:
-        header_dct[code][0][title][0][division][0][part][0][chapter][0][article][0] = range_dict["article"][0]
-        header_dct[code][0][title][0][division][0][part][0][chapter][0][article][1] = range_dict["article"][1]
-        header_dct[code][0][title][0][division][0][part][0][chapter][0][article][2] = range_dict["article"][2]
+        header_dct[code][0][title][0][division][0][part][0][chapter][0][article][1] = range_dict["article"][0]
+        header_dct[code][0][title][0][division][0][part][0][chapter][0][article][2] = range_dict["article"][1]
+        header_dct[code][0][title][0][division][0][part][0][chapter][0][article][3] = range_dict["article"][2]
     
 
 def get_all_rows_with_headers(conn):
@@ -179,6 +173,7 @@ def extract_section_ranges(text):
         start = pair[1]+1
     new_text += text[start:]
     return range_dict, new_text
+
 
 if __name__ == "__main__":
     main()
