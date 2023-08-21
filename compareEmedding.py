@@ -6,10 +6,7 @@ import getPSQLConn
 
 
 def main():
-    summary_e = get_embedding('The main theme of the user inputted document is the regulation of flavored tobacco products and the restrictions placed on their sale. This includes defining what constitutes a characterizing flavor, the prohibition of flavored tobacco products by tobacco retailers, and exceptions for certain types of tobacco products and establishments. The document also mentions penalties for violating the regulations and the ability of local standards to impose stricter restrictions on tobacco product access.')
-    input_e = get_embedding('Is it legal to buy fruit flavored vapes in california?')
-    result = openai.embeddings_utils.cosine_similarity(summary_e, input_e)
-    print(result)
+    user_embedding_search()
     
     
 
