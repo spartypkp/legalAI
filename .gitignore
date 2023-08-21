@@ -10,3 +10,9 @@ scrapedData/
 /duplicateKeys.txt
 /test.txt
 /tableInformation.sql
+/characterCodeResearch.txt
+/cleanedRowsToUpdate.txt
+/contentUpdate.txt
+/definitionsUpdate.txt
+/failedExtraction.txt
+/nestedHeaderDict.txt
