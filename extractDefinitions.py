@@ -5,7 +5,8 @@ import sys, os
 import getPSQLConn as psql
 
 def main():
-    extract_all_definitions()
+    update_header_content()
+    update_header_definitions()
 
 
 def extract_all_definitions():
@@ -73,12 +74,31 @@ def update_header_definitions():
 
     cursor = conn.cursor()
     for k,v in definitions_to_update.items():
+        if "'" in v:
+            v = v.replace("'", "''")
         sql = "UPDATE ca_code SET definitions='{}' WHERE id={};".format(v, int(k))
         cursor.execute(sql)
     conn.commit()
     conn.close()
 
-def 
+def update_header_content():
+    conn = psql.connect()
+    with open("contentUpdate.txt","r") as content_file:
+        text = content_file.read()
+        content_to_update = json.loads(text)
+    content_file.close()
+
+    cursor = conn.cursor()
+    for k,v in content_to_update.items():
+        print("Key: {}, Value: {}".format(k, v))
+        if v is None:
+            v = ""
+        if "'" in v:
+            v = v.replace("'", "''")
+        sql = "UPDATE ca_code SET content='{}' WHERE id={};".format(v, int(k))
+        cursor.execute(sql)
+    conn.commit()
+    conn.close()
 
 def remove_definitions_from_str(test_str):
     target = "following definitions"
