@@ -5,6 +5,7 @@ import sys, os
 import getPSQLConn as psql
 
 def main():
+    extract_all_definitions()
     update_header_content()
     update_header_definitions()
 
@@ -38,13 +39,13 @@ def extract_all_definitions():
             continue
         code, division, title, part, chapter, article, section = str_key.split("#")
         if category == "title":
-            header_dct[code][0][title][4].extend(definitions)
+            header_dct[code][0][title][4].append(definitions)
         elif category == "division":
-            header_dct[code][0][title][0][division][4].extend(definitions)
+            header_dct[code][0][title][0][division][4].append(definitions)
         elif category == "part":
-            header_dct[code][0][title][0][division][0][part][4].extend(definitions)
+            header_dct[code][0][title][0][division][0][part][4].append(definitions)
         elif category == "chapter":
-            header_dct[code][0][title][0][division][0][part][0][chapter][4].extend(definitions)
+            header_dct[code][0][title][0][division][0][part][0][chapter][4].append(definitions)
         elif category == "article":
             header_dct[code][0][title][0][division][0][part][0][chapter][0][article][4].extend(definitions)
             header_dct[code][0][title][0][division][0][part][0][chapter][0][article][0] = str_key
