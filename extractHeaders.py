@@ -37,55 +37,45 @@ def main():
     with open("nestedHeaderDict.txt", "w") as header_file:
         header_file.write(json.dumps(header_dct))
     header_file.close()
-        
+    
     
 
 def add_to_header_dictionary(header_dct, row, range_dict):
-    code = row[1]
-    division = row[2]
-    title = row[3]
-    part = row[4]
-    chapter = row[5]
-    article = row[6]
-    #print("Code:{}, {}".format(code, row[9]))
-
+    code, division, title, part, chapter, article = row[1:7]
+    # Range_dct: {Key: "division": [title, (range tup)]}
+    # header_dct:  {Key "BPC": [{} Subtrees, Title, Tup:(Range start, range end), [definitions], "floor tag"]}
     if code not in header_dct:
-        header_dct[code] = [{}, None, None, None, [], "code"]
+        header_dct[code] = [{}, None, None, [], "code"]
     # A default dict would be so much better here but I am stubborn
     if title not in header_dct[code][0]:
-        header_dct[code][0][title] = [{}, None, None, None, [], "title"]
+        header_dct[code][0][title] = [{}, None, None, [], "title"]
     if "title" in range_dict and header_dct[code][0][title][1] is None:
         header_dct[code][0][title][1] = range_dict["title"][0]
-        header_dct[code][0][title][2] = range_dict["title"][1]
-        header_dct[code][0][title][3] = range_dict["title"][2]
+        header_dct[code][0][title][2] = tuple(range_dict["title"][1][0],range_dict["title"][1][1])
     
     if division not in header_dct[code][0][title][0]:
-        header_dct[code][0][title][0][division] = [{}, None, None, None, [], "division"]
+        header_dct[code][0][title][0][division] = [{}, None, None, [], "division"]
     if "division" in range_dict and header_dct[code][0][title][0][division][1] is None:
         header_dct[code][0][title][0][division][1] = range_dict["division"][0]
-        header_dct[code][0][title][0][division][2] = range_dict["division"][1]
-        header_dct[code][0][title][0][division][3] = range_dict["division"][2]
+        header_dct[code][0][title][0][division][2] = tuple(range_dict["division"][1][0],range_dict["division"][1][1])
 
     if part not in header_dct[code][0][title][0][division][0]:
-        header_dct[code][0][title][0][division][0][part] = [{}, None, None, None, [], "part"]
+        header_dct[code][0][title][0][division][0][part] = [{}, None, None, [], "part"]
     if "part" in range_dict and header_dct[code][0][title][0][division][0][part][1] is None:
         header_dct[code][0][title][0][division][0][part][1] = range_dict["part"][0]
-        header_dct[code][0][title][0][division][0][part][2] = range_dict["part"][1]
-        header_dct[code][0][title][0][division][0][part][3] = range_dict["part"][2]
+        header_dct[code][0][title][0][division][0][part][2] = tuple(range_dict["part"][1][0],range_dict["part"][1][1])
     # This is getting ridculous
     if chapter not in header_dct[code][0][title][0][division][0][part][0]:
-        header_dct[code][0][title][0][division][0][part][0][chapter] = [{}, None, None, None, [], "chapter"]
+        header_dct[code][0][title][0][division][0][part][0][chapter] = [{}, None, None, [], "chapter"]
     if "chapter" in range_dict and header_dct[code][0][title][0][division][0][part][0][chapter][1] is None:
         header_dct[code][0][title][0][division][0][part][0][chapter][1] = range_dict["chapter"][0]
-        header_dct[code][0][title][0][division][0][part][0][chapter][2] = range_dict["chapter"][1]
-        header_dct[code][0][title][0][division][0][part][0][chapter][3] = range_dict["chapter"][2]
+        header_dct[code][0][title][0][division][0][part][0][chapter][2] = tuple(range_dict["chapter"][1][0],range_dict["chapter"][1][1])
     # Fuck my life
     if article not in header_dct[code][0][title][0][division][0][part][0][chapter][0]:
-        header_dct[code][0][title][0][division][0][part][0][chapter][0][article] = [None, None, None, None, [], "article"]
+        header_dct[code][0][title][0][division][0][part][0][chapter][0][article] = [None, None, [], "article"]
     if "article" in range_dict and header_dct[code][0][title][0][division][0][part][0][chapter][0][article][1] is None:
-        header_dct[code][0][title][0][division][0][part][0][chapter][0][article][1] = range_dict["article"][0]
-        header_dct[code][0][title][0][division][0][part][0][chapter][0][article][2] = range_dict["article"][1]
-        header_dct[code][0][title][0][division][0][part][0][chapter][0][article][3] = range_dict["article"][2]
+        header_dct[code][0][title][0][division][0][part][0][chapter][0][article][0] = range_dict["article"][0]
+        header_dct[code][0][title][0][division][0][part][0][chapter][0][article][1] = tuple(range_dict["article"][1][0],range_dict["article"][1][1])
     
 
 def get_all_rows_with_headers(conn):
@@ -161,7 +151,7 @@ def extract_section_ranges(text):
         range_start = range_search[0]
         range_end = range_search[1]
 
-        range_dict[key] = [title, range_start, range_end]
+        range_dict[key] = [title, (range_start, range_end)]
         start = second_index
         first_index = text.find("[", second_index)
 
