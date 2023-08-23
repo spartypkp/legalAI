@@ -39,7 +39,7 @@ def embed_Codes(code):
     out_file.close()
 
 # Return both the embedding and number of tokens
-@retry(wait=wait_random_exponential(min=1, max=2), stop=stop_after_attempt(6))
+#@retry(wait=wait_random_exponential(min=1, max=2), stop=stop_after_attempt(6))
 def get_embedding_and_token(text, model="text-embedding-ada-002"):
     embed = openai.Embedding.create(input=[text], model=model)
     return embed["data"][0]["embedding"], embed["usage"]["total_tokens"]
