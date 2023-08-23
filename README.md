@@ -27,7 +27,7 @@ Possible refinements to my strategy include using GPT 3.5 to automatically summa
    OpenAI: OpenAI is used to get text embeddings from the text-embeddings-ada-02 model. GPT 3.5 Turbo (maybe 4.0) will be used in the near future to incorporate embeddings into requests for legal information.
 
 #### 5.Open-source projects that the developers independently modify or expand should be contained in a section on “desired collaboration” in the readme.md file. How should problems be handled? How should developers advance the changes?
-    Will update later.
+    Hypothetical Document Embedding HyDE: (https://arxiv.org/pdf/2212.10496.pdf)
 #### 6. Known bugs and any bug fixes
     A lot. Will update later.
 #### 7. FAQ section with all previously asked questions
