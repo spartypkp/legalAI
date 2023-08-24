@@ -22,7 +22,7 @@ LegalAI is NOT a replacement for a licensed legal professional.
       
 LegalAI is simply intended as a tool to provide legal information, nothing more. Currently it's at the proof of concept stage, but I am excited to be able to work on it and advance the project to its goals.
 
-## 2. Project Status
+## 3. Project Status
    Legal AI is still in early development. So far, the entirety of the California Legal Code has been scraped from the official .gov website documentation (https://leginfo.legislature.ca.gov/faces/codes.xhtml). Using python, the data is read in, cleaned, and features are extracted from the raw text. Definitions, addendums, and section titles are extracted from the text and stored in their own columns. Each row in the database corresponds to a distinct section of the California Legal Code. Sections can be considered "leaf nodes" of the legal code tree, as a general rule being the smallest divisible piece of text. Codes are at the top level of the legal tree, followed by divisions/titles/.../Chapters which all are considered "parent" sections of a given section. All parent section's values are a useful positional identifier for a given leaf-node section. After cleaning and extraction, rows are inserted into a PostgreSQL table through the python package Psycopg2. Below is an example row containing the first section in the California constitution. <br>
 
 | ID | Code | Division | Title | Part | Chapter | Article | Section | Raw Text Excluding Addendnum/Definitions | Addendnum - Date Added | Link |
@@ -44,20 +44,20 @@ Below is a flowchart showing the flowchart of one "run" of the system. This flow
 
 I'm hoping to get a working prototype out within the next few weeks. Check back in at a later date or feel free to hit me up on linkedin.
 
-## 3. A guide to installation and use
+## 4. A guide to installation and use
    TO DO: The project is currently not in a fully working state.
-## 4. A list of technology used and any links to further information related to this technology
+## 5. A list of technology used and any links to further information related to this technology
    Built in Python 3.8.9 in Visual Studio Code. Major python packages: psycopg2, openai, tokenify, beautifulSoup.
    - TODO: More version information
    PostgreSQL is used to store the database after scraping and cleaning.
    - TODO: More version information
    OpenAI: OpenAI is used to get text embeddings from the text-embeddings-ada-02 model. GPT 3.5 Turbo (maybe 4.0) will be used in the near future to incorporate embeddings into requests for legal information.
 
-## 5.Open-source projects that the developers independently modify or expand should be contained in a section on “desired collaboration” in the readme.md file. How should problems be handled? How should developers advance the changes?
+## 6.Open-source projects that the developers independently modify or expand should be contained in a section on “desired collaboration” in the readme.md file. How should problems be handled? How should developers advance the changes?
     Hypothetical Document Embedding HyDE: (https://arxiv.org/pdf/2212.10496.pdf)
-## 6. Known bugs and any bug fixes
+## 7. Known bugs and any bug fixes
     A lot. Will update later upon public release.
-## 7. FAQ section with all previously asked questions
+## 8. FAQ section with all previously asked questions
     Will update later. Please reach out to me on LinkedIn if you have any questions, I would love to talk about the project! Please hire me.
-## 8. Copyright and licensing information
+## 9. Copyright and licensing information
     Will update later.
