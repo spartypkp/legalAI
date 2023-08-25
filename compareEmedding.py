@@ -6,7 +6,24 @@ import getPSQLConn
 
 
 def main():
-    user_embedding_search()
+    #user_embedding_search()
+    text = " ".join(["Legality of consuming cannabis",
+      "Laws regarding marijuana use",
+      "Regulations on smoking cannabis",
+      "Legality of marijuana consumption",
+      "Is it legal to smoke cannabis?",
+      "Is it legal to smoke marijuana?"])
+    
+    rows = compare_all_embeddings(text, 0.1, 1)
+    print(rows[0])
+    exit(1)
+    conn = getPSQLConn.connect()
+    cursor = conn.cursor()
+    sql = ','.join(cursor.mogrify("(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", row).decode('utf8') for row in rows)
+    cur.execute("INSERT INTO test_embed VALUES " + sql)
+    conn.commit()
+    conn.close()
+    print(rows)
     
     
 
@@ -59,16 +76,18 @@ def compare_all_embeddings(text, match_threshold=0.5, match_count=5):
     conn = getPSQLConn.connect()
     cur = conn.cursor()
 
-    print("\n\n")
+    #print("\n\n")
     cur.callproc('match_embedding', ['{}'.format(embedding), match_threshold, match_count])
-    print("Fetching {} matching sections which have cosine similarity match threshold {} for text:\n{}\n".format(match_count, match_threshold, text))
+    #print("Fetching {} matching sections which have cosine similarity match threshold {} for text:\n{}\n".format(match_count, match_threshold, text))
     result = cur.fetchall()
-
+    cur.close()
+    conn.close()
+    return result
+    
     rows_formatted = format_sql_rows(result)
     print(rows_formatted)
     
-    cur.close()
-    conn.close()
+    
 
 def format_sql_rows(list_of_rows):
     result = ""
