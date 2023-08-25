@@ -1,36 +1,63 @@
 # legalAI (Name subject to change)
 created by Will Diamond 
 
-#### 1. What is legalAI?
-LegalAI is a passion project which strives to explore and simplify the complexities of obtaining legal information. For US citizens it can be incredibly difficult to find answers to simple legal questions such as "is marijuana legal in california?". The top google search result for this question returns "Today, cannabis is legal in California for both medicinal and adult (recreational) use." Seems simple enough, but often a user would like to know more specific rules, limitations, and caveats which cannot be easily found. For more complex legal questions a top level google search is not nearly enough, instead prompting you to seek help from a legal professional. If you are committed to finding an answer you can attempt to search through the official California Legislative Code, although unless you have a degree in law, (I don't) it's probably not worth your time because of the inherent complexity.
-
-The idea of legalAI is to use Machine Learning and AI principles to construct a program which can help a user find any legal information they need. LegalAI will be able to quickly answer simple questions while maintaining the ability to show the user specific rules, limitations, and caveats pertaining to the question. Through a discourse with legalAI, a user should be able to narrow down and find the exact information they need without having to exactly know the legal definitions and requirements. LegalAI will be able to directly cite sources from the California Legal Code and show exact text upon request. LegalAI has the knowledge of the entire California Legal Code and can answer questions of any complexity.
+## 1. What is legalAI?
+LegalAI is a passion project which strives to explore and simplify the complexities of obtaining legal information. This project is being implemented to achieve the following goals:
+#### Project Goals
+   1. Allow for smarter legal information search which includes more than just a simple answer to the question: "Is X legal?". Given a simple legal topic or question, legalAI will be able to provide all useful information about the topic, answered by GPT 4 following the format of a "Universal Question Answer". These universal questions are outlined in the universal answer document and will eliminate the need for followup queries of basic information. In one "run" of the program, a user should be able to ask a simple question and receive an answer which includes everything they want to know (even though they may not have directly asked for it).
+   2. Simplify the surprisingly difficult task of searching for legal information. Complex legal questions about very specific topics can be hard to find on the internet and combing through the legal code is no easy task (trust me). LegalAI strives to provide accurate legal information to someone regardless of their legal knowledge or technological ability.
+   3. Show exact source text and use citations when answering a complex legal question. It's important to me that our process to answer legal questions is transparent and we show exactly where our answers are found in official legislation. Answers to users that incorporate multiple ideas from different sections will cite those different sections in-line. After each answer we will provide to the user links and references to the exact text and legislation referred to in the answer, if they so wish to read for themselves.
+   4. Remove the barriers to access legal information. Aware of legal information or not, citizens are governed by a multitude of laws which can be difficult to comprehend. I believe it's important for everyone to be able to find out exactly what law, statues, regulations, or legislation applies to them wherever they may be.
 
 The ultimate goal of the current iteration of legalAI is to create an AI chatbot capable of conversing with a user, summarizing and extracting relevant text, and answering all legal questions with legal information to the best of its ability. All source material is directly scraped from the official California Legislature Legal Code. Exact text can be provided, along with citations, and instructions on how to find the information on the official documentation itself. In uncertain times it's difficult to fully understand all your rights as a citizen of the United States. LegalAI's goal is to be a tool for everyday citizens to provide accurate legal information easily, quickly, and with the ability to answer questions about every official piece of legislation that affects you.
 
-#### 2. Project Status
-   Legal AI is still in early development. So far, the entirety of the California Legal Code has been scraped from the official .gov documentation. Using python, the data is read in, cleaned, and features are extracted from the raw text. Each piece of legislation is separated by a multitude of hierarchiecal identifiers. In descending order it goes: Code identifier, Division, Title, Part, Chapter, Article, Section. 
-   Below is a random example for the Food and Agriculture Code (FAC).
-   FAC - Division 22 - Title 0 - Part 2 - Chapter 9.5 - Article 6 - Section 71123: Every person who handles rice in any quantity shall keep a complete and accurate record of all transactions involving the purchase or sale of rice and shall submit the record to the commission in the time and manner specified by the commission....
-   
-The section is the smallest way to divide a legislative code and is therefore the base we use. Every section has its own heirarchiecal identifiers to exactly categorize where it exists in the legal code. There are currently 178, 581 unique sections in the California Legal Code. For each section, the section text is parsed into OpenAI.createEmbedding to return a vector embedding of the text. The section identifiers, text, embedding, https link, and other attributes are then loaded into a postGresSQL table as a unique row using psycopg2.
-  Currently, I am working on the implementation of searching for specific relevant text using cosine search on vector embeddings. Next, these embeddings can be fed to GPT 3.5 in a prompt in order to help answer a user's legal question.
-Possible refinements to my strategy include using GPT 3.5 to automatically summarize and categorize entire Articles, Chapters, and even Divisions into "common" language. Embedding these summary and "common translations" will allow for a user's question to be searched on these instead. More analysis will have to be done on the accuracy of using GPT 3.5 summaries/translations as embeddings themselves. The project currently stands as an investigation into how AI can conduct a unique combination of search, recommendation, and classification. Everything is subject to change, so check back in for updates on the direction and scope of the project!
+## 2. What is legalAI not?
+LegalAI is NOT a replacement for a licensed legal professional. 
+#### LegalAI is NOT intended or designed to do the following:
+   1. Provide any legal advice.
+   2. Give recommendations or instructions on a legal course of action.
+   3. Be used in a legal defense.
+   4. Replace a human lawyer, attorney, or licensed legal professional.
+   5. Give advice on ANYTHING to do or say in a legal court of law.
+      
+LegalAI is simply intended as a tool to provide legal information, nothing more. Currently it's at the proof of concept stage, but I am excited to be able to work on it and advance the project to its goals.
 
-#### 3. A guide to installation and use
-   TO DO: I'm a very junior programmer.
-#### 4. A list of technology used and any links to further information related to this technology
+## 3. Project Status
+   Legal AI is still in early development. So far, the entirety of the California Legal Code has been scraped from the official .gov website documentation (https://leginfo.legislature.ca.gov/faces/codes.xhtml). Using python, the data is read in, cleaned, and features are extracted from the raw text. Definitions, addendums, and section titles are extracted from the text and stored in their own columns. Each row in the database corresponds to a distinct section of the California Legal Code. Sections can be considered "leaf nodes" of the legal code tree, as a general rule being the smallest divisible piece of text. Codes are at the top level of the legal tree, followed by divisions/titles/.../Chapters which all are considered "parent" sections of a given section. All parent section's values are a useful positional identifier for a given leaf-node section. After cleaning and extraction, rows are inserted into a PostgreSQL table through the python package Psycopg2. Below is an example row containing the first section in the California constitution. <br>
+
+| ID | Code | Division | Title | Part | Chapter | Article | Section | Raw Text Excluding Addendnum/Definitions | Addendnum - Date Added | Link |
+| ---| ---- | -------- | ----- | ---- | ------- | ------- | ------- | ---------------------------------------- | ---------------------- | ---- |
+|1  | CONS | 0        | 0	  | 0    | 0       |	I       |	1	   | All people are by nature free...blahblah |	(added Nov. 5, 1974..  | htt..|	
+
+Headers for parent sections are given their own rows. After scraping and inserting to PostgreSQL, we have a table with 178,564 unique rows corresponding to actual sections in the California Legal Code.
+   
+The next step is preparing the dataset for more efficient search and retrieval. Using OpenAI's embedding model "text-embeddings-ada-002", vector embeddings are automatically created for each section's:
+   1. Raw section text
+   2. Legal definitions applying specificially to this section and definitions applying to ALL parent sections.
+   3. Titles of section and parent sections as if you were traversing the tree top to bottom.
+      a) For section X, the path would look like("Code BPC, Division 10, Title 0, Part 0, Chapter 22, Article 7 , Section X")
+      b) The title path trace would be ("Business Professions Code, Cannabis, Cannabis Cooperative Associations, Powers, Section X")
+
+Below is a flowchart showing the flowchart of one "run" of the system. This flowchart assumes all previous data and embedding collection is complete.
+
+![Flowchart](https://github.com/spartypkp/legalAI/assets/59883254/f8cd0cc9-2e69-40f4-8a6f-27fdef98d537)
+
+I'm hoping to get a working prototype out within the next few weeks. Check back in at a later date or feel free to hit me up on linkedin.
+
+## 4. A guide to installation and use
+   TO DO: The project is currently not in a fully working state.
+## 5. A list of technology used and any links to further information related to this technology
    Built in Python 3.8.9 in Visual Studio Code. Major python packages: psycopg2, openai, tokenify, beautifulSoup.
    - TODO: More version information
    PostgreSQL is used to store the database after scraping and cleaning.
    - TODO: More version information
    OpenAI: OpenAI is used to get text embeddings from the text-embeddings-ada-02 model. GPT 3.5 Turbo (maybe 4.0) will be used in the near future to incorporate embeddings into requests for legal information.
 
-#### 5.Open-source projects that the developers independently modify or expand should be contained in a section on “desired collaboration” in the readme.md file. How should problems be handled? How should developers advance the changes?
-    Will update later.
-#### 6. Known bugs and any bug fixes
-    A lot. Will update later.
-#### 7. FAQ section with all previously asked questions
+## 6.Open-source projects that the developers independently modify or expand should be contained in a section on “desired collaboration” in the readme.md file. How should problems be handled? How should developers advance the changes?
+    Hypothetical Document Embedding HyDE: (https://arxiv.org/pdf/2212.10496.pdf)
+## 7. Known bugs and any bug fixes
+    A lot. Will update later upon public release.
+## 8. FAQ section with all previously asked questions
     Will update later. Please reach out to me on LinkedIn if you have any questions, I would love to talk about the project! Please hire me.
-#### 8. Copyright and licensing information
+## 9. Copyright and licensing information
     Will update later.
