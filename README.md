@@ -2,7 +2,7 @@
 created by Will Diamond 
 
 ## 1. What is legalAI?
-LegalAI is a passion project which strives to explore and simplify the complexities of obtaining legal information. This project is being implemented to achieve the following goals:
+LegalAI is a passion project which explores the applications of novel generative AI techniques to simplify the complexities of obtaining accurate legal information. This project is being implemented to achieve the following goals:
 #### Project Goals
    1. Allow for smarter legal information search which includes more than just a simple answer to the question: "Is X legal?". Given a simple legal topic or question, legalAI will be able to provide all useful information about the topic, answered by GPT 4 following the format of a "Universal Question Answer". These universal questions are outlined in the universal answer document and will eliminate the need for followup queries of basic information. In one "run" of the program, a user should be able to ask a simple question and receive an answer which includes everything they want to know (even though they may not have directly asked for it).
    2. Simplify the surprisingly difficult task of searching for legal information. Complex legal questions about very specific topics can be hard to find on the internet and combing through the legal code is no easy task (trust me). LegalAI strives to provide accurate legal information to someone regardless of their legal knowledge or technological ability.
