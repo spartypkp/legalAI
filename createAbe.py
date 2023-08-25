@@ -1,6 +1,8 @@
 import os
 import openai
 import config
+import json
+import compareEmedding
 openai.api_key = config.spartypkp_openai_key
 
 # gpt-3.5-turbo-16k
@@ -17,29 +19,73 @@ openai.api_key = config.spartypkp_openai_key
 
 
 def main():
-
-    system_prompt = """You will be provided with a document delimited by triple quotes. 
-    The document contains key words encapsulated in double quotes and immediately followed by the key word's definition.
-    Key word and definitions can apply to the category, Division, Title, Part, Chapter, Article, Section, or subdivision.
-
-    Use the following step by step instruction to respond to user inputs.
-    Step 1 - Search the document for key words and following definition.
-    Step 2 - Print out the key word and definition.
-    Step 3 - Repeat until all key words and definitions are found.
-    Step 4 - Finally, determine which category these key word and definition pairs apply to and print it out to the user. 
     
-    Definitions which have text longer than two sentences can be cut off after two sentences.
-    """
+    user_question = input("Input a question to ask about the California legal code or a specific topic you would like to know more about.")
+    topic_dict = get_similar_topics(user_question)
+    topics_str = " ".join(topic_dict["queries"])
+    
+    rows = compareEmedding.compare_all_embeddings(topics_str, match_count=10)
+    total_tokens = 0
+    for row in rows:
+        print(row)
+        print("\n\n\n\n")
+        total_tokens += row[10]
 
-    response = openai.ChatCompletion.create(
-              model="MODEL_NAME",
-              messages=[{"role": "system", "content": 'SPECIFY HOW THE AI ASSISTANT SHOULD BEHAVE'},
-                        {"role": "user", "content": 'SPECIFY WANT YOU WANT THE AI ASSISTANT TO SAY'}
-              ])
+    
+    print(total_tokens)
+    '''
+    messages= [
+        {"role": "system", "content": "System instructions here!"},
+        {"role": "user", "content": "Instructions and inputs go in here"}      
+    ]
+    completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": "Hello world"}])
+    '''
+    
 
 
+def get_similar_topics(user_question):
+    similar_topics= [
+        {"role": "system", "content": "All output shall be in JSON format."},
+        {"role": "user", "content": '''Generate an array of search queries that are relevant to this question.
 
+        Use a variation of related keywords for the queries, trying to be as general as possible.
 
+        Queries should include legal language and formal structure as you would see in an official legal document.
 
+        Queries should not be in the format of questions.
+
+        Return 10 relevant search queries.
+
+        User question: "{}"
+                    
+        Format: {{\\"queries\\": [\\"query_1\\", \\"query_2\\", \\"query_3\\"]}}";'''.format(user_question)}]
+    
+    chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=similar_topics)
+    result = chat_completion.choices[0].message.content
+    result_dct = json.loads(result)
+    return result_dct
+
+def extract_questions_from_text():
+    prompt = '''You are an editor for a law firm that helps explain legal text. 
+
+    You will be given a section of legal code delimitted by triple quotes. 
+
+    Make a list of questions that could be answered by this section of legal code. Questions you make will be used to link a frequently asked section page to this document. 
+
+    Be creative and create as many question as you can from every part of the text.
+
+    '''
+    return
+
+def get_final_answer(user_question, text):
+    answer_prompt= [
+        {"role": "system", "content": '''You will be provided with a document delimited by triple quotes and a user question. Your task is to answer the question using only the provided document and to cite the passage(s) of the document used to answer the question. If the document does not contain the information needed to answer this question then simply write: "Insufficient information." If an answer to the question is provided, it must be annotated with a citation. Use the following format for to cite relevant passages ({"section": …}).
+        All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.'''},
+        {"role": "user", "content": '''User Question: \"{}\"\nLegal Documentation:\'\'\'{}\'\'\''''.format(user_question, text)}]
+    chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo-16k",messages=answer_prompt)
+    result = chat_completion.choices[0].message.content
+    return result
+        
+         
 if __name__ == "__main__":
     main()
