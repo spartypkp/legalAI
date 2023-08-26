@@ -66,7 +66,7 @@ def get_similar_topics(user_question):
     return result_dct
 
 def extract_questions_from_text():
-    prompt = '''You are an editor for a law firm that helps explain legal text. 
+    prompt1 = '''You are an editor for a law firm that helps explain legal text. 
 
     You will be given a section of legal code delimitted by triple quotes. 
 
@@ -75,6 +75,12 @@ def extract_questions_from_text():
     Be creative and create as many question as you can from every part of the text.
 
     '''
+    prompt2 = '''You are a helpful and thorough teachers assistant in a law school. You focus on assisting professors by creating rigorous questions that test's a student understanding of a piece of legislation.
+
+    Generate questions that this piece of legislation answers.
+
+    Read carefully and take your time. Create a list of 20 questions.
+        '''
     return
 
 def get_final_answer(user_question, text):
