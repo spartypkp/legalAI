@@ -7,15 +7,41 @@ import getPSQLConn
 
 def main():
     #user_embedding_search()
-    text = " ".join(["Legality of consuming cannabis",
-      "Laws regarding marijuana use",
-      "Regulations on smoking cannabis",
-      "Legality of marijuana consumption",
-      "Is it legal to smoke cannabis?",
-      "Is it legal to smoke marijuana?"])
+    text = " ".join(["legalization of marijuana",
+    "cannabis laws",
+    "possession of marijuana",
+    "smoking weed",
+    "weed consumption",
+    "marijuana regulations",
+    "drug enforcement policies",
+    "drug possession laws",
+    "controlled substances act",
+    "marijuana use and penalties",
+    "recreational marijuana laws",
+    "medical marijuana laws",
+    "drug policy reform",
+    "marijuana legalization debate",
+    "impact of marijuana on health",
+    "marijuana penalties and fines",
+    "legalization of cannabis for medicinal purposes",
+    "drug abuse prevention and control",
+    "criminalization of marijuana",
+    "marijuana laws by country",
+    "marijuana legislation and statutes",
+    "drug trafficking laws",
+    "possession with intent to distribute marijuana",
+    "history of marijuana prohibition",
+    "drug scheduling and classifications",
+    "effects of marijuana on driving",
+    "marijuana taxation and regulation",
+    "drug possession and incarceration rates",
+    "public opinion on marijuana legalization",
+    "marijuana consumption and workplace policies",
+    "marijuana and criminal justice system",
+    "legalization of drugs"])
     
-    rows = compare_all_embeddings(text, 0.1, 1)
-    print(rows[0])
+    rows = compare_all_embeddings(text, 0.1, 20)
+    
     exit(1)
     conn = getPSQLConn.connect()
     cursor = conn.cursor()
@@ -82,10 +108,11 @@ def compare_all_embeddings(text, match_threshold=0.5, match_count=5):
     result = cur.fetchall()
     cur.close()
     conn.close()
-    return result
+    #return result
     
-    rows_formatted = format_sql_rows(result)
-    print(rows_formatted)
+    #rows_formatted = format_sql_rows(result)
+    #print(rows_formatted)
+    return result
     
     
 
