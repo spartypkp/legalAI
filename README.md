@@ -30,7 +30,16 @@ LegalAI is simply intended as a tool to provide legal information, nothing more.
 |1  | CONS | 0        | 0	  | 0    | 0       |	I       |	1	   | All people are by nature free...blahblah |	(added Nov. 5, 1974..  | htt..|	
 
 Headers for parent sections are given their own rows. After scraping and inserting to PostgreSQL, we have a table with 178,564 unique rows corresponding to actual sections in the California Legal Code.
-   
+
+Some quick analysis of the California Legal Code shows two things:
+1. 99% of sections are short in length measured in tokens.
+![log_token_distribution](https://github.com/spartypkp/legalAI/assets/59883254/f91ad92f-0ce7-4848-81c0-23c1da28f38a)
+2. Certain codes contain MUCH more content than others.
+![section_code_distribution](https://github.com/spartypkp/legalAI/assets/59883254/9b5029dc-d874-44ac-a859-c740a4b7d764)
+
+It's interesting to help us understand the "normal" structure and format of a single law. This will be useful later when designing GPT prompts at scale, ie: Focus on finetuning prompts for dealing with 99% of the data formatting, worry about outliers later.
+
+
 The next step is preparing the dataset for more efficient search and retrieval. Using OpenAI's embedding model "text-embeddings-ada-002", vector embeddings are automatically created for each section's:
    1. Raw section text
    2. Legal definitions applying specificially to this section and definitions applying to ALL parent sections.
