@@ -3,7 +3,7 @@ import openai
 import config
 import json
 import compareEmedding
-import tkinter as tk
+
 openai.api_key = config.spartypkp_openai_key
 
 # gpt-3.5-turbo-16k
@@ -20,30 +20,25 @@ openai.api_key = config.spartypkp_openai_key
 
 
 def main():
+    ask_abe("Placeholder")
     
-    user_question = input("\n\nInput a question to ask about the California legal code or a specific topic you would like to know more about:\n")
+    
+    
+def ask_abe(user_question):  
+    user_question = input("What question would you like abe to answer?\n")
     topic_dict = get_similar_topics(user_question)
     topics_str = " ".join(topic_dict["queries"])
     print("\n\n Calling GPT 3.5 to generate related questions...: \n", topics_str)
     print("\n Comparing vector embeddings in the database to embedding of all related quries....\n")
     rows = compareEmedding.compare_all_embeddings(topics_str, match_count=20)
+    formatted_section = compareEmedding.format_sql_rows(rows)
     #continue_to_answer = input("These are all the relevant sections above. Would you like to continue to get a full answer from GPT? (y/n)")
     continue_to_answer = "y"
     if continue_to_answer == "y":
         final_answer = get_final_answer(user_question, rows)
         print("\n\n")
         print(final_answer)
-    
-    '''
-
-    messages= [
-        {"role": "system", "content": "System instructions here!"},
-        {"role": "user", "content": "Instructions and inputs go in here"}      
-    ]
-    completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": "Hello world"}])
-    '''
-    
-
+        return final_answer, formatted_section
 
 def get_similar_topics(user_question):
     similar_topics= [
@@ -121,7 +116,6 @@ The more detail you include in your answers, the more you help the user. Include
     chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo-16k",messages=answer_prompt)
     result = chat_completion.choices[0].message.content
     return result
-        
-         
+
 if __name__ == "__main__":
     main()

@@ -117,11 +117,10 @@ def compare_all_embeddings(text, match_threshold=0.5, match_count=5):
     
 
 def format_sql_rows(list_of_rows):
-    result = ""
+    result = "################################################\n"
     for row in list_of_rows:
-        result += "################################################\n"
+        result += "Code {} | Division {} | Title {} | Part {} | Chapter {} | Article {} | Section {}\n".format(*row[2:9])
         result += "Similarity Score: {}\n".format(row[1])
-        result += "Code {} | Division {} | Title {} | Part {} | Chapter {} | Article {} | Section {}\n{}\n".format(*row[2:10])
     result += "################################################\n"
     return result
 
