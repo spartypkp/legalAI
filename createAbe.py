@@ -3,6 +3,7 @@ import openai
 import config
 import json
 import compareEmedding
+import tkinter as tk
 openai.api_key = config.spartypkp_openai_key
 
 # gpt-3.5-turbo-16k
@@ -20,20 +21,21 @@ openai.api_key = config.spartypkp_openai_key
 
 def main():
     
-    user_question = input("Input a question to ask about the California legal code or a specific topic you would like to know more about.")
+    user_question = input("\n\nInput a question to ask about the California legal code or a specific topic you would like to know more about:\n")
     topic_dict = get_similar_topics(user_question)
     topics_str = " ".join(topic_dict["queries"])
+    print("\n\n Calling GPT 3.5 to generate related questions...: \n", topics_str)
+    print("\n Comparing vector embeddings in the database to embedding of all related quries....\n")
+    rows = compareEmedding.compare_all_embeddings(topics_str, match_count=20)
+    #continue_to_answer = input("These are all the relevant sections above. Would you like to continue to get a full answer from GPT? (y/n)")
+    continue_to_answer = "y"
+    if continue_to_answer == "y":
+        final_answer = get_final_answer(user_question, rows)
+        print("\n\n")
+        print(final_answer)
     
-    rows = compareEmedding.compare_all_embeddings(topics_str, match_count=10)
-    total_tokens = 0
-    for row in rows:
-        print(row)
-        print("\n\n\n\n")
-        total_tokens += row[10]
-
-    
-    print(total_tokens)
     '''
+
     messages= [
         {"role": "system", "content": "System instructions here!"},
         {"role": "user", "content": "Instructions and inputs go in here"}      
@@ -48,17 +50,17 @@ def get_similar_topics(user_question):
         {"role": "system", "content": "All output shall be in JSON format."},
         {"role": "user", "content": '''Generate an array of search queries that are relevant to this question.
 
-        Use a variation of related keywords for the queries, trying to be as general as possible.
+Use a variation of related keywords for the queries, trying to be as general as possible.
 
-        Queries should include legal language and formal structure as you would see in an official legal document.
+Queries should include legal language such as ["lawful", "violation", "authorized", "restrictions", "legitimate", "defined", "according to law", "legal"].
 
-        Queries should not be in the format of questions.
+Queries should be short.
 
-        Return 10 relevant search queries.
+Generate 15 queries.
 
-        User question: "{}"
-                    
-        Format: {{\\"queries\\": [\\"query_1\\", \\"query_2\\", \\"query_3\\"]}}";'''.format(user_question)}]
+User question: {}
+            
+Format: {{\\"queries\\": [\\"query_1\\", \\"query_2\\", \\"query_3\\"]}}";'''.format(user_question)}]
     
     chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=similar_topics)
     result = chat_completion.choices[0].message.content
@@ -83,11 +85,39 @@ def extract_questions_from_text():
         '''
     return
 
-def get_final_answer(user_question, text):
+def get_final_answer(user_question, rows):
+    current_tokens = 0
+    row = 0
+    text = ""
+    max_tokens = 12000
+    while current_tokens < max_tokens and row < len(rows):
+
+        #print(rows[row])
+        current_tokens += rows[row][10]
+        text = text + "\n" + rows[row][9]
+        row += 1
+    
     answer_prompt= [
-        {"role": "system", "content": '''You will be provided with a document delimited by triple quotes and a user question. Your task is to answer the question using only the provided document and to cite the passage(s) of the document used to answer the question. If the document does not contain the information needed to answer this question then simply write: "Insufficient information." If an answer to the question is provided, it must be annotated with a citation. Use the following format for to cite relevant passages ({"section": …}).
+        {"role": "system", "content": '''You are a helpful legal assistant that answers a user query by summarizing information in a legal document.
+
+        You will be provided with a user query and legal documentation in the format of a dictionary. 
+
         All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.'''},
-        {"role": "user", "content": '''User Question: \"{}\"\nLegal Documentation:\'\'\'{}\'\'\''''.format(user_question, text)}]
+        {"role": "user", "content":''' Carefully read the entire legal documentation and answer the following from the documentation:
+1. After reading the entire document, what is the simple answer to the user's query?
+2. What exact text of the legal documentation shows the simple answer to the user's query?
+3. What rights and privileges does a user have relating to their query?
+4. What are restrictions, caveats, and conditions to the user's query?
+5. What are any penalties, punishments, or crimes which apply to violating restrictions of the user's query?
+
+For every question you answer with information from the legal documentation, annotate the answer with a citation using the format:
+Question answer. (Section). 
+
+If a question isn't related to the user's query, do not answer it.
+         
+The more detail you include in your answers, the more you help the user. Include all relevant information in each answer.
+
+[User query: {}, Legal documentation:{}]'''.format(user_question, text)}]
     chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo-16k",messages=answer_prompt)
     result = chat_completion.choices[0].message.content
     return result
