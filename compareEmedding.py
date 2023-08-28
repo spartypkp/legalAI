@@ -97,30 +97,43 @@ def user_embedding_search():
     
 
 
-def compare_all_embeddings(text, match_threshold=0.5, match_count=5):
+def compare_all_embeddings(text, print_relevant_sections=False, match_threshold=0.5, match_count=5):
     embedding = get_embedding(text)
     conn = getPSQLConn.connect()
     cur = conn.cursor()
 
-    #print("\n\n")
     cur.callproc('match_embedding', ['{}'.format(embedding), match_threshold, match_count])
-    #print("Fetching {} matching sections which have cosine similarity match threshold {} for text:\n{}\n".format(match_count, match_threshold, text))
+    print("Fetching {} content sections with threshold {} for text:\n{}\n".format(match_count, match_threshold, text))
     result = cur.fetchall()
     cur.close()
     conn.close()
     #return result
-    
-    #rows_formatted = format_sql_rows(result)
-    #print(rows_formatted)
+    if print_relevant_sections:
+        rows_formatted = format_sql_rows(result)
+        print(rows_formatted)
     return result
     
-    
+def compare_definition_embeddings(text, print_relevant_sections=False, match_threshold=0.5, match_count=5):
+    embedding = get_embedding(text)
+    conn = getPSQLConn.connect()
+    cur = conn.cursor()
+    cur.callproc('match_definitions', ['{}'.format(embedding), match_threshold, match_count])
+    print("Fetching {} definition sections with threshold {} for text:\n{}\n".format(match_count, match_threshold, text))
+    result = cur.fetchall()
+    cur.close()
+    conn.close()
+    if print_relevant_sections:
+        rows_formatted = format_sql_rows(result)
+        print(rows_formatted)
+    return result
 
 def format_sql_rows(list_of_rows):
-    result = "################################################\n"
+    result =""
     for row in list_of_rows:
+        result += "################################################\n"
         result += "Code {} | Division {} | Title {} | Part {} | Chapter {} | Article {} | Section {}\n".format(*row[2:9])
         result += "Similarity Score: {}\n".format(row[1])
+        result += "Text: {}\n".format(row[9])
     result += "################################################\n"
     return result
 
