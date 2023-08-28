@@ -2,20 +2,12 @@ import json
 import psycopg2
 
 
-GENERIC_SYSTEM_USER_MSG = '''[
-{
-"role": "system",
-"content": "{}"
-},
-{
-"role": "user",
-"content": "{}"
-}
-]'''
 
 def main():
     pass
 
+def apply_to_generic(system, user):
+    return [{"role": "system","content": "{}".format(system)},{"role": "user","content": "{}".format(user)}]
 # PRE PROCESSING PROMPTS
 def get_prompt_similar_queries(user_query):
     system = "All output shall be in JSON format."
@@ -31,7 +23,7 @@ def get_prompt_similar_queries(user_query):
                     
         Format: {{\\"queries\\": [\\"query_1\\", \\"query_2\\", \\"query_3\\"]}}";
     '''.format(user_query)
-    messages = GENERIC_SYSTEM_USER_MSG.format(system, user)
+    messages = apply_to_generic(system, user)
     return messages
 
 def get_prompt_generate_hypothetical_questions(legal_text):
@@ -45,12 +37,11 @@ def get_prompt_generate_hypothetical_questions(legal_text):
 
     '''
     user = " '''{}''' ".format(legal_text)
-    messages = GENERIC_SYSTEM_USER_MSG.format(system, user)
+    messages = apply_to_generic(system, user)
     return messages
 
 # ANSWER PROMPTS
-def get_prompt_final_answer(user_query, legal_text):
-    template = get_basic_universal_answer_template(user_query)
+def get_prompt_final_answer(user_query, legal_text, template):
     system = '''You are a helpful legal assistant that answers a user query by summarizing information in a legal document.
 
         You will be provided with a user query and legal documentation in the format of a dictionary. 
@@ -69,7 +60,7 @@ def get_prompt_final_answer(user_query, legal_text):
 
         [User query: {}, Legal documentation:{}]
     '''.format(template, user_query, legal_text)
-    messages = GENERIC_SYSTEM_USER_MSG.format(system, user)
+    messages = apply_to_generic(system, user)
     return messages
 
 
@@ -85,16 +76,39 @@ def get_prompt_score_individual_question(legal_text, template_question, generate
     User's Question: {user_question}\n\n"
     Generated Answer: {answer}\n\n"
     '''.format(legal_text, template_question, generated_answer)
-    messages = GENERIC_SYSTEM_USER_MSG.format(system, user)
+    messages = apply_to_generic(system, user)
     return messages
 
 def get_prompt_compare_questions():
     pass
-# UNIVERSAL ANSWER TEMPLATES
-def get_basic_universal_answer_template(user_query):
-    basic_template=''' 
-    1. After reading the entire document, what is the simple answer to {}? Show the exact text in the legal document that proves this.
+
+
+def get_prompt_convert_question(user_query):
+    system='''You will be provided with a user query and 3 generic questions.
+
+    Rephrase every generic question by applying the topics in the user_query.
+
+    Output should be in a single string with the following format:
+    2. QUESTION 2 \n
+    3. QUESTION 3 \n
+    4. QUESTION 4\n
     '''
+    user = '''User_Query: {}
+
+    Question 2: What rights and privileges does a user have relating to TOPICS?
+    Question 3: What are restrictions, caveats, and conditions to TOPICS?
+    Question 4: What are any penalties, punishments, or crimes which apply to violating restrictions of TOPICS?
+    '''.format(user_query)
+    messages = apply_to_generic(system, user)
+    return messages
+
+# UNIVERSAL ANSWER TEMPLATES
+def get_basic_universal_answer_template(user_query, converted_questions):
+
+    basic_template=''' 
+    1. After reading the entire document, {}? After answering, show the exact full text in the legal document that proves this.
+    {}
+    '''.format(user_query, converted_questions)
     return basic_template
 
 def get_original_universal_answer_template():
