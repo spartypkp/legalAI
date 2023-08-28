@@ -103,7 +103,7 @@ def compare_all_embeddings(text, print_relevant_sections=False, match_threshold=
     cur = conn.cursor()
 
     cur.callproc('match_embedding', ['{}'.format(embedding), match_threshold, match_count])
-    print("Fetching {} content sections with threshold {} for text:\n{}\n".format(match_count, match_threshold, text))
+    #print("Fetching {} content sections with threshold {} for text:\n{}\n".format(match_count, match_threshold, text))
     result = cur.fetchall()
     cur.close()
     conn.close()
@@ -124,7 +124,7 @@ def compare_definition_embeddings(text, print_relevant_sections=False, match_thr
     conn.close()
     if print_relevant_sections:
         rows_formatted = format_sql_rows(result)
-        print(rows_formatted)
+        #print(rows_formatted)
     return result
 
 def format_sql_rows(list_of_rows):
