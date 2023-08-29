@@ -46,6 +46,8 @@ def get_prompt_final_answer(user_query, legal_text, template):
 
         You will be provided with a user query and legal documentation in the format of a dictionary. 
 
+        Output will be in the format of a python list.
+
         All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.'''
     user = '''Carefully read the entire legal documentation and answer the following from the documentation:
         
@@ -53,6 +55,8 @@ def get_prompt_final_answer(user_query, legal_text, template):
          
         For every question you answer with information from the legal documentation, annotate the answer with a citation using the format:
         Question answer. (Section). 
+
+        Append each answer to the python output list.
 
         If a question isn't related to the user's query, do not answer it.
             
@@ -65,17 +69,21 @@ def get_prompt_final_answer(user_query, legal_text, template):
 
 
 # SCORING PROMPTS
-def get_prompt_score_individual_question(legal_text, template_question, generated_answer):
-    system= '''"As a sophisticated AI model trained on vast amounts of legal texts and familiar with the nuances of legal interpretation,
-    carefully analyze the provided legal text. Consider the user's question and evaluate the relevance of the legal text to the question. 
-    Further, judge the quality of the provided answer based on its fidelity to the legal text, its clarity, and its comprehensiveness. 
-    Provide scores on a scale from 0 to 100 for both the relevance of the legal text and the quality of the answer.
-    Your evaluation should be as precise and nuanced as a seasoned legal expert."
+def get_prompt_score_questions(legal_text, template_questions, generated_answers):
+    system= '''You are LawProfessorGPT, a witheringly critical legal scholar who reviews answers to legal questions to ensure that they are comprehensive and grounded entirely in the provided legal text.
+
+    You will be provided pairs of questions and answers to score.
+    For each pair, answer the following questions and output a score in the format [(Relevance_score 1, Answer_score 1), (), (), (), ()].
+        Relevance_score: Based on the provided legal text, how relevant are the given sections of legal text to the user's question (on a scale from 0 to 100)?
+        Answer_score: How well does the provided answer address the user's question based on the legal text (on a scale from 0 to 100)?
     '''
-    user = '''Legal Text: {legal_text}\n\n
-    User's Question: {user_question}\n\n"
-    Generated Answer: {answer}\n\n"
-    '''.format(legal_text, template_question, generated_answer)
+    user = '''Legal Text: {}\n\n
+    (Question 1: {}, Answer 1: {})\n
+    (Question 2: {}, Answer 2: {})\n
+    (Question 3: {}, Answer 3: {})\n
+    (Question 4: {}, Answer 4: {})\n
+    (Question 5: {}, Answer 5: {})\n
+    '''.format(legal_text, template_questions[0], generated_answers[0],template_questions[1], generated_answers[1],template_questions[2], generated_answers[2],template_questions[3], generated_answers[3],template_questions[4], generated_answers[4])
     messages = apply_to_generic(system, user)
     return messages
 
@@ -86,19 +94,19 @@ def get_prompt_compare_questions():
 def get_prompt_convert_question(user_query):
     system='''You will be provided with a user query and 3 generic questions.
 
-    Rephrase every generic question by applying the topics in the user_query.
+    Rephrase question 3,4,5 by applying the topics in the user_query. Keep question 2 in its original phrasing.
 
     Output should be in a single string with the following format:
     2. QUESTION 2 \n
     3. QUESTION 3 \n
-    4. QUESTION 4\n
+    4. QUESTION 4 \n
+    5. QUESTION 5 \n
     '''
     user = '''User_Query: {}
-
-    Question 2: What rights and privileges does a user have relating to TOPICS?
-    Question 3: What are restrictions, caveats, and conditions to TOPICS?
-    Question 4: What are any penalties, punishments, or crimes which apply to violating restrictions of TOPICS?
-    '''.format(user_query)
+    QUESTION 2: What is the exact legal text that answers the user query?
+    Question 3: What rights and privileges does a user have relating to TOPICS?
+    Question 4: What are restrictions, caveats, and conditions to TOPICS?
+    Question 5: What are any penalties, punishments, or crimes which apply to violating restrictions of TOPICS?'''.format(user_query)
     messages = apply_to_generic(system, user)
     return messages
 
@@ -106,7 +114,7 @@ def get_prompt_convert_question(user_query):
 def get_basic_universal_answer_template(user_query, converted_questions):
 
     basic_template=''' 
-    1. After reading the entire document, {}? After answering, show the exact full text in the legal document that proves this.
+    QUESTION 1: {}?
     {}
     '''.format(user_query, converted_questions)
     return basic_template
