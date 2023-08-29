@@ -130,11 +130,10 @@ def compare_definition_embeddings(text, print_relevant_sections=False, match_thr
 def format_sql_rows(list_of_rows):
     result =""
     for row in list_of_rows:
-        result += "################################################\n"
-        result += "Code {} | Division {} | Title {} | Part {} | Chapter {} | Article {} | Section {}\n".format(*row[2:9])
-        result += "Similarity Score: {}\n".format(row[1])
-        result += "Text: {}\n".format(row[9])
-    result += "################################################\n"
+        result += "\n"
+        
+        result += "Cal. {} § {}:\n{}\n".format(row[2], row[8], row[9])
+    result += "\n"
     return result
 
 if __name__ == "__main__":
