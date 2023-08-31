@@ -1,20 +1,20 @@
 import json
 import psycopg2
-import getPSQLConn as psqlCon
 import os
-from embedCodes import get_embedding_and_token
-from calculateTokens import num_tokens_from_string
+from utilityFunctions import get_embedding_and_token
+from utilityFunctions import num_tokens_from_string
+from utilityFunctions import psql_connect
+
 DIR = os.path.dirname(os.path.realpath(__file__))
 
-#CODES_OLD = ["BPC","CCP","CIV","COM","CONS","CORP","EDC","ELEC","EVID","FAC","FAM","FGC","FIN",**"GOV","HNC","HSC","INS","LAB","MVC","PCC","PEN","PRC","PROB","PUC","RTC","SHC","UIC","VEH","WAT","WIC"]
-CODES = ["VEH","WAT","WIC"]
+CODES = ["BPC","CCP","CIV","COM","CONS","CORP","EDC","ELEC","EVID","FAC","FAM","FGC","FIN","GOV","HNC","HSC","INS","LAB","MVC","PCC","PEN","PRC","PROB","PUC","RTC","SHC","UIC","VEH","WAT","WIC"]
 
 # This guy's the goat, helped me speed up insertion.
 # https://www.confessionsofadataguy.com/performance-testing-postgres-inserts-with-python/
 
 def main():
     # Connect to the database
-    conn = psqlCon.connect()
+    conn = psql_connect()
     
     # Format template for code_list
     # # [ID: 0, Code: 1, Division: 2, Title: 3, Part:4, Chapter: 5, Article: 6, Section: 7,
@@ -57,7 +57,6 @@ def read_from_file(code, code_list):
 
     errorLog.close()
     
-
 def insert_code_list(code_list, conn):
     """ Add each row (tuple) in code_list to an sql insert statement using string formatting. Execute large insert statement and committ """
     # Format of code_list: [(id, "section_info","content","embedding"),]

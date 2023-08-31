@@ -2,41 +2,12 @@ import os
 import openai
 import config
 import json
-import compareEmedding
+import utilityFunctions as util
 import promptStorage as prompts
 
 openai.api_key = config.spartypkp_openai_key
 
-# gpt-3.5-turbo-16k
-# Tokens Per Minute: 180k
-# Requests Per Minute: 3,500
-# Input Cost: $0.003 per 1k
-# Output Cost: $0.004 per 1k
 
-
-# gpt-3.5-turbo-4k
-# Tokens Per Minute: 80k
-# Requests Per Minute: 3,500
-# Input Cost: $0.0015 per 1k
-# Output Cost: $0.002 per 1k
-
-# gpt-4 (8k token limit)
-# 
-# $0.03/1k prompt tokens
-# $0.06/1k sampled tokens
-
-# gpt-4-32k
-# $0.06/1k prompt tokens
-# $0.12/1k sampled tokens
-
-# TESTING SUITE COSTS
-# Unit Cost:
-# Low cost: $0.20, Mid Cost: $0.5, Worst Cost: $1.60)
-# 
-# 28 calls (14 answer, 14 score)
-# 
-# Total Cost:
-# Low Cost: $5.6, Mid Cost: $14, Worst Cost: $44.8
 
 def main():
     '''
@@ -59,7 +30,7 @@ def main():
     user_query = input("What question would you like abe to answer?\n")
     ask_abe(user_query)
     
-    
+# Starts one "run" of the project    
 def ask_abe(user_query):  
     # Get similar queries by calling GPT 3.5, maybe Google BARD instead
     topic_dict = get_similar_queries(user_query)
@@ -68,7 +39,7 @@ def ask_abe(user_query):
     print("\n\n Calling GPT 3.5 to generate related questions...: \n", topics_str)
     print("\n Comparing vector embeddings in the database to embedding of all related quries....\n")
     # Get cosine similarity score of related queries to all content embeddings
-    rows = compareEmedding.compare_all_embeddings(user_query, print_relevant_sections=True, match_count=20)
+    rows = util.compare_all_embeddings(user_query, print_relevant_sections=True, match_count=20)
     
 
     # continue to answer = input("Would you like to continue to GPT 4's answer? (y/n):\n")
@@ -99,15 +70,6 @@ def generate_hypothetical_questions():
     # Call openai.ChatCompletion.create(model, messages=, temperature=)
     return
 
-def calculate_prompt_cost(model, prompt_tokens, completion_tokens):
-    model_rates = {"gpt-3.5-turbo-16k":[0.003, 0.004], "gpt-3.5-turbo-4k":[0.0015, 0.002], "gpt-4":[0.03, 0.06], "gpt-4-32k":[0.06, 0.12]}
-    prompt_rate = model_rates[model][0]
-    completion_rate = model_rates[model][1]
-    cost = ((prompt_rate/1000)*prompt_tokens) + ((completion_rate/1000)*completion_tokens)
-    print("Prompt Tokens: {}, Completion Tokens: {}".format(prompt_tokens, completion_tokens))
-    print("Total cost of using {}: ${}".format(model, cost))
-    return cost
-
 def get_final_answer(user_query, rows, use_gpt_4=True):
     current_tokens = 0
     row = 0
@@ -123,7 +85,7 @@ def get_final_answer(user_query, rows, use_gpt_4=True):
         legal_text.append(rows[row])
         row += 1
         
-    legal_text = compareEmedding.format_sql_rows(legal_text)
+    legal_text = util.format_sql_rows(legal_text)
     #print("Number of tokens in legal_text: ", current_tokens)
     prompt_convert_question = prompts.get_prompt_convert_question(user_query)
     chat_completion =  openai.ChatCompletion.create(model=used_model,messages=prompt_convert_question, temperature=0)
@@ -141,7 +103,7 @@ def get_final_answer(user_query, rows, use_gpt_4=True):
     result = chat_completion.choices[0].message.content
     prompt_tokens = chat_completion.usage["prompt_tokens"]
     completion_tokens = chat_completion.usage["completion_tokens"]
-    cost = calculate_prompt_cost(used_model, prompt_tokens, completion_tokens)
+    cost = util.calculate_prompt_cost(used_model, prompt_tokens, completion_tokens)
     result = result[1:len(result)-1]
     result = list(result)
     print(result)
@@ -155,7 +117,6 @@ def find_and_replace_definitions(user_query):
     # Prompt gpt-4 to determine which definitions are most relevant
     # If there are multiple similar definitions, ask user to define which is most relevant
     # Reformat user_query with applicable definitions and return
-
 
 def test_all_questions(user_query, legal_text, template, answer_list):
     questions_list = template.split("\n")

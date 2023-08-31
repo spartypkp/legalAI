@@ -1,58 +1,15 @@
 import psycopg2
 import openai
 import os
-from embedCodes import get_embedding
-import getPSQLConn as psql
+import utilityFunctions as util
+from utilityFunctions import get_embedding
+from utilityFunctions import psql_connect
 
 
 def main():
-    #user_embedding_search()
-    text = " ".join(["legalization of marijuana",
-    "cannabis laws",
-    "possession of marijuana",
-    "smoking weed",
-    "weed consumption",
-    "marijuana regulations",
-    "drug enforcement policies",
-    "drug possession laws",
-    "controlled substances act",
-    "marijuana use and penalties",
-    "recreational marijuana laws",
-    "medical marijuana laws",
-    "drug policy reform",
-    "marijuana legalization debate",
-    "impact of marijuana on health",
-    "marijuana penalties and fines",
-    "legalization of cannabis for medicinal purposes",
-    "drug abuse prevention and control",
-    "criminalization of marijuana",
-    "marijuana laws by country",
-    "marijuana legislation and statutes",
-    "drug trafficking laws",
-    "possession with intent to distribute marijuana",
-    "history of marijuana prohibition",
-    "drug scheduling and classifications",
-    "effects of marijuana on driving",
-    "marijuana taxation and regulation",
-    "drug possession and incarceration rates",
-    "public opinion on marijuana legalization",
-    "marijuana consumption and workplace policies",
-    "marijuana and criminal justice system",
-    "legalization of drugs"])
+    pass
     
-    rows = compare_all_embeddings(text, 0.1, 20)
-    
-    exit(1)
-    conn = getPSQLConn.connect()
-    cursor = conn.cursor()
-    sql = ','.join(cursor.mogrify("(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", row).decode('utf8') for row in rows)
-    cur.execute("INSERT INTO test_embed VALUES " + sql)
-    conn.commit()
-    conn.close()
-    print(rows)
-    
-    
-
+# Internal tool for testing embedding similarity
 def user_embedding_search():
     print("=== Welcome to the user embedding search function! ===")
     print("-This function allows the user to input some user generated text and receive the closest \"match\" found in the California Legal Code.")
@@ -90,16 +47,13 @@ def user_embedding_search():
                     exit(0)
                 print("Please put a valid int in the range (1, 20) inclusive.")
         print()
-        compare_all_embeddings(user_text, user_match_threshold, user_match_count)
+        compare_content_embeddings(user_text, user_match_threshold, user_match_count)
         print()
 
-    
-    
-
-
-def compare_all_embeddings(text, print_relevant_sections=False, match_threshold=0.5, match_count=5):
+# Return most relevant content embeddings
+def compare_content_embeddings(text, print_relevant_sections=False, match_threshold=0.5, match_count=5):
     embedding = get_embedding(text)
-    conn = getPSQLConn.connect()
+    conn = psql_connect()
     cur = conn.cursor()
 
     cur.callproc('match_embedding', ['{}'.format(embedding), match_threshold, match_count])
@@ -112,10 +66,11 @@ def compare_all_embeddings(text, print_relevant_sections=False, match_threshold=
         rows_formatted = format_sql_rows(result)
         print(rows_formatted)
     return result
-    
+
+# Return most relevant definition embeddings  
 def compare_definition_embeddings(text, print_relevant_sections=False, match_threshold=0.5, match_count=5):
     embedding = get_embedding(text)
-    conn = getPSQLConn.connect()
+    conn = psql_connect()
     cur = conn.cursor()
     cur.callproc('match_definitions', ['{}'.format(embedding), match_threshold, match_count])
     print("Fetching {} definition sections with threshold {} for text:\n{}\n".format(match_count, match_threshold, text))
@@ -127,18 +82,20 @@ def compare_definition_embeddings(text, print_relevant_sections=False, match_thr
         #print(rows_formatted)
     return result
 
+# Return most relevant header embeddings
 def compare_header_embeddings(text, print_relevant_headers=False, match_threshold=0.5, match_count=5):
     embedding = get_embedding(text)
-    conn = getPSQLConn.connect()
+    conn = psql_connect()
     curr = conn.cursor()
     # cur.callproc
-    result = cur.fetchall()
+    result = curr.fetchall()
     curr.close()
     conn.close()
     if print_relevant_headers:
         rows_formatted = format_sql_rows(result)
     return result
 
+# Format one row of the table in a string, adding universal citation (State Code § Section #)
 def format_sql_rows(list_of_rows):
     result =""
     for row in list_of_rows:
@@ -150,14 +107,15 @@ def format_sql_rows(list_of_rows):
 
 # Create Title and Definition Embeddings, previously createTitleDefinitionEmbedding.py
 def createTitleDefinitionEmbedding():
-    conn = psql.connect()
+    conn = psql_connect()
     sql_select = "SELECT id, definitions, title_path, content_tokens FROM ca_code ORDER BY id;"
-    rows = psql.select_and_fetch_rows(conn, sql_select)
+    rows = util.select_and_fetch_rows(conn, sql_select)
     print(len(rows))
     conn.close()
-    conn = psql.connect()
+    conn = psql_connect()
     get_all_row_embeddings(rows, conn)
 
+# Get embeddings from openAI for new title/definitions
 def get_all_row_embeddings(rows, conn):
     titleDict = {}
     defDict = {}
@@ -175,7 +133,7 @@ def get_all_row_embeddings(rows, conn):
             def_tokens = defDict[definitions][1]
         else:
             try:
-                def_embedding, def_tokens = embedCodes.get_embedding_and_token(definitions)
+                def_embedding, def_tokens = util.get_embedding_and_token(definitions)
                 print("New definition found for id: {}".format(id))
                 defDict[definitions] = [def_embedding, def_tokens]
                 sql_update += "definition_embedding='{}', ".format(def_embedding)
@@ -186,7 +144,7 @@ def get_all_row_embeddings(rows, conn):
             title_tokens = titleDict[title_path][1]
         else:
             try:
-                title_embedding, title_tokens = embedCodes.get_embedding_and_token(title_path)
+                title_embedding, title_tokens = util.get_embedding_and_token(title_path)
                 titleDict[title_path] = [title_embedding, title_tokens]
                 sql_update += "title_path_embedding='{}', ".format(title_embedding)
             except:

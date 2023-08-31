@@ -90,7 +90,6 @@ def get_prompt_score_questions(legal_text, template_questions, generated_answers
 def get_prompt_compare_questions():
     pass
 
-
 def get_prompt_convert_question(user_query):
     system='''You will be provided with a user query and 3 generic questions.
 

@@ -5,7 +5,6 @@ import urllib.request
 import requests
 import json
 import re
-import calculateTokens
 import psycopg2
 
 CODE_SELECTION = "https://leginfo.legislature.ca.gov/faces/codes.xhtml"
@@ -42,7 +41,6 @@ def html_scraper():
             print("Finishided scraping Code: {}. Started at ID {} , ended at ID {}".format(currentCode, get_ID(), GLOBAL_ID))
             set_ID(GLOBAL_ID)
 
-
 def scrape(link, fileName):
     
     try:
@@ -57,7 +55,6 @@ def scrape(link, fileName):
         print("Could not scrape articles for code {}".format(fileName))
         print(exc)
         exit(1)
-
 
 def getHTMLdocument(url):
     # request for HTML document of given url
@@ -197,7 +194,6 @@ def split_sections(dct, sectionTags, text):
 
     dct[key] = localSectionTags
 
-
 def get_addendum_index(sectionText):
     if sectionText[-1] != ")":
         return -1
@@ -211,7 +207,6 @@ def get_addendum_index(sectionText):
             if len(stack) == 0:
                 return i
     return -1
-
 
 def get_tags_from_link(path, sectionTags):
     # [ ID, CONS, Division, Title, Part, Chapter, Article, Section ]
@@ -236,18 +231,17 @@ def get_ID():
         ID = int(get_file.read())
     get_file.close()
     return ID
+
 def set_ID(newID):
     with open("id.txt", "w") as set_file:
         set_file.write(str(newID))
     set_file.close()
 
 
-
 # CLEANING DATA FUNCTIONS
 def removeTokenCount(code):
-    path = os.path.realpath(__file__)
-    dir = os.path.dirname(path)
-    with open("{}/codeTexts/{}.txt".format(dir, code), "r") as text_file:
+
+    with open("{}/codeTexts/{}.txt".format(DIR, code), "r") as text_file:
         rawText = text_file.read()
         dct = json.loads(rawText)
     new_dct = {}
@@ -263,11 +257,10 @@ def removeTokenCount(code):
         write_file.write(json.dumps(new_dct))
     write_file.close()
     print("Finished writing {}.".format(code))
+
 def escape_characters(code):
     bad_chars = ["'"]
-    path = os.path.realpath(__file__)
-    dir = os.path.dirname(path)
-    with open("{}/codeTexts/{}.txt".format(dir, code), "r") as text_file:
+    with open("{}/codeTexts/{}.txt".format(DIR, code), "r") as text_file:
         rawText = text_file.read()
         dct = json.loads(rawText)
     new_dct = {}
@@ -278,11 +271,10 @@ def escape_characters(code):
             new_value = new_value.replace(ch, "\{}".format(ch))
         print("new value:", new_value)
         break
+
 def strip_text(code):
     print("Running strip_text for {}".format(code))
-    path = os.path.realpath(__file__)
-    dir = os.path.dirname(path)
-    with open("{}/codeTexts/{}.txt".format(dir, code), "r") as text_file:
+    with open("{}/codeTexts/{}.txt".format(DIR, code), "r") as text_file:
         rawText = text_file.read()
         dct = json.loads(rawText)
     new_dct = {}

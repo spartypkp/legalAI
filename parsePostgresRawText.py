@@ -1,8 +1,8 @@
-from calculateTokens import num_tokens_from_string as calc
+from utilityFunctions import num_tokens_from_string as calc
 import json
 import re
 import sys, os
-import getPSQLConn as psql
+import utilityFunctions as util
 
 def main():
     extract_all_definitions()
@@ -13,8 +13,8 @@ def main():
 def extract_all_definitions():
     # List content embeddings to be redone
     sql_select = "SELECT id, str_key, content FROM ca_code WHERE content ILIKE '%following definitions%' AND section NOT ILIKE '%Header%' OR section IS NULL ORDER BY id;"
-    conn = psql.connect()
-    rows = psql.select_and_fetch_rows(conn, sql_select)
+    conn = util.psql_connect()
+    rows = util.select_and_fetch_rows(conn, sql_select)
 
     with open("nestedHeaderDict.txt", "r") as header_file:
         text = header_file.read()
@@ -67,7 +67,7 @@ def extract_all_definitions():
     definition_file.close()
 
 def update_header_definitions():
-    conn = psql.connect()
+    conn = util.psql_connect()
     with open("definitionsUpdate.txt","r") as definition_file:
         text = definition_file.read()
         definitions_to_update = json.loads(text)
@@ -83,7 +83,7 @@ def update_header_definitions():
     conn.close()
 
 def update_header_content():
-    conn = psql.connect()
+    conn = util.psql_connect()
     with open("contentUpdate.txt","r") as content_file:
         text = content_file.read()
         content_to_update = json.loads(text)
@@ -149,7 +149,7 @@ def remove_definitions_from_str(test_str):
 def extractHeaders():
     header_dct = {}
     cleaned_text = {}
-    conn = getPSQLConn.connect()
+    conn = util.psql_connect()
     rows = get_all_rows_with_headers(conn)
     conn.close()
     
@@ -342,11 +342,11 @@ def updateAllSectionsForArticle(def_str, path, titles):
         titles = titles.replace("'", "''")
     if "'" in def_str:
         def_str = def_str.replace("'", "''")
-    conn = psql.connect()
+    conn = util.psql_connect()
     cursor = conn.cursor()
     sql_select = "SELECT id, definitions FROM ca_code WHERE {}".format(path)
     print(sql_select)
-    rows = psql.select_and_fetch_rows(conn, sql_select)
+    rows = util.select_and_fetch_rows(conn, sql_select)
     for tup in rows:
         id = int(tup[0])
         old_def = tup[1]
