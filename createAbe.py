@@ -149,6 +149,13 @@ def get_final_answer(user_query, rows, use_gpt_4=True):
     test_all_questions(user_query, legal_text, template)
     return result
 
+def find_and_replace_definitions(user_query):
+    pass
+    # Find relevant definition embeddings
+    # Prompt gpt-4 to determine which definitions are most relevant
+    # If there are multiple similar definitions, ask user to define which is most relevant
+    # Reformat user_query with applicable definitions and return
+
 
 def test_all_questions(user_query, legal_text, template, answer_list):
     questions_list = template.split("\n")
