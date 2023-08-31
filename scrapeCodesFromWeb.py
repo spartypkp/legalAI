@@ -10,7 +10,7 @@ import psycopg2
 
 CODE_SELECTION = "https://leginfo.legislature.ca.gov/faces/codes.xhtml"
 FULL_PATH =  "https://leginfo.legislature.ca.gov"
-
+codes = ["CIV","BPC","CCP","COM","CONS","CORP","EDC","ELEC","EVID","FAC","FAM","FGC","FIN","GOV","HNC","HSC","INS","LAB","MVC","PCC","PEN","PRC","PROB","PUC","RTC","SHC","UIC","VEH","WAT","WIC"]
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 GLOBAL_ID = 0
@@ -230,16 +230,73 @@ def get_tags_from_link(path, sectionTags):
 def create_key(lst):
     return "{}#{}#{}#{}#{}#{}#{}".format(*lst)
 
+# Get and set unique section ID
 def get_ID():
     with open("id.txt", "r") as get_file:
         ID = int(get_file.read())
     get_file.close()
     return ID
-
 def set_ID(newID):
     with open("id.txt", "w") as set_file:
         set_file.write(str(newID))
     set_file.close()
+
+
+
+# CLEANING DATA FUNCTIONS
+def removeTokenCount(code):
+    path = os.path.realpath(__file__)
+    dir = os.path.dirname(path)
+    with open("{}/codeTexts/{}.txt".format(dir, code), "r") as text_file:
+        rawText = text_file.read()
+        dct = json.loads(rawText)
+    new_dct = {}
+
+    for k,v in dct.items():
+        commaIndex = v.index(",")
+        newValue = v[commaIndex+1:]
+        new_dct[k] = newValue
+
+    text_file.close()
+    print("Finished reading {}.".format(code))
+    with open('{}/codeTexts/{}.txt'.format(dir, code), 'w') as write_file:
+        write_file.write(json.dumps(new_dct))
+    write_file.close()
+    print("Finished writing {}.".format(code))
+def escape_characters(code):
+    bad_chars = ["'"]
+    path = os.path.realpath(__file__)
+    dir = os.path.dirname(path)
+    with open("{}/codeTexts/{}.txt".format(dir, code), "r") as text_file:
+        rawText = text_file.read()
+        dct = json.loads(rawText)
+    new_dct = {}
+    for k, v in dct.items():
+        print("old value: ", v)
+        new_value = v
+        for ch in bad_chars:
+            new_value = new_value.replace(ch, "\{}".format(ch))
+        print("new value:", new_value)
+        break
+def strip_text(code):
+    print("Running strip_text for {}".format(code))
+    path = os.path.realpath(__file__)
+    dir = os.path.dirname(path)
+    with open("{}/codeTexts/{}.txt".format(dir, code), "r") as text_file:
+        rawText = text_file.read()
+        dct = json.loads(rawText)
+    new_dct = {}
+
+    for k, v in dct.items():
+
+        newValue = v.strip()
+        new_dct[k] = newValue
+
+    text_file.close()
+
+    with open('{}/codeTexts/{}.txt'.format(dir, code), 'w') as write_file:
+        write_file.write(json.dumps(new_dct))
+    write_file.close()
 
 if __name__ == '__main__':
     main()
