@@ -127,6 +127,18 @@ def compare_definition_embeddings(text, print_relevant_sections=False, match_thr
         #print(rows_formatted)
     return result
 
+def compare_header_embeddings(text, print_relevant_headers=False, match_threshold=0.5, match_count=5):
+    embedding = get_embedding(text)
+    conn = getPSQLConn.connect()
+    curr = conn.cursor()
+    # cur.callproc
+    result = cur.fetchall()
+    curr.close()
+    conn.close()
+    if print_relevant_headers:
+        rows_formatted = format_sql_rows(result)
+    return result
+
 def format_sql_rows(list_of_rows):
     result =""
     for row in list_of_rows:
