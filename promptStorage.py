@@ -1,14 +1,15 @@
 import json
 import psycopg2
 
-
-
 def main():
     pass
 
+# Apply prompts to generic chatCompletion with a system and user, returns chatCompletion.messages
 def apply_to_generic(system, user):
     return [{"role": "system","content": "{}".format(system)},{"role": "user","content": "{}".format(user)}]
-# PRE PROCESSING PROMPTS
+
+# PRE PROCESSING PROMPTS ===============================================
+# generates an array of similar search queries
 def get_prompt_similar_queries(user_query):
     system = "All output shall be in JSON format."
     user = '''Generate an array of similar search queries that are relevant to the user query.
@@ -26,6 +27,7 @@ def get_prompt_similar_queries(user_query):
     messages = apply_to_generic(system, user)
     return messages
 
+# Generates hypothetical questions that could be answered by some legal text
 def get_prompt_generate_hypothetical_questions(legal_text):
     system = '''You are an editor for a law firm that helps explain legal text. 
 
@@ -40,7 +42,8 @@ def get_prompt_generate_hypothetical_questions(legal_text):
     messages = apply_to_generic(system, user)
     return messages
 
-# ANSWER PROMPTS
+# ANSWER PROMPTS ===============================================
+# Using legal text as input, answer all questions from a specific answer template
 def get_prompt_final_answer(user_query, legal_text, template):
     system = '''You are a helpful legal assistant that answers a user query by summarizing information in a legal document.
 
@@ -67,8 +70,8 @@ def get_prompt_final_answer(user_query, legal_text, template):
     messages = apply_to_generic(system, user)
     return messages
 
-
-# SCORING PROMPTS
+# SCORING PROMPTS ===============================================
+# Score questions on a) relevancy of legal text (sections) to user's question, b) quality of generated answer based on legal text
 def get_prompt_score_questions(legal_text, template_questions, generated_answers):
     system= '''You are LawProfessorGPT, a witheringly critical legal scholar who reviews answers to legal questions to ensure that they are comprehensive and grounded entirely in the provided legal text.
 
@@ -87,9 +90,11 @@ def get_prompt_score_questions(legal_text, template_questions, generated_answers
     messages = apply_to_generic(system, user)
     return messages
 
+# TODO: Compare two answers and their relevant template questions
 def get_prompt_compare_questions():
     pass
 
+# Combine and rephrase all template questions to ask about specific topics in a user query
 def get_prompt_convert_question(user_query):
     system='''You will be provided with a user query and 3 generic questions.
 
@@ -109,7 +114,8 @@ def get_prompt_convert_question(user_query):
     messages = apply_to_generic(system, user)
     return messages
 
-# UNIVERSAL ANSWER TEMPLATES
+# UNIVERSAL ANSWER TEMPLATES ===============================================
+# Most basic answer to user query
 def get_basic_universal_answer_template(user_query, converted_questions):
 
     basic_template=''' 
@@ -118,6 +124,7 @@ def get_basic_universal_answer_template(user_query, converted_questions):
     '''.format(user_query, converted_questions)
     return basic_template
 
+# Deprecated
 def get_original_universal_answer_template():
     original_template=''' 
     1. After reading the entire document, what is the simple answer to the user's query? One positive validation of the user's query overrides any other negatives in the documentation.
@@ -128,6 +135,7 @@ def get_original_universal_answer_template():
     '''
     return original_template
 
+# Deprecated
 def get_extended_universal_answer_template():
     extended_template='''
     1. After reading the entire document, what is the simple answer to the user's query? One positive validation of the user's query overrides any other negatives in the documentation.
