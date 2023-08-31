@@ -9,7 +9,6 @@ scrapedData/
 /embeddingErrorLog.txt
 /duplicateKeys.txt
 /test.txt
-/tableInformation.sql
 /characterCodeResearch.txt
 /cleanedRowsToUpdate.txt
 /contentUpdate.txt
@@ -17,3 +16,5 @@ scrapedData/
 /failedExtraction.txt
 /nestedHeaderDict.txt
 /testQueries.txt
+intermediateParsingDicts/
+scrapingSourceFiles/law-stackexchange-questions-answers.json
