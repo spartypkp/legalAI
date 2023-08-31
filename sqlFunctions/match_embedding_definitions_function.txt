@@ -1,4 +1,4 @@
-create or replace function match_definitions (
+create or replace function match_embedding_definitions (
   query_embedding vector(1536),
   match_threshold float,
   match_count int
@@ -13,8 +13,9 @@ returns table (
   chapter text,
   article text,
   section text,
+  content text,
   definitions text,
-  similarity float
+  titlePath text
 )
 language sql stable
 as $$
@@ -28,32 +29,9 @@ as $$
     ca_code.chapter,
     ca_code.article,
     ca_code.section,
-    ca_code.definitions,
-    ca_code.definition_tokens
-  from ca_code
-  where ca_code.definition_embedding IS NOT NULL AND 1 - (ca_code.embedding <=> query_embedding) > match_threshold 
-  order by similarity desc
-  limit match_count;
-$$;
-
-create or replace function match_titles (
-  query_embedding vector(1536),
-  match_threshold float,
-  match_count int
-)
-returns table (
-  id bigint,
-  definitions text,
-  content text,
-  similarity float
-)
-language sql stable
-as $$
-  select
-    ca_code.id,
-    ca_code.definitions,
     ca_code.content,
-    1 - (ca_code.definition_embedding <=> query_embedding) as similarity
+    ca_code.definitions,
+    ca_code.title_path
   from ca_code
   where 1 - (ca_code.definition_embedding <=> query_embedding) > match_threshold
   order by similarity desc

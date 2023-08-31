@@ -1,4 +1,4 @@
-create or replace function match_embedding (
+create or replace function match_embedding_titles (
   query_embedding vector(1536),
   match_threshold float,
   match_count int
@@ -21,7 +21,7 @@ language sql stable
 as $$
   select
     ca_code.id,
-    1 - (ca_code.embedding <=> query_embedding) as similarity,
+    1 - (ca_code.title_path_embedding <=> query_embedding) as similarity,
     ca_code.code,
     ca_code.division,
     ca_code.title,
@@ -33,7 +33,7 @@ as $$
     ca_code.definitions,
     ca_code.title_path
   from ca_code
-  where 1 - (ca_code.embedding <=> query_embedding) > match_threshold
+  where 1 - (ca_code.title_path_embedding <=> query_embedding) > match_threshold
   order by similarity desc
   limit match_count;
 $$;
