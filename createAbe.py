@@ -4,6 +4,7 @@ import config
 import json
 import utilityFunctions as util
 import promptStorage as prompts
+import testWithCurrentBuild as test
 
 openai.api_key = config.spartypkp_openai_key
 
@@ -58,6 +59,7 @@ def ask_abe(user_query):
         '''
         return final_answer
 
+# Given a user query, generate similar queries with related language
 def get_similar_queries(user_query):
     prompt_similar_queries = prompts.get_prompt_similar_queries(user_query)
     chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=prompt_similar_queries, temperature=0.4)
@@ -65,11 +67,7 @@ def get_similar_queries(user_query):
     result_dct = json.loads(result)
     return result_dct
 
-def generate_hypothetical_questions():
-    prompt = prompts.get_prompt_generate_hypothetical_questions()
-    # Call openai.ChatCompletion.create(model, messages=, temperature=)
-    return
-
+# All relevant sections are found, now generate an answer
 def get_final_answer(user_query, rows, use_gpt_4=True):
     current_tokens = 0
     row = 0
@@ -108,8 +106,9 @@ def get_final_answer(user_query, rows, use_gpt_4=True):
     result = list(result)
     print(result)
     exit(1)
-    test_all_questions(user_query, legal_text, template)
+    test.test_all_questions(user_query, legal_text, template)
     return result
+
 
 def find_and_replace_definitions(user_query):
     pass
@@ -118,40 +117,7 @@ def find_and_replace_definitions(user_query):
     # If there are multiple similar definitions, ask user to define which is most relevant
     # Reformat user_query with applicable definitions and return
 
-def test_all_questions(user_query, legal_text, template, answer_list):
-    questions_list = template.split("\n")
-    # This is stupid as fuck and I love it
-    try:
-        while True:
-            questions_list.remove(" ")
-    except:
-        pass
-    try:
-        while True:
-            questions_list.remove("")
-    except:
-        pass
-    print(questions_list)
-    used_model = "gpt-4-32k"
-    prompt_score_questions = prompts.get_prompt_score_questions(legal_text, questions_list, answer_list)
-    chat_completion = openai.ChatCompletion.create(model=used_model, messages=prompt_score_questions)
-    result = chat_completion.choices[0].message.content
-    print(result)
-    exit(1)
-    relevance_scores = [0]
-    answer_scores = [0]
-
-    with open("testQueries.txt","r") as read_file:
-        text = read_file.read()
-        test_dict = json.loads(text)
-    read_file.close()
-    if user_query in test_dict:
-        copy = test_dict[user_query]
-        copy[legal_text] = legal_text
-        copy["questions"][0]["best_answer"] = answer_list[0]
-        copy["questions"][0]["best_answer_metadata"]["relevance_score"] = relevance_scores[0]
-        copy["questions"][0]["best_answer_metadata"]["answer_score"] = answer_scores[0]
-        
+       
 
 
 if __name__ == "__main__":
