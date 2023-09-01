@@ -3,11 +3,61 @@ import json
 import re
 import sys, os
 import utilityFunctions as util
+from interval import interval, inf, imath
+CODES = ["CIV","BPC","CCP","COM","CONS","CORP","EDC","ELEC","EVID","FAC","FAM","FGC","FIN","GOV","HNC","HSC","INS","LAB","MVC","PCC","PEN","PRC","PROB","PUC","RTC","SHC","UIC","VEH","WAT","WIC"]
+DIR = os.path.dirname(os.path.realpath(__file__))
+COUNT = 0
 
 def main():
+
+    
+    with open("temporary.txt","r") as read_file:
+        text = read_file.read()
+        lst = json.loads(text)
+    read_file.close()
+    big_rnge = interval[0,1]
+    num_tokens = 0
+    biggest_index = 0
+    biggest_token = 0
+    print(lst[811])
+    exit(1)
+    for i, element in enumerate(lst):
+        text = element[0]
+        code = element[1]
+        rnge = element[2][0]
+        
+        if -1 not in rnge:
+            big_rnge = big_rnge | interval(rnge)
+
+        temp_tokens = util.num_tokens_from_string(text)
+        if temp_tokens > biggest_token:
+            biggest_token = temp_tokens
+            biggest_index = i
+        element.append(temp_tokens)
+        num_tokens += temp_tokens
+        
+    print("Biggest token count: {}, index: {}".format(biggest_token, biggest_index))
+
+    '''
+    
+    with open("{}/intermediateParsingDicts/nestedHeaderDict.txt".format(DIR), "r") as header_file:
+        text = header_file.read()
+        header_dct = json.loads(text)
+    header_file.close()
+    lst = []
+    all_headers = [header_dct, "ROOT", "0", "INF", "", "ROOT"]
+    traverse_definitions("ROOT", all_headers, "", lst)
+    print(len(lst))
+    with open("temporary.txt", "w") as write_file:
+        write_file.write(json.dumps(lst))
+    write_file.close()
+
+    
     extract_all_definitions()
     update_header_content()
     update_header_definitions()
+    '''
+    
 
 
 def extract_all_definitions():
@@ -317,24 +367,53 @@ def headerTreeTraversals():
     #print(type(all_headers[0])==dict)
     traverse_titles_and_definitions("WIC", all_headers, "", "", "")
 
-def traverse_titles_and_definitions(key, header_dct_values, def_str, path, titles):
+def traverse_definitions(key, header_dct_values, path, lst):
+    
+    
+    #print("Traversing for key: ", key)
+    
     if header_dct_values[4] != "":
-        def_str = def_str + ", " + header_dct_values[4]
-    
-    if header_dct_values[1] != "ROOT":
-        currentPath = "{}='{}' AND ".format(header_dct_values[5], key)
+        text = header_dct_values[4]
         
+        try:
+            start = header_dct_values[2].strip()
+            end = header_dct_values[3].strip()
+            start = float(start)
+            end = float(end)
+            rnge = interval[start, end]
+            print(rnge)
+        except:
+            rnge = interval[-1,-1]
+        code = path.split("*")[0]
+        lst.append([text, code, rnge])
+        
+
+    if header_dct_values[1] != "ROOT":
+        currentPath = "{}*".format(key)
         path += currentPath
-        if header_dct_values[1] is not None:
-            titles = titles + ", " + header_dct_values[1]
-    
+        
     if type(header_dct_values[0]) != dict or header_dct_values[5] == "article":
-        path = path[0:len(path)-5]+";"
-        updateAllSectionsForArticle(def_str, path, titles)
         return
     
     for k,v in header_dct_values[0].items():
-        traverse_titles_and_definitions(k, v, def_str, path, titles)
+        traverse_definitions(k, v, path, lst)
+
+
+def traverse_titles_and_definitions(key, header_dct_values, path, titles):
+# Range_dct: {Key: "division": [title, (range tup)]}
+    # header_dct:  {Key "BPC": [{} Subtrees, Title, Tup:(Range start, range end), [definitions], "floor tag"]}
+
+    
+    if header_dct_values[1] != "ROOT":
+        currentPath = "{}='{}' AND ".format(header_dct_values[5], key)
+        path += currentPath
+        
+    if type(header_dct_values[0]) != dict or header_dct_values[5] == "article":
+        path = path[0:len(path)-5]+";"
+        return
+    
+    for k,v in header_dct_values[0].items():
+        traverse_titles_and_definitions(k, v, path, titles)
 
 def updateAllSectionsForArticle(def_str, path, titles):
     titles, def_str = titles.strip(","), def_str.strip(",")
