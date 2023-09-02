@@ -7,21 +7,23 @@ from utilityFunctions import psql_connect
 
 
 def main():
-    pass
+    user_embedding_search()
     
 # Internal tool for testing embedding similarity
-def user_embedding_search():
-    print("=== Welcome to the user embedding search function! ===")
-    print("-This function allows the user to input some user generated text and receive the closest \"match\" found in the California Legal Code.")
-    print("-User generated text is converted into vector embeddings using OpenAI's text-embedding-ada-002 model.")
-    print("-This vector embedding is compared to a database of embedding for the entire legal code using cosine similarity search.")
-    print("-Please try inputting more complex phrases and questions. The more verbiose language you use the better testing I get!.")
+def user_embedding_search(show_explanation=False):
+    if show_explanation:
+        print("=== Welcome to the user embedding search function! ===")
+        print("-This function allows the user to input some user generated text and receive the closest \"match\" found in the California Legal Code.")
+        print("-User generated text is converted into vector embeddings using OpenAI's text-embedding-ada-002 model.")
+        print("-This vector embedding is compared to a database of embedding for the entire legal code using cosine similarity search.")
+        print("-Please try inputting more complex phrases and questions. The more verbiose language you use the better testing I get!.")
     print()
+
     user_text = ""
     while True:
         print("You will be prompted to enter some parameters. Enter\'q\' any time to exit the function:")
         
-        user_text = input("  1. Some user text to search/compare to the database:\n")
+        user_text = input("  1. A user query to compare to PSQL:\n")
         if user_text == "q":
             exit(0)
         while True:
@@ -47,64 +49,90 @@ def user_embedding_search():
                     exit(0)
                 print("Please put a valid int in the range (1, 20) inclusive.")
         print()
-        compare_content_embeddings(user_text, user_match_threshold, user_match_count)
+        compare_content_embeddings(user_text, True, user_match_threshold, user_match_count)
+        compare_definition_embeddings(user_text, True, user_match_threshold, user_match_count)
+        compare_title_path_embeddings(user_text, True, user_match_threshold, user_match_count)
         print()
 
 # Return most relevant content embeddings
-def compare_content_embeddings(text, print_relevant_sections=False, match_threshold=0.5, match_count=5):
-    embedding = get_embedding(text)
+def compare_content_embeddings(user_query, print_relevant_sections=False, match_threshold=0.5, match_count=5):
+    embedding = get_embedding(user_query)
     conn = psql_connect()
     cur = conn.cursor()
 
     cur.callproc('match_embedding', ['{}'.format(embedding), match_threshold, match_count])
-    #print("Fetching {} content sections with threshold {} for text:\n{}\n".format(match_count, match_threshold, text))
+    print("Fetching {} content sections with threshold {} for user_query:\n{}\n".format(match_count, match_threshold, user_query))
     result = cur.fetchall()
     cur.close()
     conn.close()
-    #return result
+    
     if print_relevant_sections:
         rows_formatted = format_sql_rows(result)
         print(rows_formatted)
+
     return result
 
 # Return most relevant definition embeddings  
-def compare_definition_embeddings(text, print_relevant_sections=False, match_threshold=0.5, match_count=5):
-    embedding = get_embedding(text)
+def compare_definition_embeddings(user_query, print_relevant_sections=False, match_threshold=0.5, match_count=5):
+    embedding = get_embedding(user_query)
     conn = psql_connect()
     cur = conn.cursor()
-    cur.callproc('match_definitions', ['{}'.format(embedding), match_threshold, match_count])
-    print("Fetching {} definition sections with threshold {} for text:\n{}\n".format(match_count, match_threshold, text))
+
+    cur.callproc('match_embedding_definitions', ['{}'.format(embedding), match_threshold, match_count])
+    print("Fetching {} definition sections with threshold {} for user_query:\n{}\n".format(match_count, match_threshold, user_query))
+
     result = cur.fetchall()
     cur.close()
     conn.close()
+
     if print_relevant_sections:
-        rows_formatted = format_sql_rows(result)
-        #print(rows_formatted)
+        rows_formatted = format_sql_rows(result, embedding_type="definitions")
+        print(rows_formatted)
+
     return result
 
-# Return most relevant header embeddings
-def compare_header_embeddings(text, print_relevant_headers=False, match_threshold=0.5, match_count=5):
-    embedding = get_embedding(text)
+# Return most relevant title embeddings
+def compare_title_path_embeddings(user_query, print_relevant_headers=False, match_threshold=0.5, match_count=5):
+    embedding = get_embedding(user_query)
     conn = psql_connect()
-    curr = conn.cursor()
-    # cur.callproc
-    result = curr.fetchall()
-    curr.close()
+    cur = conn.cursor()
+
+    cur.callproc('match_embedding_definitions', ['{}'.format(embedding), match_threshold, match_count])
+    print("Fetching {} title_path sections with threshold {} for user_query:\n{}\n".format(match_count, match_threshold, user_query))
+    
+    result = cur.fetchall()
+    cur.close()
     conn.close()
+
     if print_relevant_headers:
-        rows_formatted = format_sql_rows(result)
+        rows_formatted = format_sql_rows(result, embedding_type="title_path")
+        print(rows_formatted)
+
     return result
 
 # Format one row of the table in a string, adding universal citation (State Code § Section #)
-def format_sql_rows(list_of_rows):
+def format_sql_rows(list_of_rows, embedding_type="content"):
     result =""
+    # Match Function returns row format:
+    #  0,          1,    2,        3,     4,    5,       6,       7,       8,       9,          10,        11
+    # ID, Similarity, code, division, title, part, chapter, article, section, content, definitions, titlePath
+    print("\nFormatting rows for type: {}".format(embedding_type))
     for row in list_of_rows:
         result += "\n"
-        
-        result += "Cal. {} § {}:\n{}\n".format(row[2], row[8], row[9])
+        content = row[9]
+        if embedding_type == "definitions":
+            content = row[10]
+        elif embedding_type == "title_path":
+            content = row[11]
+        result += "Cal. {} § {}:\n{}\n".format(row[2], row[8], content)
     result += "\n"
     return result
 
+
+
+
+
+# DEPRECATED
 # Create Title and Definition Embeddings, previously createTitleDefinitionEmbedding.py
 def createTitleDefinitionEmbedding():
     conn = psql_connect()
