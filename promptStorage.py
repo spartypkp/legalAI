@@ -42,6 +42,22 @@ def get_prompt_generate_hypothetical_questions(legal_text):
     messages = apply_to_generic(system, user)
     return messages
 
+def get_prompt_extract_definitions(legal_text):
+    system = '''You are a helpful assistant at a law firm. You help people save time by finding legal key words and its definitions in a provided legal text.
+
+    You will be provided with a legal text delimited by triple quotes.
+
+    Key words and definitions are in the following format:
+    "KEY WORD" DEFINITION
+
+    List all key words and their full definitions to the user in the following format:
+    * "KEY WORD": DEFINITION
+
+    Print out the entire text of every definition no matter the length.'''
+    user = "'''{}'''".format(legal_text)
+    messages = apply_to_generic(system, user)
+    return messages
+
 # ANSWER PROMPTS ===============================================
 # Using legal text as input, answer all questions from a specific answer template
 def get_prompt_final_answer(user_query, legal_text, template):
