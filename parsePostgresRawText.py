@@ -4,40 +4,182 @@ import re
 import sys, os
 import utilityFunctions as util
 from interval import interval, inf, imath
+import matplotlib.pyplot as plt
+import promptStorage as prompts
+import openai
 CODES = ["CIV","BPC","CCP","COM","CONS","CORP","EDC","ELEC","EVID","FAC","FAM","FGC","FIN","GOV","HNC","HSC","INS","LAB","MVC","PCC","PEN","PRC","PROB","PUC","RTC","SHC","UIC","VEH","WAT","WIC"]
 DIR = os.path.dirname(os.path.realpath(__file__))
 COUNT = 0
 
 def main():
+    with open("definitionWithRanges.txt", "r") as output_file:
+        text = output_file.read()
+        all_definitions = json.loads(text)
+    output_file.close()
 
+    with open("definitionFromSections.txt","r") as input_file:
+        text = input_file.read()
+        raw_sections = json.loads(text)
+    input_file.close()
+
+    with open("referenceDefinitions.txt", "r") as reference_file:
+        text = reference_file.read()
+        reference_definitions= json.loads(text)
+    reference_file.close()
+
+    with open("temporary.txt", "r") as temp_file:
+        text = temp_file.read()
+        temp = json.loads(text)
+    temp_file.close()
+
+    with open("{}/intermediateParsingDicts/nestedHeaderDict.txt".format(DIR), "r") as header_file:
+        text = header_file.read()
+        header_dct = json.loads(text)
+    header_file.close()
     
+    header_values= [header_dct, "ROOT", "0", "INF", "", "ROOT"]
+    
+    # raw_sections [[id, str_key, content, content_tokens]]
+    # reference_definitions [keyword, definition, code, interval]
+    # big sections [text, code, interval, tokens]
+    # all_definitions {keyword: {definition: {code: interval}}}
+    raw_sections = raw_sections[0]
+    big_raw_sections = raw_sections[1]
+    big_sections = temp[1]
+    big_sections.extend(big_raw_sections)
+    for section in raw_sections:
+        id = section[0]
+        str_key = section[1]
+        code = str_key.split("#")[0]
+        content = section[2]
+        content_tokens = section[3]
+        rnge = find_key_scope(str_key, header_values)
+        
+        
+        prompt = prompts.get_prompt_extract_definitions(content)
+        used_model = "gpt-3.5-turbo-16k"
+        chat_completion = openai.ChatCompletion.create(model=used_model,messages=prompt, temperature=0)
+        definitions_str = chat_completion.choices[0].message.content
+        definitions_lst = definitions_str[1:].split("*")
+
+        for definition in definitions_lst:
+            try:
+                def_index = definition.index(":")
+            except:
+                print("Misclassified as definition! {}".format(definition[0:20]))
+                continue
+            
+            keyWord = definition[0:def_index].strip()
+            definition = definition[def_index+1:].strip()
+            if "as defined in" in definition or "has the same meaning as" in definition:
+                reference_definitions.append((keyWord, definition, code, rnge))
+                continue
+            
+            # KeyWord already in all_definitions
+            if keyWord in all_definitions:
+                # Definition already in unique_definitions
+                if definition in all_definitions[keyWord]:
+                    # Definition already found in another code, range union
+                    if code in all_definitions[keyWord][definition]:
+                        print("Definition already found, performing range union...")
+                        all_definitions[keyWord][definition][code] = interval(all_definitions[keyWord][definition][code][0]) | rnge
+                    # Definition found in new code, create new interval
+                    else:
+                        print("Same definition in different code: {} with range: {}".format(code, rnge))
+                        all_definitions[keyWord][definition][code] = rnge
+                # New definition exists for keyword
+                else:
+                    all_definitions[keyWord][definition] = {code: rnge}
+                    print("New definition: {} exists for keyword: {}".format(definition, keyWord))
+            # Brand new keyword
+            else:
+                all_definitions[keyWord] = {definition: {code: rnge}}
+                print("New keyword!  ", all_definitions[keyWord])
+
+    with open("referenceDefinitions.txt","w") as write_file:
+        write_file.write(json.dumps(reference_definitions))
+    write_file.close
+    with open("definitionWithRanges.txt","w") as write_file:
+        write_file.write(json.dumps(all_definitions))
+    write_file.close()
+    with open("temporary.txt","w") as write_file:
+        write_file.write(json.dumps(big_sections))
+    write_file.close()
+
+
+
+
+
+
+    '''
     with open("temporary.txt","r") as read_file:
         text = read_file.read()
         lst = json.loads(text)
     read_file.close()
-    big_rnge = interval[0,1]
-    num_tokens = 0
-    biggest_index = 0
-    biggest_token = 0
-    print(lst[811])
-    exit(1)
-    for i, element in enumerate(lst):
-        text = element[0]
-        code = element[1]
-        rnge = element[2][0]
-        
-        if -1 not in rnge:
-            big_rnge = big_rnge | interval(rnge)
+    # definition_ranges {key: "keyWord", value: {uniqueDefinitions}}
+    # uniqueDefinitions {key:"definition", value: {codeIntevals}}
+    # codeIntervals {key: code, value: [Interval ]}
+    all_definitions = {}
+    reference_definitions = []
+    regular_rows = lst[0]
+    #counter = 0
+    for row in regular_rows:
+        #counter += 1
+        #if counter == 4:
+            #break
+        text = row[0]
+        code = row[1]
+        rnge = row[2]
+        tokens = row[3]
 
-        temp_tokens = util.num_tokens_from_string(text)
-        if temp_tokens > biggest_token:
-            biggest_token = temp_tokens
-            biggest_index = i
-        element.append(temp_tokens)
-        num_tokens += temp_tokens
-        
-    print("Biggest token count: {}, index: {}".format(biggest_token, biggest_index))
+        prompt = prompts.get_prompt_extract_definitions(text)
+        used_model = "gpt-3.5-turbo-16k"
+        chat_completion = openai.ChatCompletion.create(model=used_model,messages=prompt, temperature=0)
+        definitions_str = chat_completion.choices[0].message.content
+        definitions_lst = definitions_str[1:].split("*")
+        definitions_lst = definitions_lst
+        print("\nRow: {}, {}".format(code, rnge))
+        #print("Definitions List:\n{}".format(definitions_lst))
+        for definition in definitions_lst:
+            try:
+                def_index = definition.index(":")
+            except:
+                print("Misclassified as definition! {}".format(definition[0:20]))
+                continue
+            
+            keyWord = definition[0:def_index].strip()
+            definition = definition[def_index+1:].strip()
+            if "as defined in" in definition or "has the same meaning as" in definition:
+                reference_definitions.append((keyWord, definition, code, rnge))
+                continue
+            # KeyWord already in all_definitions
+            if keyWord in all_definitions:
+                # Definition already in unique_definitions
+                if definition in all_definitions[keyWord]:
+                    # Definition already found in another code, range union
+                    if code in all_definitions[keyWord][definition]:
+                        all_definitions[keyWord][definition][code] = all_definitions[keyWord][definition][code] | interval[rnge[0]]
+                    # Definition found in new code, create new interval
+                    else:
+                        all_definitions[keyWord][definition][code] = interval[rnge[0]]
+                # New definition exists for keyword
+                else:
+                    all_definitions[keyWord][definition] = {code: interval[rnge[0]]}
+            # Brand new keyword
+            else:
+                all_definitions[keyWord] = {definition: {code: interval[rnge[0]]}}
+                print("New keyword!  ", all_definitions[keyWord])
 
+    with open("referenceDefinitions.txt","w") as write_file:
+        write_file.write(json.dumps(reference_definitions))
+    write_file.close
+    with open("definitionWithRanges.txt","w") as write_file:
+        write_file.write(json.dumps(all_definitions))
+    write_file.close()
+        
+    
+    '''
+    
     '''
     
     with open("{}/intermediateParsingDicts/nestedHeaderDict.txt".format(DIR), "r") as header_file:
@@ -57,7 +199,63 @@ def main():
     update_header_content()
     update_header_definitions()
     '''
+
+def find_key_scope(str_key, header_values):
+    #  0,   1,2,3,4,5,6
+    # [HSC,10,0,0,4,1,11165.1]
+    str_key_split = str_key.split("#")
+    str_key_split[1], str_key_split[2] = str_key_split[2], str_key_split[1]
+    for i in range(5, -1, -1):
+        if str_key_split[i] != "0":
+            stop = str_key_split[i]
     
+    values = header_values
+    for element in str_key_split:
+        values = values[0][element]
+        
+        if element==stop:
+            start = values[3]
+            end = values[4]
+            
+            try:
+                start = start.strip()
+                end = end.strip()
+                try:
+                    rnge = interval[float(start), float(end)]
+                except:
+                    rnge = -1
+            except:
+                rnge = -1
+            if rnge == -1 and values[4] != "code":
+                try:
+                    rnge = interval[float(str_key_split[-1]),float(str_key_split[-1])]
+                except:
+                    rnge = interval[-1, -1]
+            else:
+                rnge = interval[-1, -1]
+            return rnge
+    
+
+def extract_definitions_from_sections():
+    sql_select = "SELECT id, str_key, content, content_tokens FROM ca_code WHERE content ILIKE '%” means%' ORDER BY content_tokens;"
+    conn = util.psql_connect()
+    rows = util.select_and_fetch_rows(conn, sql_select)
+    regular_rows = []
+    big_rows = []
+    for i, row in enumerate(rows):
+        text = row[2]
+        tokens = util.num_tokens_from_string(text)
+        if tokens > 2000:
+            big_rows.append(list(row))
+            big_rows[-1][3] = tokens
+        else:
+            regular_rows.append(list(row))
+
+    result = [regular_rows, big_rows]
+    with open("definitionFromSections.txt","w") as write_file:
+        write_file.write(json.dumps(result))
+    write_file.close()
+    conn.close()
 
 
 def extract_all_definitions():
@@ -233,7 +431,7 @@ def extractHeaders():
 def add_to_header_dictionary(header_dct, row, range_dict):
     code, division, title, part, chapter, article = row[1:7]
     # Range_dct: {Key: "division": [title, (range tup)]}
-    # header_dct:  {Key "BPC": [{} Subtrees, Title, Tup:(Range start, range end), [definitions], "floor tag"]}
+    # header_dct:  {Key "BPC": [{} Subtrees, Title, Range start, range end, [definitions], "floor tag"]}
     if code not in header_dct:
         header_dct[code] = [{}, None, None, [], "code"]
     # A default dict would be so much better here but I am stubborn
