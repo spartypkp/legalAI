@@ -15,7 +15,9 @@ returns table (
   section text,
   content text,
   definitions text,
-  titlePath text
+  titlePath text,
+  contentTokens int,
+  definitionTokens int
 )
 language sql stable
 as $$
@@ -31,7 +33,9 @@ as $$
     ca_code.section,
     ca_code.content,
     ca_code.definitions,
-    ca_code.title_path
+    ca_code.title_path,
+    ca_code.content_tokens,
+    ca_code.definition_tokens
   from ca_code
   where 1 - (ca_code.title_path_embedding <=> query_embedding) > match_threshold
   order by similarity desc
