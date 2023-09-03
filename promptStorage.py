@@ -65,7 +65,9 @@ def get_prompt_final_answer(user_query, legal_text, template):
 
         You will be provided with a user query and legal documentation in the format of a dictionary. 
 
-        Output will be in the format of a python list.
+        Output will be in the following format:
+        *QUESTION 1: Answer,
+        *QUESTION 2: Answer,
 
         All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.'''
     user = '''Carefully read the entire legal documentation and answer the following from the documentation:
