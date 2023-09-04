@@ -5,10 +5,9 @@ import json
 import utilityFunctions as util
 import promptStorage as prompts
 import testWithCurrentBuild as test
+import embeddingSimilarity
 
 openai.api_key = config.spartypkp_openai_key
-
-
 
 def main():
     '''
@@ -40,11 +39,9 @@ def ask_abe(user_query):
     print("\n\n Calling GPT 3.5 to generate related questions...: \n", topics_str)
     print("\n Comparing vector embeddings in the database to embedding of all related quries....\n")
     # Get cosine similarity score of related queries to all content embeddings
-    rows = util.compare_all_embeddings(user_query, print_relevant_sections=True, match_count=20)
+    rows = embeddingSimilarity.compare_content_embeddings(user_query, print_relevant_sections=True, match_count=20)
     
-
     # continue to answer = input("Would you like to continue to GPT 4's answer? (y/n):\n")
-    
     continue_to_answer = "y"
     if continue_to_answer == "y":
         print("Using gpt-3.5-turbo, 16k token limit")
@@ -78,18 +75,16 @@ def get_final_answer(user_query, rows, use_gpt_4=True):
     else:
         max_tokens = 12000
     while current_tokens < max_tokens and row < len(rows):
-        #print(rows[row])
-        current_tokens += rows[row][10]
+        current_tokens += rows[row][12]
         legal_text.append(rows[row])
         row += 1
         
-    legal_text = util.format_sql_rows(legal_text)
-    #print("Number of tokens in legal_text: ", current_tokens)
+    legal_text = embeddingSimilarity.format_sql_rows(legal_text)
     prompt_convert_question = prompts.get_prompt_convert_question(user_query)
     chat_completion =  openai.ChatCompletion.create(model=used_model,messages=prompt_convert_question, temperature=0)
     converted_questions = chat_completion.choices[0].message.content
     template = prompts.get_basic_universal_answer_template(user_query, converted_questions)
-    # This is stupid as fuck and I love it
+    
     prompt_final_answer= prompts.get_prompt_final_answer(user_query, legal_text, template)
     
     if use_gpt_4:
@@ -98,12 +93,13 @@ def get_final_answer(user_query, rows, use_gpt_4=True):
         chat_completion = openai.ChatCompletion.create(model=used_model,messages=prompt_final_answer, temperature=0.2)
     else:
         chat_completion = openai.ChatCompletion.create(model=used_model,messages=prompt_final_answer, temperature=0.2)
-    result = chat_completion.choices[0].message.content
+    result_str = chat_completion.choices[0].message.content
+    result = result_str.split("*")
+    result = "\n".join(result[1:])
     prompt_tokens = chat_completion.usage["prompt_tokens"]
     completion_tokens = chat_completion.usage["completion_tokens"]
     cost = util.calculate_prompt_cost(used_model, prompt_tokens, completion_tokens)
-    result = result[1:len(result)-1]
-    result = list(result)
+    print("\n\n\n\n")
     print(result)
     exit(1)
     test.test_all_questions(user_query, legal_text, template)
