@@ -12,6 +12,14 @@ DIR = os.path.dirname(os.path.realpath(__file__))
 COUNT = 0
 
 def main():
+    # 19,000 keywords found
+    # row 9500: 21827 keywords, 34703 definitions
+    # 30,000 unique definitions found
+    #test_definition_dict()
+    reformat_definitions()
+
+def reformat_definitions():
+
     with open("definitionWithRanges.txt", "r") as output_file:
         text = output_file.read()
         all_definitions = json.loads(text)
@@ -43,16 +51,32 @@ def main():
     # reference_definitions [keyword, definition, code, interval]
     # big sections [text, code, interval, tokens]
     # all_definitions {keyword: {definition: {code: interval}}}
-    raw_sections = raw_sections[0]
+    
     big_raw_sections = raw_sections[1]
+    raw_sections = raw_sections[0]
+    
     big_sections = temp[1]
     big_sections.extend(big_raw_sections)
-    for section in raw_sections:
+    # index 3540
+    count = 0
+    for i in range(9000, len(raw_sections)):
+        if count == 4:
+            exit(1)
+        section = raw_sections[i]     
         id = section[0]
         str_key = section[1]
         code = str_key.split("#")[0]
         content = section[2]
         content_tokens = section[3]
+
+        print("Row Index: {}, ID: {}, Str_Key: {}, Tokens: {}".format(i, id, str_key, content_tokens))
+        if i % 50 == 0 and i != 9500:
+            with open("referenceDefinitions.txt","w") as write_file:
+                write_file.write(json.dumps(reference_definitions))
+            write_file.close
+            with open("definitionWithRanges.txt","w") as write_file:
+                write_file.write(json.dumps(all_definitions))
+            write_file.close()
         rnge = find_key_scope(str_key, header_values)
         
         
@@ -61,7 +85,11 @@ def main():
         chat_completion = openai.ChatCompletion.create(model=used_model,messages=prompt, temperature=0)
         definitions_str = chat_completion.choices[0].message.content
         definitions_lst = definitions_str[1:].split("*")
-
+        print(definitions_lst)
+        count += 1
+        continue
+        # index 3540
+        
         for definition in definitions_lst:
             try:
                 def_index = definition.index(":")
@@ -81,20 +109,20 @@ def main():
                 if definition in all_definitions[keyWord]:
                     # Definition already found in another code, range union
                     if code in all_definitions[keyWord][definition]:
-                        print("Definition already found, performing range union...")
+                        #print("Definition already found, performing range union...")
                         all_definitions[keyWord][definition][code] = interval(all_definitions[keyWord][definition][code][0]) | rnge
                     # Definition found in new code, create new interval
                     else:
-                        print("Same definition in different code: {} with range: {}".format(code, rnge))
+                        #print("Same definition in different code: {} with range: {}".format(code, rnge))
                         all_definitions[keyWord][definition][code] = rnge
                 # New definition exists for keyword
                 else:
                     all_definitions[keyWord][definition] = {code: rnge}
-                    print("New definition: {} exists for keyword: {}".format(definition, keyWord))
+                    #print("New definition: {} exists for keyword: {}".format(definition, keyWord))
             # Brand new keyword
             else:
                 all_definitions[keyWord] = {definition: {code: rnge}}
-                print("New keyword!  ", all_definitions[keyWord])
+                #print("New keyword!  ", all_definitions[keyWord])
 
     with open("referenceDefinitions.txt","w") as write_file:
         write_file.write(json.dumps(reference_definitions))
@@ -199,6 +227,18 @@ def main():
     update_header_content()
     update_header_definitions()
     '''
+
+def test_definition_dict():
+    with open("definitionWithRanges.txt", "r") as output_file:
+        text = output_file.read()
+        all_definitions = json.loads(text)
+    output_file.close()
+    print(len(all_definitions))
+    unique_definitions = 0
+    for key in all_definitions.keys():
+        unique_definitions += len(all_definitions[key].keys())
+    print(unique_definitions)
+
 
 def find_key_scope(str_key, header_values):
     #  0,   1,2,3,4,5,6
