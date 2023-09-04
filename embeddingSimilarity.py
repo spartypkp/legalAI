@@ -97,7 +97,7 @@ def compare_title_path_embeddings(user_query, print_relevant_headers=False, matc
     conn = psql_connect()
     cur = conn.cursor()
 
-    cur.callproc('match_embedding_definitions', ['{}'.format(embedding), match_threshold, match_count])
+    cur.callproc('match_embedding_titles', ['{}'.format(embedding), match_threshold, match_count])
     print("Fetching {} title_path sections with threshold {} for user_query:\n{}\n".format(match_count, match_threshold, user_query))
     
     result = cur.fetchall()
@@ -114,8 +114,8 @@ def compare_title_path_embeddings(user_query, print_relevant_headers=False, matc
 def format_sql_rows(list_of_rows, embedding_type="content"):
     result =""
     # Match Function returns row format:
-    #  0,          1,    2,        3,     4,    5,       6,       7,       8,       9,          10,        11
-    # ID, Similarity, code, division, title, part, chapter, article, section, content, definitions, titlePath
+    #  0,          1,    2,        3,     4,    5,       6,       7,       8,       9,          10,        11             12                13
+    # ID, Similarity, code, division, title, part, chapter, article, section, content, definitions, titlePath, contentTokens, definitionTokens
     print("\nFormatting rows for type: {}".format(embedding_type))
     for row in list_of_rows:
         result += "\n"
