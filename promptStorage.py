@@ -43,18 +43,20 @@ def get_prompt_generate_hypothetical_questions(legal_text):
     return messages
 
 def get_prompt_extract_definitions(legal_text):
-    system = '''You are a helpful assistant at a law firm. You help people save time by finding legal key words and its definitions in a provided legal text.
+    system = '''You are a helpful assistant at a law firm. You help people by trimming unnecessary text off of definitions.
 
-    You will be provided with a legal text delimited by triple quotes.
+You will be provided with a legal term and a definition in the following format:
+ '“TERM” means DEFINITION. Extraneous text'
 
-    Key words and definitions are in the following format:
-    "KEY WORD" DEFINITION
+Follow these steps:
+1. Take your time to read each sentence in order. The first sentence is guaranteed to be part of the definition.
+2. For each sentence, determine if it is strictly defining the term and explain your reasoning.
+3. If at any time the current sentence does not strictly define the meaning of the term, cut the remaining text and print out the text to the user.
+4. If all sentences do strictly define the meaning of the term, return the exact provided input text to the user. 
 
-    List all key words and their full definitions to the user in the following format:
-    * "KEY WORD": DEFINITION
-
-    Print out the entire text of every definition no matter the length.'''
-    user = "'''{}'''".format(legal_text)
+Before displaying your answer to the user, remove your reasoning.
+'''
+    user = "{}".format(legal_text)
     messages = apply_to_generic(system, user)
     return messages
 
