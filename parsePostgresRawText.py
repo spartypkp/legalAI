@@ -15,10 +15,14 @@ def main():
     # 19,000 keywords found
     # row 9500: 21827 keywords, 34703 definitions
     # 30,000 unique definitions found
+    test_remaining_tokens()
+    #test_remaining_tokens()
     #test_definition_dict()
-    reformat_definitions()
+    #reformat_definitions()
+    
 
 def reformat_definitions():
+    
 
     with open("definitionWithRanges.txt", "r") as output_file:
         text = output_file.read()
@@ -133,70 +137,135 @@ def reformat_definitions():
     with open("temporary.txt","w") as write_file:
         write_file.write(json.dumps(big_sections))
     write_file.close()
+    
 
-
-
-
-
-
-    '''
-    with open("temporary.txt","r") as read_file:
+def remaining():
+    small = []
+    big = []
+    with open("sendToGPT4.txt","r") as read_file:
         text = read_file.read()
         lst = json.loads(text)
     read_file.close()
-    # definition_ranges {key: "keyWord", value: {uniqueDefinitions}}
-    # uniqueDefinitions {key:"definition", value: {codeIntevals}}
-    # codeIntervals {key: code, value: [Interval ]}
-    all_definitions = {}
-    reference_definitions = []
-    regular_rows = lst[0]
-    #counter = 0
-    for row in regular_rows:
-        #counter += 1
-        #if counter == 4:
-            #break
-        text = row[0]
-        code = row[1]
-        rnge = row[2]
-        tokens = row[3]
+    
+    #print(len(lst))
+    for text in lst:
+        tokens = util.num_tokens_from_string(text)
+        count = text.count('“')
+        if count > 1 or count == 0:
+            big.append(text)
+        else:
+            #print(text)
+            # Start “
+            # End ”
+            firstIndex = text.index('“')
+            secondIndex = text.index('”', firstIndex+1)
+            text = text[firstIndex:secondIndex+1] + ":" + text[secondIndex+1:]
+            small.append(text)
+    print(len(big))
+    print(len(small))
+    small = sorted(small, key=len)
+    big = sorted(big, key=len)
+    with open("small.txt","w") as small_file:
+        small_file.write(json.dumps(small))
+    small_file.close()
+    with open("big.txt", "w") as big_file:
+        big_file.write(json.dumps(big))
+    big_file.close()
+    print(small[-1])
+    #plt.hist(tokens,bins=12)
+    #plt.show()
 
-        prompt = prompts.get_prompt_extract_definitions(text)
-        used_model = "gpt-3.5-turbo-16k"
-        chat_completion = openai.ChatCompletion.create(model=used_model,messages=prompt, temperature=0)
-        definitions_str = chat_completion.choices[0].message.content
-        definitions_lst = definitions_str[1:].split("*")
-        definitions_lst = definitions_lst
-        print("\nRow: {}, {}".format(code, rnge))
-        #print("Definitions List:\n{}".format(definitions_lst))
-        for definition in definitions_lst:
-            try:
-                def_index = definition.index(":")
-            except:
-                print("Misclassified as definition! {}".format(definition[0:20]))
-                continue
-            
-            keyWord = definition[0:def_index].strip()
-            definition = definition[def_index+1:].strip()
-            if "as defined in" in definition or "has the same meaning as" in definition:
-                reference_definitions.append((keyWord, definition, code, rnge))
-                continue
-            # KeyWord already in all_definitions
-            if keyWord in all_definitions:
-                # Definition already in unique_definitions
-                if definition in all_definitions[keyWord]:
-                    # Definition already found in another code, range union
-                    if code in all_definitions[keyWord][definition]:
-                        all_definitions[keyWord][definition][code] = all_definitions[keyWord][definition][code] | interval[rnge[0]]
-                    # Definition found in new code, create new interval
-                    else:
-                        all_definitions[keyWord][definition][code] = interval[rnge[0]]
-                # New definition exists for keyword
-                else:
-                    all_definitions[keyWord][definition] = {code: interval[rnge[0]]}
-            # Brand new keyword
+
+def test_remaining_tokens():
+ 
+    with open("definitionFromSections.txt","r") as input_file:
+        text = input_file.read()
+        raw_sections = json.loads(text)
+    input_file.close()
+    
+    with open("referenceDefinitions.txt","r") as write_file:
+        temp = write_file.read()
+        reference_definitions = json.loads(temp)
+    write_file.close
+    
+    with open("definitionWithRanges.txt","r") as write_file:
+        temp = write_file.read()
+        all_definitions = json.loads(temp)
+    write_file.close()
+    
+    #reference_definitions = []
+    #all_definitions = {}
+
+    raw_sections = raw_sections[0]
+    total_new_tokens = 0
+    
+    needs_gpt4 = []
+    reference_definitions = []
+    all_definitions = {}
+
+    with open("{}/intermediateParsingDicts/nestedHeaderDict.txt".format(DIR), "r") as header_file:
+        text = header_file.read()
+        header_dct = json.loads(text)
+    header_file.close()
+
+    header_values= [header_dct, "ROOT", "0", "INF", "", "ROOT"]
+    
+    # raw_sections [[id, str_key, content, content_tokens]]
+    # reference_definitions [keyword, definition, code, interval]
+    # big sections [text, code, interval, tokens]
+    # all_definitions {keyword: {definition: {code: interval}}}
+    # 13668 sections
+    for i in range(12150, len(raw_sections)):
+        needs_gpt = []
+        already_done = []
+        
+
+        if i % 50 == 0 and i != 12150:
+            with open("referenceDefinitions.txt","w") as write_file:
+                write_file.write(json.dumps(reference_definitions))
+            write_file.close
+            with open("definitionWithRanges.txt","w") as write_file:
+                write_file.write(json.dumps(all_definitions))
+            write_file.close()
+            with open("remaining.txt","w") as write_file:
+                write_file.write(json.dumps(needs_gpt4))
+            write_file.close()
+
+
+        section = raw_sections[i] 
+        id = section[0]   
+        str_key = section[1]
+        code = str_key.split("#")[0]
+        content = section[2]
+        content_tokens = section[3]
+        
+        print("Row Index: {}, ID: {}, Str_Key: {}, Tokens: {}".format(i, id, str_key, content_tokens))
+
+        new_tokens = find_next_definition(content, needs_gpt, already_done)
+        rnge = find_key_scope(str_key, header_values)
+
+        for term in needs_gpt:
+            count = term.count('“')
+            if count > 1 or count == 0:
+                needs_gpt4.append((id, str_key, code, term, rnge))
             else:
-                all_definitions[keyWord] = {definition: {code: interval[rnge[0]]}}
-                print("New keyword!  ", all_definitions[keyWord])
+                firstIndex = term.index('“')
+                secondIndex = term.index('”', firstIndex+1)
+                term = term[firstIndex:secondIndex+1] + ":" + term[secondIndex+1:]
+                prompt = prompts.get_prompt_extract_definitions(term)
+                #print(prompt)
+                chat_completion =  openai.ChatCompletion.create(model="gpt-3.5-turbo-16k",messages=prompt, temperature=0)
+                result = chat_completion.choices[0].message.content
+                #print(result)
+                add_to_dct(all_definitions, reference_definitions, code, rnge, result)
+                #print(all_definitions)
+                
+        # Add to dict
+        for done_definition in already_done:
+            add_to_dct(all_definitions, reference_definitions, code, rnge, done_definition)
+            
+        total_new_tokens += new_tokens
+        
 
     with open("referenceDefinitions.txt","w") as write_file:
         write_file.write(json.dumps(reference_definitions))
@@ -204,29 +273,115 @@ def reformat_definitions():
     with open("definitionWithRanges.txt","w") as write_file:
         write_file.write(json.dumps(all_definitions))
     write_file.close()
-        
-    
-    '''
-    
-    '''
-    
-    with open("{}/intermediateParsingDicts/nestedHeaderDict.txt".format(DIR), "r") as header_file:
-        text = header_file.read()
-        header_dct = json.loads(text)
-    header_file.close()
-    lst = []
-    all_headers = [header_dct, "ROOT", "0", "INF", "", "ROOT"]
-    traverse_definitions("ROOT", all_headers, "", lst)
-    print(len(lst))
-    with open("temporary.txt", "w") as write_file:
-        write_file.write(json.dumps(lst))
+    with open("remaining.txt","w") as write_file:
+        write_file.write(json.dumps(needs_gpt4))
     write_file.close()
 
+def add_to_dct(all_definitions, reference_definitions, code, rnge, result):
+    if '“' not in result:
+            result = result.replace("\"",'“',1)
+            result = result.replace("\"",'”', 1)
+    result = result.replace('”','”:', 1)
     
-    extract_all_definitions()
-    update_header_content()
-    update_header_definitions()
-    '''
+    if ":" not in result[:len(result)-2]:
+        print("No Colong Case!")
+        return
+    colon_index = result.index(":")
+    keyWord = result[0:colon_index].lower()
+    definition = result[colon_index+1:]
+
+    if "as defined in" in definition or "has the same meaning as" in definition:
+        reference_definitions.append((keyWord, definition, code, rnge))
+        return
+
+    # KeyWord already in all_definitions
+    if keyWord in all_definitions:
+        # Definition already in unique_definitions
+        if definition in all_definitions[keyWord]:
+            # Definition already found in another code, range union
+            if code in all_definitions[keyWord][definition]:
+                #print("Definition already found, performing range union...")
+                all_definitions[keyWord][definition][code] = interval(all_definitions[keyWord][definition][code][0]) | rnge
+            # Definition found in new code, create new interval
+            else:
+                #print("Same definition in different code: {} with range: {}".format(code, rnge))
+                all_definitions[keyWord][definition][code] = rnge
+        # New definition exists for keyword
+        else:
+            all_definitions[keyWord][definition] = {code: rnge}
+            #print("New definition: {} exists for keyword: {}".format(definition, keyWord))
+    # Brand new keyword
+    else:
+        all_definitions[keyWord] = {definition: {code: rnge}}
+        #print("New keyword!  ", all_definitions[keyWord])
+
+def find_next_definition(text, needs_gpt4, already_done):
+    indices = []
+    text = text.replace('‛', '“')
+    current = 0
+    total_tokens = 0
+    next_period_index = 0
+    
+    needs_gpt4_local = []
+    already_done_local = []
+    if text.count('“') % 2 != 0:
+        new_tokens = util.num_tokens_from_string(text)
+        needs_gpt4.append(text)
+        return new_tokens
+    try:
+        while True:      
+            first_index = text.index('“', current)
+            if next_period_index > first_index:
+                new_tokens = util.num_tokens_from_string(text)
+                needs_gpt4.append(text)
+                return new_tokens
+            
+            current = first_index+1
+            second_index = text.index('“', first_index)
+            next_period_index = text.index('.', first_index)
+            current = second_index+1
+            indices.append(first_index)
+    except:
+        print(indices)
+        if len(indices) == 0:
+            new_tokens = util.num_tokens_from_string(text)
+            needs_gpt4.append(text)
+            return new_tokens
+        try:
+            working_index = 0
+            for i in range(1, len(indices)):      
+                last_index = indices[i-1]
+                current_index = indices[i]
+                working_index = i
+                definition = text[last_index:current_index]
+                index = definition.rindex('”')
+                new_tokens = util.num_tokens_from_string(definition)
+                keyWord = definition[0:index+1] + ":" + definition[index+1:]
+                if len(keyWord) > 200:
+                    needs_gpt4_local.append(keyWord)
+                    total_tokens += new_tokens
+                else:
+                    already_done_local.append(keyWord)
+            
+            #print(indices)
+            #print(text)
+            definition = text[indices[-1]:]
+            index = definition.rindex('”')
+            #print(definition2)
+            new_tokens = util.num_tokens_from_string(definition)
+            keyWord = definition[0:index+1] + ":" + definition[index+1:]
+            if len(keyWord) > 200:
+                needs_gpt4_local.append(keyWord)
+                total_tokens += new_tokens
+            else:
+                already_done_local.append(keyWord)
+        except Exception as e:
+            new_tokens = util.num_tokens_from_string(text)
+            needs_gpt4.append(text)
+            return new_tokens
+    needs_gpt4.extend(needs_gpt4_local)
+    already_done.extend(already_done_local)
+    return total_tokens
 
 def test_definition_dict():
     with open("definitionWithRanges.txt", "r") as output_file:
@@ -270,9 +425,11 @@ def find_key_scope(str_key, header_values):
                 try:
                     rnge = interval[float(str_key_split[-1]),float(str_key_split[-1])]
                 except:
-                    rnge = interval[-1, -1]
+                    # Specific Section
+                    rnge = interval[-2, -1]
             else:
-                rnge = interval[-1, -1]
+                # code level
+                rnge = interval[-4, -3]
             return rnge
     
 
