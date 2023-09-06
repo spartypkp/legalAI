@@ -15,7 +15,7 @@ def main():
     # 19,000 keywords found
     # row 9500: 21827 keywords, 34703 definitions
     # 30,000 unique definitions found
-    test_remaining_tokens(firstPass=True)
+    test_remaining_tokens(firstPass=False)
     #test_remaining_tokens()
     #test_definition_dict()
     #reformat_definitions()
@@ -222,12 +222,12 @@ def test_remaining_tokens(firstPass=False):
     # all_definitions {keyword: {definition: {code: interval}}}
 
     # 13668 sections
-    for i in range(6000, len(raw_sections)):
+    for i in range(6050, len(raw_sections)):
         # LOCAL lists
         needs_gpt = []
         already_done = []
         
-        if i % 50 == 0 and i != 6000:
+        if i % 50 == 0 and i != 6050:
             with open("referenceDefinitions.txt","w") as write_file:
                 write_file.write(json.dumps(reference_definitions))
             write_file.close
@@ -263,13 +263,13 @@ def test_remaining_tokens(firstPass=False):
                 
                 chat_completion =  util.create_chat_completion(used_model="gpt-3.5-turbo-16k",prompt_messages=prompt, temp=0, api_key_choice="will")
                 result = chat_completion.choices[0].message.content
-                print("With GPT 3.5: ", result)
+                #print("With GPT 3.5: ", result)
                 add_to_dct(all_definitions, reference_definitions, code, rnge, result)
                 
                 
         # Add to dict
         for done_definition in already_done:
-            print("No GPT Needed: ", result)
+            #print("No GPT Needed: ", result)
             add_to_dct(all_definitions, reference_definitions, code, rnge, done_definition)
             
         total_new_tokens += new_tokens
