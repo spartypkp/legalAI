@@ -222,12 +222,12 @@ def test_remaining_tokens(firstPass=False):
     # all_definitions {keyword: {definition: {code: interval}}}
 
     # 13668 sections
-    for i in range(0, len(raw_sections)):
+    for i in range(6000, len(raw_sections)):
         # LOCAL lists
         needs_gpt = []
         already_done = []
         
-        if i % 50 == 0 and i != 0:
+        if i % 50 == 0 and i != 6000:
             with open("referenceDefinitions.txt","w") as write_file:
                 write_file.write(json.dumps(reference_definitions))
             write_file.close
