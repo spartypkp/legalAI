@@ -6,6 +6,8 @@ import utilityFunctions as util
 import promptStorage as prompts
 import testWithCurrentBuild as test
 import embeddingSimilarity
+import time
+import math
 
 openai.api_key = config.spartypkp_openai_key
 
@@ -113,7 +115,7 @@ def find_and_replace_definitions(user_query):
     # If there are multiple similar definitions, ask user to define which is most relevant
     # Reformat user_query with applicable definitions and return
 
-       
+
 
 
 if __name__ == "__main__":
