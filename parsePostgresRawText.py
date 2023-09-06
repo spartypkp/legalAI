@@ -15,7 +15,7 @@ def main():
     # 19,000 keywords found
     # row 9500: 21827 keywords, 34703 definitions
     # 30,000 unique definitions found
-    test_remaining_tokens()
+    test_remaining_tokens(firstPass=True)
     #test_remaining_tokens()
     #test_definition_dict()
     #reformat_definitions()
@@ -176,51 +176,58 @@ def remaining():
     #plt.show()
 
 
-def test_remaining_tokens():
- 
+def test_remaining_tokens(firstPass=False):
+    # Always open this
     with open("definitionFromSections.txt","r") as input_file:
         text = input_file.read()
-        raw_sections = json.loads(text)
+        all_raw_sections = json.loads(text)
     input_file.close()
-    
-    with open("referenceDefinitions.txt","r") as write_file:
-        temp = write_file.read()
-        reference_definitions = json.loads(temp)
-    write_file.close
-    
-    with open("definitionWithRanges.txt","r") as write_file:
-        temp = write_file.read()
-        all_definitions = json.loads(temp)
-    write_file.close()
-    
-    #reference_definitions = []
-    #all_definitions = {}
 
-    raw_sections = raw_sections[0]
-    total_new_tokens = 0
-    
-    needs_gpt4 = []
-    reference_definitions = []
-    all_definitions = {}
-
+    # Always open this
     with open("{}/intermediateParsingDicts/nestedHeaderDict.txt".format(DIR), "r") as header_file:
         text = header_file.read()
         header_dct = json.loads(text)
     header_file.close()
+    
+    # Iterative saving implementation
+    if firstPass:
+        reference_definitions = []
+        all_definitions = {}
+        needs_gpt4 = []
+    else:
+        # Open only if already passed through some
+        with open("referenceDefinitions.txt","r") as reference_file:
+            temp = reference_file.read()
+            reference_definitions = json.loads(temp)
+        reference_file.close
+        # Open only if already passed through some
+        with open("definitionWithRanges.txt","r") as all_definitions_file:
+            temp = all_definitions_file.read()
+            all_definitions = json.loads(temp)
+        all_definitions_file.close()
 
+        with open("remaining.txt", "r") as remaining_file:
+            temp = remaining_file.read()
+            needs_gpt4 = json.loads(temp)
+        remaining_file.close()
+
+    
+    raw_sections = all_raw_sections[0]
+    total_new_tokens = 0
     header_values= [header_dct, "ROOT", "0", "INF", "", "ROOT"]
     
     # raw_sections [[id, str_key, content, content_tokens]]
     # reference_definitions [keyword, definition, code, interval]
     # big sections [text, code, interval, tokens]
     # all_definitions {keyword: {definition: {code: interval}}}
+
     # 13668 sections
-    for i in range(12150, len(raw_sections)):
+    for i in range(0, len(raw_sections)):
+        # LOCAL lists
         needs_gpt = []
         already_done = []
         
-
-        if i % 50 == 0 and i != 12150:
+        if i % 50 == 0 and i != 0:
             with open("referenceDefinitions.txt","w") as write_file:
                 write_file.write(json.dumps(reference_definitions))
             write_file.close
@@ -253,15 +260,16 @@ def test_remaining_tokens():
                 secondIndex = term.index('”', firstIndex+1)
                 term = term[firstIndex:secondIndex+1] + ":" + term[secondIndex+1:]
                 prompt = prompts.get_prompt_extract_definitions(term)
-                #print(prompt)
-                chat_completion =  openai.ChatCompletion.create(model="gpt-3.5-turbo-16k",messages=prompt, temperature=0)
+                
+                chat_completion =  util.create_chat_completion(used_model="gpt-3.5-turbo-16k",prompt_messages=prompt, temp=0, api_key_choice="will")
                 result = chat_completion.choices[0].message.content
-                #print(result)
+                print("With GPT 3.5: ", result)
                 add_to_dct(all_definitions, reference_definitions, code, rnge, result)
-                #print(all_definitions)
+                
                 
         # Add to dict
         for done_definition in already_done:
+            print("No GPT Needed: ", result)
             add_to_dct(all_definitions, reference_definitions, code, rnge, done_definition)
             
         total_new_tokens += new_tokens
@@ -282,9 +290,10 @@ def add_to_dct(all_definitions, reference_definitions, code, rnge, result):
             result = result.replace("\"",'“',1)
             result = result.replace("\"",'”', 1)
     result = result.replace('”','”:', 1)
+    #print(result)
     
     if ":" not in result[:len(result)-2]:
-        print("No Colong Case!")
+        #print("No Colon Case!")
         return
     colon_index = result.index(":")
     keyWord = result[0:colon_index].lower()
@@ -342,7 +351,7 @@ def find_next_definition(text, needs_gpt4, already_done):
             current = second_index+1
             indices.append(first_index)
     except:
-        print(indices)
+        #print(indices)
         if len(indices) == 0:
             new_tokens = util.num_tokens_from_string(text)
             needs_gpt4.append(text)
