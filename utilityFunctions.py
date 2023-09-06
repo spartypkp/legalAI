@@ -164,7 +164,7 @@ def calculate_prompt_cost(model, prompt_tokens, completion_tokens):
     cost = ((prompt_rate/1000)*prompt_tokens) + ((completion_rate/1000)*completion_tokens)
     #print("Prompt Tokens: {}, Completion Tokens: {}".format(prompt_tokens, completion_tokens))
     #print("Total cost of using {}: ${}".format(model, cost))
-    return cost
+    return "${}".format(round(cost, 3))
 
 
 
