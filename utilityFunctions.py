@@ -6,6 +6,7 @@ import os
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 import psycopg2
 from config import config_psql
+import time
 
 # gpt-3.5-turbo-16k
 # Tokens Per Minute: 180k
@@ -45,6 +46,43 @@ def main():
     pass
     # DENOTES NEW SECTION
     # \u00a0\u00a0
+
+## DECORATORS
+# Debug decorator specifically for gpt completions
+def gpt_wrapper(func):
+    def inner(*args, **kwargs):
+        if "debug_print" in kwargs:
+            print_debug = kwargs["debug_print"]
+        else:
+            print_debug = False
+        if print_debug:
+            print("## Before openAI create_chat_completion:\n## Used Model: {}, API Key: {}\n## Function Input: {}".format(kwargs["used_model"], kwargs["api_key_choice"], kwargs["prompt_messages"]))
+        begin = time.time()
+        returned_value = func(*args, **kwargs)
+        end = time.time()
+        if print_debug:
+            prompt_tokens = returned_value.usage["prompt_tokens"]
+            completion_tokens = returned_value.usage["completion_tokens"]
+            total_tokens = returned_value.usage["total_tokens"]
+            total_cost = calculate_prompt_cost(kwargs["used_model"], prompt_tokens, completion_tokens)
+            print("## After openAI create_chat_completion:\n## Total time in {}: {}, Prompt Tokens: {}, Completion Tokens: {}, Total Tokens: {}, Total Cost: ${},\n## GPT Output: {}".format(func.__name__, end-begin,prompt_tokens, completion_tokens, total_tokens, total_cost, returned_value.choices[0].message.content))
+        return returned_value
+    return inner
+
+# General debug decorator
+def debug(func):
+    def wrapper(*args, **kwargs):
+        print(f"Calling {func.__name__} with args: {args}, \
+        kwargs: {kwargs}")
+        begin = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print("{} ran in {}.".format(func.__name__, end-begin))
+        print(f"{func.__name__} returned: {result}")
+        return result
+
+    return wrapper
+
 
 # Deprecated
 def find_big_tokens():
@@ -105,15 +143,30 @@ def select_and_fetch_rows(conn, sql_select):
     cursor.close()
     return rows
 
+
+@gpt_wrapper
+def create_chat_completion(used_model="gpt-3.5-turbo", api_key_choice="will", prompt_messages=None, debug_print=False, temp=0.4, top_p_val=1, n_responses=1, do_stream=False, stop_conditions=None, presence_p=0, frequency_p=0):
+    openai.api_key = config.get_api_key(api_key_choice)
+    try:
+        chat_completion = openai.ChatCompletion.create(model=used_model,messages=prompt_messages, temperature=temp, n=n_responses, top_p=top_p_val, stream=do_stream, stop=stop_conditions, presence_penalty=presence_p, frequency_penalty=frequency_p)
+        return chat_completion
+    except Exception as e:
+        print("***** Failed calling create_chat_completion!")
+        print(e)
+        raise e
+
+
 # Prompt cost calculations
 def calculate_prompt_cost(model, prompt_tokens, completion_tokens):
     model_rates = {"gpt-3.5-turbo-16k":[0.003, 0.004], "gpt-3.5-turbo-4k":[0.0015, 0.002], "gpt-4":[0.03, 0.06], "gpt-4-32k":[0.06, 0.12]}
     prompt_rate = model_rates[model][0]
     completion_rate = model_rates[model][1]
     cost = ((prompt_rate/1000)*prompt_tokens) + ((completion_rate/1000)*completion_tokens)
-    print("Prompt Tokens: {}, Completion Tokens: {}".format(prompt_tokens, completion_tokens))
-    print("Total cost of using {}: ${}".format(model, cost))
+    #print("Prompt Tokens: {}, Completion Tokens: {}".format(prompt_tokens, completion_tokens))
+    #print("Total cost of using {}: ${}".format(model, cost))
     return cost
+
+
 
 if __name__ == "__main__":
     main()
