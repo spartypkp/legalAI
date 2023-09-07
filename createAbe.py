@@ -9,6 +9,8 @@ import embeddingSimilarity
 import time
 import math
 from typing import Union
+import processUserQuery as process
+import searchRelevantSections as search
 
 
 openai.api_key = config.spartypkp_openai_key
@@ -18,14 +20,9 @@ def main():
     
 # Starts one "run" of the project    
 def ask_abe(user_query, print_sections, do_testing):  
-    # Get similar queries by calling GPT 3.5, maybe Google BARD instead
-    topic_dict = get_similar_queries(user_query)
-    topics_str = " ".join(topic_dict["queries"])
-    # Debug prints, print related queries
-    print("\n\n Calling GPT 3.5 to generate related questions...: \n", topics_str)
-    print("\n Comparing vector embeddings in the database to embedding of all related quries....\n")
-    # Get cosine similarity score of related queries to all content embeddings
-    rows = embeddingSimilarity.compare_content_embeddings(user_query, print_relevant_sections=print_sections, match_count=20)
+    
+   
+    
     
     # continue to answer = input("Would you like to continue to GPT 4's answer? (y/n):\n")
     continue_to_answer = "y"
@@ -35,34 +32,25 @@ def ask_abe(user_query, print_sections, do_testing):
             legal_text = "Relevant Sections Redacted"
         return legal_text, final_answer, cost
 
-# Given a user query, generate similar queries with related language
-def get_similar_queries(user_query):
-    prompt_similar_queries = prompts.get_prompt_similar_queries(user_query)
-    chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=prompt_similar_queries, temperature=0.4)
-    result = chat_completion.choices[0].message.content
-    result_dct = json.loads(result)
-    return result_dct
+def processing_stage(user_query, print_sections, do_testing):
 
+    # Get similar queries by calling GPT 3.5, maybe Google BARD instead
+    similar_queries = process.get_similar_queries(user_query)
+    user_query_as_template = process.convert_query_to_template(user_query, used_model="gpt-3.5-turbo")
+    return similar_queries, user_query_as_template
+    
+def searching_stage(user_query, print_sections):
+    similar_content = search.search_similar_content_sections(user_query, print_sections)
+    legal_text, legal_text_tokens = search.accumulate_legal_text_from_sections(similar_content, used_model="gpt-3.5-turbo-16k")
+    legal_text = search.format_legal_text(legal_text)
+    return similar_content, legal_text, legal_text_tokens
+
+def answering_stage():
+    pass
+def testing_stage():
+    pass
 # All relevant sections are found, now generate an answer
 def get_final_answer(user_query, rows, use_gpt_4=True):
-    current_tokens = 0
-    row = 0
-    legal_text = []
-    used_model = "gpt-3.5-turbo-16k"
-    if use_gpt_4:
-        max_tokens = 24000
-    else:
-        max_tokens = 12000
-    while current_tokens < max_tokens and row < len(rows):
-        current_tokens += rows[row][12]
-        legal_text.append(rows[row])
-        row += 1
-        
-    legal_text = embeddingSimilarity.format_sql_rows(legal_text)
-    prompt_convert_question = prompts.get_prompt_convert_question(user_query)
-    chat_completion =  openai.ChatCompletion.create(model=used_model,messages=prompt_convert_question, temperature=0)
-    converted_questions = chat_completion.choices[0].message.content
-    template = prompts.get_basic_universal_answer_template(user_query, converted_questions)
     
     prompt_final_answer= prompts.get_prompt_final_answer(user_query, legal_text, template)
     
