@@ -212,7 +212,7 @@ def test_remaining_tokens(firstPass=False):
         remaining_file.close()
 
     
-    raw_sections = all_raw_sections[0]
+    raw_sections = all_raw_sections[1]
     total_new_tokens = 0
     header_values= [header_dct, "ROOT", "0", "INF", "", "ROOT"]
     
@@ -221,13 +221,15 @@ def test_remaining_tokens(firstPass=False):
     # big sections [text, code, interval, tokens]
     # all_definitions {keyword: {definition: {code: interval}}}
 
+    
+
     # 13668 sections
-    for i in range(8250, len(raw_sections)):
+    for i in range(0, len(raw_sections)):
         # LOCAL lists
         needs_gpt = []
         already_done = []
         
-        if i % 50 == 0 and i != 8250:
+        if i % 50 == 0 and i != 0:
             with open("referenceDefinitions.txt","w") as write_file:
                 write_file.write(json.dumps(reference_definitions))
             write_file.close
