@@ -58,7 +58,10 @@ async def create_abe_model(abe: AbeModel):
 
 @app.get("/abeModel/")
 async def get_current_abe_model():
-    return CURRENT_ABE.dict()
+    if CURRENT_ABE is not None:
+        return CURRENT_ABE.dict()
+    else:
+        return "No current Abe Model"
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000)
