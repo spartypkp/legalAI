@@ -145,6 +145,7 @@ def select_and_fetch_rows(conn, sql_select):
 
 
 @gpt_wrapper
+@retry(wait=wait_random_exponential(min=1, max=2), stop=stop_after_attempt(6))
 def create_chat_completion(used_model="gpt-3.5-turbo", api_key_choice="will", prompt_messages=None, debug_print=False, temp=0.4, top_p_val=1, n_responses=1, do_stream=False, stop_conditions=None, presence_p=0, frequency_p=0):
     openai.api_key = config.get_api_key(api_key_choice)
     try:
