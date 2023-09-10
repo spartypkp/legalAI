@@ -20,10 +20,9 @@ def main():
     
 # Starts one "run" of the project    
 def ask_abe(user_query, print_sections, do_testing):  
-    
-   
-    
-    
+    similar_queries, user_query_as_template = processing_stage(user_query)
+    similar_content, legal_text, legal_text_tokens = searching_stage(user_query, print_sections)
+
     # continue to answer = input("Would you like to continue to GPT 4's answer? (y/n):\n")
     continue_to_answer = "y"
     if continue_to_answer == "y":
@@ -32,7 +31,7 @@ def ask_abe(user_query, print_sections, do_testing):
             legal_text = "Relevant Sections Redacted"
         return legal_text, final_answer, cost
 
-def processing_stage(user_query, print_sections, do_testing):
+def processing_stage(user_query):
 
     # Get similar queries by calling GPT 3.5, maybe Google BARD instead
     similar_queries = process.get_similar_queries(user_query)
@@ -45,8 +44,9 @@ def searching_stage(user_query, print_sections):
     legal_text = search.format_legal_text(legal_text)
     return similar_content, legal_text, legal_text_tokens
 
-def answering_stage():
-    pass
+def answering_stage(user_query, user_query_as_template, legal_text):
+
+    
 def testing_stage():
     pass
 # All relevant sections are found, now generate an answer
