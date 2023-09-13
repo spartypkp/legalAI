@@ -6,11 +6,18 @@ import embeddingSimilarity
 def main():
     pass
 
-def search_similar_content_sections(user_query, print_sections, matches=20):
+def searching_stage(similar_queries, print_sections):
+    print("Starting search stage...")
+    similar_content = search_similar_content_sections(similar_queries, print_sections)
+    legal_text, legal_text_tokens = accumulate_legal_text_from_sections(similar_content, used_model="gpt-3.5-turbo-16k")
+    legal_text = format_legal_text(legal_text)
+    return similar_content, legal_text, legal_text_tokens
+
+def search_similar_content_sections(modified_user_query, print_sections, matches=20):
     print("\n Comparing vector embeddings in the database to embedding of all related quries....\n")
     # Get cosine similarity score of related queries to all content embeddings
-    rows = embeddingSimilarity.compare_content_embeddings(user_query, print_relevant_sections=print_sections, match_count=matches)
-    return rows
+    content_sections = embeddingSimilarity.compare_content_embeddings(modified_user_query, print_relevant_sections=print_sections, match_count=matches)
+    return content_sections
 
 def accumulate_legal_text_from_sections(sections, used_model):
     current_tokens = 0
