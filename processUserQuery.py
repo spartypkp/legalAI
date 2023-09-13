@@ -1,28 +1,46 @@
 import promptStorage as prompts
 import openai
 import json
+import utilityFunctions as util
 
 
 
 def main():
     pass
 
-def convert_query_to_template(user_query, used_model):
-    prompt_convert_question = prompts.get_prompt_convert_question(user_query)
-    chat_completion =  openai.ChatCompletion.create(model=used_model,messages=prompt_convert_question, temperature=0)
+def find_and_replace_definitions(user_query):
+    pass
+    # Find relevant definition embeddings
+    # Prompt gpt-4 to determine which definitions are most relevant
+    # If there are multiple similar definitions, ask user to define which is most relevant
+    # Reformat user_query with applicable definitions and return
+
+def processing_stage(user_query):
+    print("Starting processing stage...")
+    # Get similar queries by calling GPT 3.5, maybe Google BARD instead
+    similar_queries = get_similar_queries(user_query)
+    question_list = convert_query_to_question_list(user_query, used_model="gpt-3.5-turbo")
+    return similar_queries, question_list
+
+def convert_query_to_question_list(user_query, used_model):
+    question_list = prompts.get_original_universal_answer_template(user_query)
+    prompt_convert_question = prompts.get_prompt_convert_question(question_list)
+
+    chat_completion =  util.create_chat_completion(used_model, api_key_choice="will", prompt_messages=prompt_convert_question, temp=0)
     converted_questions = chat_completion.choices[0].message.content
-    template = prompts.get_basic_universal_answer_template(user_query, converted_questions)
-    return template
+    
+    converted_questions = converted_questions.split("\n")
+    #print(converted_questions)
+    #converted_questions.pop()
+    return converted_questions
 
 
 def get_similar_queries(user_query):
-    
     prompt_similar_queries = prompts.get_prompt_similar_queries(user_query)
-    chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=prompt_similar_queries, temperature=0.4)
+    chat_completion = util.create_chat_completion(prompt_messages=prompt_similar_queries)
     result = chat_completion.choices[0].message.content
     result_dct = json.loads(result)
     similar_queries = " ".join(result_dct["queries"])
-    print("\n\n Calling GPT 3.5 to generate related questions...: \n", similar_queries)
     return similar_queries
 
 def find_and_replace_definitions(user_query):
