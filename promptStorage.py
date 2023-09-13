@@ -1,8 +1,14 @@
 import json
 import psycopg2
+import answerUserQuery as answer
 
 def main():
-    pass
+    legal_text = "blah"
+    question = "QUESTION 1: What is the simplest answer to can I smoke cannabis?"
+    messages = get_prompt_final_answer(legal_text, question)
+    result, prompt_tokens, completion_tokens, cost = answer.answer_one_question(messages, True)
+    print(result)
+    print(cost)
 
 # Apply prompts to generic chatCompletion with a system and user, returns chatCompletion.messages
 def apply_to_generic(system, user):
@@ -62,31 +68,44 @@ Before displaying your answer to the user, remove your reasoning.
 
 # ANSWER PROMPTS ===============================================
 # Using legal text as input, answer all questions from a specific answer template
-def get_prompt_final_answer(user_query, legal_text, template):
-    system = '''You are a helpful legal assistant that answers a user query by summarizing information in a legal document.
 
-        You will be provided with a user query and legal documentation in the format of a dictionary. 
+def get_prompt_simple_answer(legal_text, question):
+    system = '''You are a helpful legal assistant that answers a user's question by referencing information in a legal document.
 
-        Output will be in the following format:
-        *QUESTION 1: Answer,
-        *QUESTION 2: Answer,
+    You will be provided with a user question and legal documentation. 
 
-        All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.'''
-    user = '''Carefully read the entire legal documentation and answer the following from the documentation:
+    Your answer should be brief and concise. Once you striclty answer the question in a concise and simple manner, exit.
+
+    Output will be in the following format:
+    QUESTION #: Generated Answer. (Citation)
+
+    All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.'''
+    user = '''Carefully read the entire legal documentation and concisely answer the following question from the documentation:
+    Question: {}
+    Legal documentation:{}'''.format(question, legal_text)
+    messages = apply_to_generic(system, user)
+    return messages
+
+def get_prompt_final_answer(legal_text, question):
+    system = '''You are a helpful legal assistant that answers a user's question by referencing information in a legal document.
+
+    You will be provided with a user question and legal documentation. 
+
+    Output will be in the following format:
+    QUESTION #: Generated Answer. (Citation)
+
+    All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.'''
+    user = '''Carefully read the entire legal documentation and answer the following question from the documentation:
+    Question: {}
+
+    If your answer has multiple parts, list all of them to the user like the following format:
+    QUESTION #: Generated Answer which includes specific parts:
+    -specific part (citation).
+    -another specific part (citation).
+
         
-        {}
-         
-        For every question you answer with information from the legal documentation, annotate the answer with a citation using the format:
-        Question answer. (Section). 
-
-        Append each answer to the python output list.
-
-        If a question isn't related to the user's query, do not answer it.
-            
-        The more detail you include in your answers, the more you help the user. Include all relevant information in each answer.
-
-        [User query: {}, Legal documentation:{}]
-    '''.format(template, user_query, legal_text)
+    Legal documentation:{}
+    '''.format(question, legal_text)
     messages = apply_to_generic(system, user)
     return messages
 
@@ -115,45 +134,38 @@ def get_prompt_compare_questions():
     pass
 
 # Combine and rephrase all template questions to ask about specific topics in a user query
-def get_prompt_convert_question(user_query):
-    system='''You will be provided with a user query and 3 generic questions.
+def get_prompt_convert_question(question_list):
+    print(question_list)
+    n_questions = len(question_list)
+    
+    system_format = ""
+    
+    for i in range(0, n_questions-1):
+        system_format += "QUESTION {}:".format(i+1)
+    
+    print(system_format)
+    system='''You will be provided with a user query and generic questions.
 
-    Rephrase question 3,4,5 by applying the topics in the user_query. Keep question 2 in its original phrasing.
+    Rephrase all questions by applying the topics in the user_query. Keep question 1 and 2 in their original phrasing.
 
     Output should be in a single string with the following format:
-    2. QUESTION 2 \n
-    3. QUESTION 3 \n
-    4. QUESTION 4 \n
-    5. QUESTION 5 \n
-    '''
-    user = '''User_Query: {}
-    QUESTION 2: What is the exact legal text that answers the user query?
-    Question 3: What rights and privileges does a user have relating to TOPICS?
-    Question 4: What are restrictions, caveats, and conditions to TOPICS?
-    Question 5: What are any penalties, punishments, or crimes which apply to violating restrictions of TOPICS?'''.format(user_query)
+    {}
+    '''.format(system_format)
+    user = question_list
     messages = apply_to_generic(system, user)
     return messages
 
 # UNIVERSAL ANSWER TEMPLATES ===============================================
-# Most basic answer to user query
-def get_basic_universal_answer_template(user_query, converted_questions):
 
-    basic_template=''' 
-    QUESTION 1: {}?
-    {}
-    '''.format(user_query, converted_questions)
-    return basic_template
-
-# Deprecated
-def get_original_universal_answer_template():
-    original_template=''' 
-    1. After reading the entire document, what is the simple answer to the user's query? One positive validation of the user's query overrides any other negatives in the documentation.
-    2. What exact text of the legal documentation shows the simple answer to the user's query?
-    3. What rights and privileges does a user have relating to their query?
-    4. What are restrictions, caveats, and conditions to the user's query?
-    5. What are any penalties, punishments, or crimes which apply to violating restrictions of the user's query?
-    '''
-    return original_template
+# USE THIS
+def get_original_universal_answer_template(user_query):
+    template = ["User_Query: {}\n".format(user_query),
+    "QUESTION 1: What is the simple answer to {}?\n".format(user_query),
+    "QUESTION 2: What is the exact legal text that answers {}?\n".format(user_query),
+    "Question 3: What rights and privileges does a user have relating to TOPICS?\n",
+    "Question 4: What are restrictions, caveats, and conditions to TOPICS?\n",
+    "Question 5: What are any penalties, punishments, or crimes which apply to violating restrictions of TOPICS?"]
+    return template
 
 # Deprecated
 def get_extended_universal_answer_template():
