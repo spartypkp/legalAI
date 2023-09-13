@@ -18,15 +18,14 @@ def apply_to_generic(system, user):
 # generates an array of similar search queries
 def get_prompt_similar_queries(user_query):
     system = "All output shall be in JSON format."
-    user = '''Generate an array of similar search queries that are relevant to the user query.
+    user = '''Generate an array of similar search queries that are relevant to the user question.
 
         Use a variation of related keywords for the queries, trying to be as general as possible.
 
-        Queries should include legal language such as ["lawful", "violation", "authorized", "restrictions", "legitimate", "defined", "according to law", "legal"].
+        Generated queries should include legal language synonyms of keywords in the user question, as well as rephrasings of original questions.
+        Generate 10 queries of varying length.
 
-        Generate 15 queries of varying length.
-
-        User query: {}
+        User question: {}
                     
         Format: {{\\"queries\\": [\\"query_1\\", \\"query_2\\", \\"query_3\\"]}}";
     '''.format(user_query)
@@ -68,6 +67,45 @@ Before displaying your answer to the user, remove your reasoning.
 
 # ANSWER PROMPTS ===============================================
 # Using legal text as input, answer all questions from a specific answer template
+
+def get_prompt_refine_answer(question, partial_answer):
+    system = '''You are a helpful legal assistant that edits a legal expert's answer to a user's legal question.
+
+    In the expert's answer there may be duplicate information or extraneous information not relevant to the question.
+    Legal definitions may be kept in the answer.
+
+    You are to edit and revise the expert's answer to increase readability by following these steps.
+    1. Carefully read the expert's answer and remove information not explicitly related to the user's legal question.
+    2. Reorganize seaparate parts of the answer so related information is next to each other.
+    3. Edit the answer so each reorganized section has a meaninful title relating to the user question.
+    4. Combine similar reogranized sections under more generalized titles.
+
+    Return the reorganized and revised expert answer to the user.
+    '''
+    user = '''User Legal Question: {}
+    Expert Answer: {}
+    '''.format(question, partial_answer)
+    messages = apply_to_generic(system, user)
+    return messages
+
+def get_prompt_iterate_answer_rights(legal_text, question, previous_answer):
+    system = '''You are a helpful legal assistant that answers a question from official legal text.
+    You will be provided with three things by the user:
+    1. Question: A legal question which you are helping to answer.
+    2. Partial Answer: A partial answer to the question already partially answered by an expert.
+    3. Legal Text: A new section of legal text that might help further improve the partial answer.
+
+    Carefully read the legal text and modify the partial answer as needed. Correct mistakes in the partial answer, add new relevant information, or do nothing if the section isn't relevant to the question.
+    If you add new relevant information, you should cite the current section after the added sentence.
+    Only include information about what a user can do, do not include any restrictions.
+    Improve the partial answer relating to the question as needed using information found in the legal text and return it to the user.
+    '''
+    user='''question:{}
+    partial answer: {}
+    legal text: {}
+    '''.format(question, previous_answer, legal_text)
+    messages = apply_to_generic(system, user)
+    return messages
 
 def get_prompt_simple_answer(legal_text, question):
     system = '''You are a helpful legal assistant that answers a user's question by referencing information in a legal document.
@@ -135,15 +173,12 @@ def get_prompt_compare_questions():
 
 # Combine and rephrase all template questions to ask about specific topics in a user query
 def get_prompt_convert_question(question_list):
-    print(question_list)
     n_questions = len(question_list)
-    
     system_format = ""
     
     for i in range(0, n_questions-1):
         system_format += "QUESTION {}:".format(i+1)
     
-    print(system_format)
     system='''You will be provided with a user query and generic questions.
 
     Rephrase all questions by applying the topics in the user_query. Keep question 1 and 2 in their original phrasing.

@@ -55,7 +55,7 @@ def user_embedding_search(show_explanation=False):
         print()
 
 # Return most relevant content embeddings
-def compare_content_embeddings(user_query, print_relevant_sections=False, match_threshold=0.5, match_count=5):
+def compare_content_embeddings(user_query, match_threshold=0.5, match_count=5):
     embedding = get_embedding(user_query)
     conn = psql_connect()
     cur = conn.cursor()
@@ -65,10 +65,6 @@ def compare_content_embeddings(user_query, print_relevant_sections=False, match_
     result = cur.fetchall()
     cur.close()
     conn.close()
-    
-    if print_relevant_sections:
-        rows_formatted = format_sql_rows(result)
-        print(rows_formatted)
 
     return result
 
@@ -79,15 +75,11 @@ def compare_definition_embeddings(user_query, print_relevant_sections=False, mat
     cur = conn.cursor()
 
     cur.callproc('match_embedding_definitions', ['{}'.format(embedding), match_threshold, match_count])
-    print("Fetching {} definition sections with threshold {} for user_query:\n{}\n".format(match_count, match_threshold, user_query))
+    #print("Fetching {} definition sections with threshold {} for user_query:\n{}\n".format(match_count, match_threshold, user_query))
 
     result = cur.fetchall()
     cur.close()
     conn.close()
-
-    if print_relevant_sections:
-        rows_formatted = format_sql_rows(result, embedding_type="definitions")
-        print(rows_formatted)
 
     return result
 
@@ -104,9 +96,7 @@ def compare_title_path_embeddings(user_query, print_relevant_headers=False, matc
     cur.close()
     conn.close()
 
-    if print_relevant_headers:
-        rows_formatted = format_sql_rows(result, embedding_type="title_path")
-        print(rows_formatted)
+    
 
     return result
 
@@ -118,7 +108,7 @@ def format_sql_rows(list_of_rows, embedding_type="content"):
     # ID, Similarity, code, division, title, part, chapter, article, section, content, definitions, titlePath, contentTokens, definitionTokens
     print("\nFormatting rows for type: {}".format(embedding_type))
     for row in list_of_rows:
-        result += "\n"
+        result += "\n*"
         content = row[9]
         if embedding_type == "definitions":
             content = row[10]
@@ -126,7 +116,9 @@ def format_sql_rows(list_of_rows, embedding_type="content"):
             content = row[11]
         result += "Cal. {} § {}:\n{}\n".format(row[2], row[8], content)
     result += "\n"
-    return result
+    result_list = result.split("*")
+    result_list = result_list[1:]
+    return result_list
 
 
 
