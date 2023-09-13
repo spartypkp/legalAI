@@ -24,7 +24,7 @@ def main():
 
 def html_scraper():
     
-    sections = open("sections", "r")
+    sections = open("{}/scrapingSourceFiles/sections".format(DIR), "r")
     currentCode = None
     for line in sections:
         if line[0] == "#":
@@ -36,6 +36,15 @@ def html_scraper():
             
             #if currentCode in DONE:
                 #continue
+            response = urllib.request.urlopen("https://leginfo.legislature.ca.gov/faces/codedisplayexpand.xhtml?tocCode=CONS")
+            data = response.read()      # a `bytes` object
+            text = data.decode('utf-8') # a `str`; 
+            soup = BeautifulSoup(text,features='xml')
+            pretty = soup.prettify()
+            with open("testXML.txt","w") as write_file:
+                write_file.write(pretty)
+            write_file.close()
+            exit(1)
             scrape(line, "{}".format(currentCode))
 
             print("Finishided scraping Code: {}. Started at ID {} , ended at ID {}".format(currentCode, get_ID(), GLOBAL_ID))
