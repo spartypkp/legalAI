@@ -69,6 +69,8 @@ Before displaying your answer to the user, remove your reasoning.
 # Using legal text as input, answer all questions from a specific answer template
 
 def get_prompt_refine_answer(question, partial_answer):
+    system_experimental = '''You are a helpful legal assistant tasked with editing a legal expert's answer to a user's legal question. Your goal is to increase the readability of the expert's answer by following a set of steps: removing duplicate or extraneous information, reorganizing separate parts of the answer, adding meaningful titles to each section, and combining similar sections under more generalized titles. Your final task is to return the reorganized and revised expert answer to the user.
+    '''
     system = '''You are a helpful legal assistant that edits a legal expert's answer to a user's legal question.
 
     In the expert's answer there may be duplicate information or extraneous information not relevant to the question.
@@ -89,16 +91,18 @@ def get_prompt_refine_answer(question, partial_answer):
     return messages
 
 def get_prompt_iterate_answer_rights(legal_text, question, previous_answer):
-    system = '''You are a helpful legal assistant that answers a question from official legal text.
+    system = '''As a helpful legal assistant, your goal is to answer a legal question by improving a partial answer provided by an expert. You will also have access to a new section of legal text that may help enhance the partial answer. Your task is to carefully read the legal text and modify the partial answer by correcting mistakes, adding new relevant information, or doing nothing if the section isn't relevant. If you add new information, make sure to cite the current section. Your final response should provide an improved partial answer to the user's question.
     You will be provided with three things by the user:
     1. Question: A legal question which you are helping to answer.
     2. Partial Answer: A partial answer to the question already partially answered by an expert.
     3. Legal Text: A new section of legal text that might help further improve the partial answer.
 
-    Carefully read the legal text and modify the partial answer as needed. Correct mistakes in the partial answer, add new relevant information, or do nothing if the section isn't relevant to the question.
-    If you add new relevant information, you should cite the current section after the added sentence.
-    Only include information about what a user can do, do not include any restrictions.
-    Improve the partial answer relating to the question as needed using information found in the legal text and return it to the user.
+    Suggestions:
+    Include any relevant legal principles or statutes from the legal text that support or clarify the partial answer.
+
+    Ensure the revised partial answer is clear and concise, addressing the specific legal question asked.
+
+    If the legal text doesn't provide any additional information, consider explaining why it is not relevant to the question.
     '''
     user='''question:{}
     partial answer: {}
@@ -108,16 +112,12 @@ def get_prompt_iterate_answer_rights(legal_text, question, previous_answer):
     return messages
 
 def get_prompt_simple_answer(legal_text, question):
-    system = '''You are a helpful legal assistant that answers a user's question by referencing information in a legal document.
+    system = '''As a helpful legal assistant, your goal is to answer a user's question by referencing information in a legal document. Your answer should be brief, concise, and provide a simple response to the question. Once you have answered the question accurately, exit the conversation. All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.
 
-    You will be provided with a user question and legal documentation. 
-
-    Your answer should be brief and concise. Once you striclty answer the question in a concise and simple manner, exit.
-
-    Output will be in the following format:
-    QUESTION #: Generated Answer. (Citation)
-
-    All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.'''
+    Suggestions:
+    Ensure the generated answer directly addresses the question asked by the user.
+    Use clear and simple language in the answer to enhance understanding.
+    Include a citation from the legal document to support the answer given.'''
     user = '''Carefully read the entire legal documentation and concisely answer the following question from the documentation:
     Question: {}
     Legal documentation:{}'''.format(question, legal_text)

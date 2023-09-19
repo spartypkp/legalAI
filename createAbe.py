@@ -23,11 +23,13 @@ def main():
 def ask_abe(user_query, print_sections, do_testing):  
     similar_queries_list, question_list = process.processing_stage(user_query)
     
+    
     similar_content_list, legal_text_list, legal_text_tokens = search.searching_stage(similar_queries_list)
     
 
     use_gpt_4 = True
     result, prompt_tokens, completion_tokens = answer.answering_stage(question_list, legal_text_list, use_gpt_4)
+    
        
     #print(result)
         

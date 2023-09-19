@@ -18,9 +18,15 @@ def find_and_replace_definitions(user_query):
 def processing_stage(user_query):
     print("Starting processing stage...")
     # Get similar queries by calling GPT 3.5, maybe Google BARD instead
-    similar_queries = get_similar_queries(user_query)
+    similar_queries_list = []
     question_list = convert_query_to_question_list(user_query, used_model="gpt-3.5-turbo")
-    return similar_queries, question_list
+    
+    for question in question_list:
+        print(question)
+        similar_query = get_similar_queries(question)
+        print(similar_query)
+        similar_queries_list.append(similar_query)
+    return similar_queries_list, question_list
 
 def convert_query_to_question_list(user_query, used_model):
     question_list = prompts.get_original_universal_answer_template(user_query)
