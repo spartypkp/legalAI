@@ -7,38 +7,15 @@ from tenacity import retry, wait_random_exponential, stop_after_attempt
 import psycopg2
 from config import config_psql
 import time
+import asyncio
+import aiohttp
+HEADERS = {
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {config.spartypkp_openai_key}"
+}
 
-# gpt-3.5-turbo-16k
-# Tokens Per Minute: 180k
-# Requests Per Minute: 3,500
-# Input Cost: $0.003 per 1k
-# Output Cost: $0.004 per 1k
-
-
-# gpt-3.5-turbo-4k
-# Tokens Per Minute: 80k
-# Requests Per Minute: 3,500
-# Input Cost: $0.0015 per 1k
-# Output Cost: $0.002 per 1k
-
-# gpt-4 (8k token limit)
-# 
-# $0.03/1k prompt tokens
-# $0.06/1k sampled tokens
-
-# gpt-4-32k
-# $0.06/1k prompt tokens
-# $0.12/1k sampled tokens
-
-# TESTING SUITE COSTS
-# Unit Cost:
-# Low cost: $0.20, Mid Cost: $0.5, Worst Cost: $1.60)
-# 
-# 28 calls (14 answer, 14 score)
-# 
-# Total Cost:
-# Low Cost: $5.6, Mid Cost: $14, Worst Cost: $44.8
-
+#start_time = time.perf_counter()
+#print("    * Time elapsed: ", round(time.perf_counter() - start_time, 3), "seconds.")
 openai.api_key = config.spartypkp_openai_key
 codes = ["BPC","CCP","CIV","COM","CONS","CORP","EDC","ELEC","EVID","FAC","FAM","FGC","FIN","GOV","HNC","HSC","INS","LAB","MVC","PCC","PEN","PRC","PROB","PUC","RTC","SHC","UIC","VEH","WAT","WIC"]
 
@@ -55,8 +32,8 @@ def gpt_wrapper(func):
             print_debug = kwargs["debug_print"]
         else:
             print_debug = False
-        if print_debug:
-            print("## Before openAI create_chat_completion:\n## Used Model: {}, API Key: {}\n## Function Input: {}".format(kwargs["used_model"], kwargs["api_key_choice"], kwargs["prompt_messages"]))
+        #if print_debug:
+            #print("## Before openAI create_chat_completion:\n## Used Model: {}, API Key: {}\n## Function Input: {}".format(kwargs["used_model"], kwargs["api_key_choice"], kwargs["prompt_messages"]))
         begin = time.time()
         returned_value = func(*args, **kwargs)
         end = time.time()
@@ -166,6 +143,51 @@ def calculate_prompt_cost(model, prompt_tokens, completion_tokens):
     #print("Prompt Tokens: {}, Completion Tokens: {}".format(prompt_tokens, completion_tokens))
     #print("Total cost of using {}: ${}".format(model, cost))
     return cost
+
+
+
+
+
+
+
+class ProgressLog:
+    def __init__(self, total):
+        self.total = total
+        self.done = 0
+
+    def increment(self):
+        self.done = self.done + 1
+
+    def __repr__(self):
+        return f"    * OpenAI ChatCompletion API calls {self.done}/{self.total}."
+
+@retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(20), before_sleep=print, retry_error_callback=lambda _: None)
+async def get_completion(content, session, semaphore, progress_log, used_model):
+    async with semaphore:
+
+        async with session.post("https://api.openai.com/v1/chat/completions", headers=HEADERS, json={
+            "model": used_model,
+            "messages": content,
+            "temperature": 0
+        }) as resp:
+
+            response_json = await resp.json()
+
+            progress_log.increment()
+            print(progress_log)
+
+            return response_json["choices"][0]['message']["content"]
+
+async def get_completion_list(content_list, max_parallel_calls, used_model="gpt-3.5-turbo"):
+    semaphore = asyncio.Semaphore(value=max_parallel_calls)
+    progress_log = ProgressLog(len(content_list))
+
+    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(10)) as session:
+        return await asyncio.gather(*[get_completion(content, session, semaphore, progress_log, used_model) for content in content_list])
+
+
+
+
 
 
 

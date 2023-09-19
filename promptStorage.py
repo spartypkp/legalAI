@@ -16,19 +16,26 @@ def apply_to_generic(system, user):
 
 # PRE PROCESSING PROMPTS ===============================================
 # generates an array of similar search queries
-def get_prompt_similar_queries(user_query):
-    system = "All output shall be in JSON format."
-    user = '''Generate an array of similar search queries that are relevant to the user question.
+def get_prompt_similar_queries_lawful(user_query):
+    system = '''You are a helpful legal assistant that rephrases a user's legal question into many legal statements that include key terms. The goal is to generate 16 new legal statements that have the same terminology and format as actual legislation.
 
-        Use a variation of related keywords for the queries, trying to be as general as possible.
+Generate legal statements that follow these criteria:
+1. Include similar meaning of the original question.
+2. Include variation of related keywords from this list ["Lawful", "legal", "valid", "warranted", "legitimate", "permissible", "rights", "privileges", "authority", "as authorized by", "as otherwise provided by law", "shall not be a violation of state or local law", "shall be lawful"]
 
-        Generated queries should include legal language synonyms of keywords in the user question, as well as rephrasings of original questions.
-        Generate 10 queries of varying length.
+Return in JSON format: {{\\"queries\\": [\\"query_1\\", \\"query_2\\", \\"query_3\\"]}}";.'''
+    user = '''User question: {}'''.format(user_query)
+    messages = apply_to_generic(system, user)
+    return messages
+def get_prompt_similar_queries_unlawful(user_query):
+    system = '''You are a helpful legal assistant that rephrases a user's legal question into many legal statements that include key terms. The goal is to generate 16 new legal statements that have the same terminology and format as actual legislation.
 
-        User question: {}
-                    
-        Format: {{\\"queries\\": [\\"query_1\\", \\"query_2\\", \\"query_3\\"]}}";
-    '''.format(user_query)
+Generate legal statements that follow these criteria:
+1. Include similar meaning of the original question.
+2. Include variation of related keywords from this list ["unlawful", "criminal", "illicit", "prohibited", "illegitimate", "against the law", "shall be punished", "guilty of", "restrictions", "does not permit", "violation", "the offense"]
+
+Return in JSON format: {{\\"queries\\": [\\"query_1\\", \\"query_2\\", \\"query_3\\"]}}";.'''
+    user = '''User question: {}'''.format(user_query)
     messages = apply_to_generic(system, user)
     return messages
 
@@ -97,12 +104,11 @@ def get_prompt_iterate_answer_rights(legal_text, question, previous_answer):
     2. Partial Answer: A partial answer to the question already partially answered by an expert.
     3. Legal Text: A new section of legal text that might help further improve the partial answer.
 
-    Suggestions:
-    Include any relevant legal principles or statutes from the legal text that support or clarify the partial answer.
-
+    
+    Include a citation of any relevant legal principles or statutes from the legal text that support or clarify the partial answer.
+    Example Citation Format:
+        REVISED ANSWER (Cal. HSC § 11362.785)
     Ensure the revised partial answer is clear and concise, addressing the specific legal question asked.
-
-    If the legal text doesn't provide any additional information, consider explaining why it is not relevant to the question.
     '''
     user='''question:{}
     partial answer: {}
@@ -113,12 +119,14 @@ def get_prompt_iterate_answer_rights(legal_text, question, previous_answer):
 
 def get_prompt_simple_answer(legal_text, question):
     system = '''As a helpful legal assistant, your goal is to answer a user's question by referencing information in a legal document. Your answer should be brief, concise, and provide a simple response to the question. Once you have answered the question accurately, exit the conversation. All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.
-
-    Suggestions:
+    Include a citation of any relevant legal principles or statutes from the legal text that support the answer given.
+    Example Citation Format:
+        Answer (Cal. HSC § 11362.785)
+        Answer (Cal. HSC § 11363.1 (a))
+        Answer (cal. BPC § 12.31 (a)(1))
     Ensure the generated answer directly addresses the question asked by the user.
-    Use clear and simple language in the answer to enhance understanding.
-    Include a citation from the legal document to support the answer given.'''
-    user = '''Carefully read the entire legal documentation and concisely answer the following question from the documentation:
+    '''
+    user = '''Read the entire legal documentation and answer the following question from the documentation:
     Question: {}
     Legal documentation:{}'''.format(question, legal_text)
     messages = apply_to_generic(system, user)

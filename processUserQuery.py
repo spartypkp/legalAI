@@ -2,6 +2,8 @@ import promptStorage as prompts
 import openai
 import json
 import utilityFunctions as util
+import time
+import asyncio
 
 
 
@@ -22,12 +24,8 @@ def processing_stage(user_query):
     print("  - Converting query to list of questions using template")
     question_list = convert_query_to_question_list(user_query, used_model="gpt-3.5-turbo")
     
-    for i, question in enumerate(question_list):
-        #print(question)
-        print(f"  - Getting similar queries for question #{i+1}")
-        similar_query = get_similar_queries(question)
-        #print(similar_query)
-        similar_queries_list.append(similar_query)
+    print("  - Generating similar search queries for questions")
+    similar_queries_list = get_similar_queries(question_list, user_query)
     return similar_queries_list, question_list
 
 def convert_query_to_question_list(user_query, used_model):
@@ -43,13 +41,26 @@ def convert_query_to_question_list(user_query, used_model):
     return converted_questions
 
 
-def get_similar_queries(user_query):
-    prompt_similar_queries = prompts.get_prompt_similar_queries(user_query)
-    chat_completion = util.create_chat_completion(prompt_messages=prompt_similar_queries)
-    result = chat_completion.choices[0].message.content
-    result_dct = json.loads(result)
-    similar_queries = " ".join(result_dct["queries"])
-    return similar_queries
+def get_similar_queries(question_list, user_query):
+    
+    content_list = []
+    lawful = prompts.get_prompt_similar_queries_lawful(user_query)
+    unlawful = prompts.get_prompt_similar_queries_unlawful(user_query)
+    
+    chat_completion = util.create_chat_completion(used_model="gpt-4", prompt_messages=lawful, temp=0, debug_print=True)
+    lawful_result = chat_completion.choices[0].message.content
+    chat_completion = util.create_chat_completion(used_model="gpt-4", prompt_messages=unlawful, temp=0, debug_print=True)
+    unlawful_result = chat_completion.choices[0].message.content
+
+    result_dct = json.loads(lawful_result)
+    lawful = " ".join(result_dct["queries"])
+    result_dct = json.loads(unlawful_result)
+    unlawful = " ".join(result_dct["queries"])
+        
+    similar_queries_list = [lawful, lawful, lawful, unlawful, unlawful]
+    print(similar_queries_list)
+    exit(1)
+    return similar_queries_list
 
 def find_and_replace_definitions(user_query):
     pass
