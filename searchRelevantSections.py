@@ -22,7 +22,7 @@ def searching_stage(similar_queries_list):
     return similar_content_rows, legal_text_list, legal_text_tokens_list
 
 def search_similar_content_sections(modified_user_query, matches=20):
-    print("\n Comparing vector embeddings in the database to embedding of all related quries....\n")
+    print("Comparing vector embeddings....")
     # Get cosine similarity score of related queries to all content embeddings
     return embeddingSimilarity.compare_content_embeddings(modified_user_query, match_count=matches)
 

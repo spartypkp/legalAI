@@ -22,9 +22,9 @@ def processing_stage(user_query):
     question_list = convert_query_to_question_list(user_query, used_model="gpt-3.5-turbo")
     
     for question in question_list:
-        print(question)
+        #print(question)
         similar_query = get_similar_queries(question)
-        print(similar_query)
+        #print(similar_query)
         similar_queries_list.append(similar_query)
     return similar_queries_list, question_list
 
