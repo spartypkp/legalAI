@@ -11,7 +11,8 @@ def searching_stage(similar_queries_list):
     similar_content_rows = []
     legal_text_list = []
     legal_text_tokens_list = []
-    for similar_queries in similar_queries_list:
+    for i, similar_queries in enumerate(similar_queries_list):
+        print(f"  - Searching relevant sections for question # {i+1}")
         similar_content = search_similar_content_sections(similar_queries, matches=10)
         similar_content_rows.append(similar_content)
         legal_text, legal_text_tokens = accumulate_legal_text_from_sections(similar_content, used_model="gpt-3.5-turbo-16k")
@@ -22,7 +23,7 @@ def searching_stage(similar_queries_list):
     return similar_content_rows, legal_text_list, legal_text_tokens_list
 
 def search_similar_content_sections(modified_user_query, matches=20):
-    print("Comparing vector embeddings....")
+    
     # Get cosine similarity score of related queries to all content embeddings
     return embeddingSimilarity.compare_content_embeddings(modified_user_query, match_count=matches)
 

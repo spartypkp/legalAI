@@ -20,7 +20,12 @@ def main():
     ask_abe("can I smoke cannabis?", False, False)
     
 # Starts one "run" of the project    
-def ask_abe(user_query, print_sections, do_testing):  
+def ask_abe(user_query, print_sections, do_testing):
+    print()
+    print("================================")
+    print("Initializing instance of Abe...")
+    print(f"User Query:\n    {user_query}")
+
     similar_queries_list, question_list = process.processing_stage(user_query)
     
     
@@ -29,6 +34,7 @@ def ask_abe(user_query, print_sections, do_testing):
 
     use_gpt_4 = True
     result, prompt_tokens, completion_tokens = answer.answering_stage(question_list, legal_text_list, use_gpt_4)
+    print("================================\n")
     
        
     #print(result)

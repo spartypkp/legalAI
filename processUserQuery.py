@@ -19,10 +19,12 @@ def processing_stage(user_query):
     print("Starting processing stage...")
     # Get similar queries by calling GPT 3.5, maybe Google BARD instead
     similar_queries_list = []
+    print("  - Converting query to list of questions using template")
     question_list = convert_query_to_question_list(user_query, used_model="gpt-3.5-turbo")
     
-    for question in question_list:
+    for i, question in enumerate(question_list):
         #print(question)
+        print(f"  - Getting similar queries for question #{i+1}")
         similar_query = get_similar_queries(question)
         #print(similar_query)
         similar_queries_list.append(similar_query)

@@ -61,7 +61,7 @@ def compare_content_embeddings(user_query, match_threshold=0.5, match_count=5):
     cur = conn.cursor()
 
     cur.callproc('match_embedding', ['{}'.format(embedding), match_threshold, match_count])
-    print("Fetching {} content sections with threshold {} for user_query:\n{}\n".format(match_count, match_threshold, user_query))
+    #print("Fetching {} content sections with threshold {} for user_query:\n{}\n".format(match_count, match_threshold, user_query))
     result = cur.fetchall()
     cur.close()
     conn.close()
@@ -90,7 +90,7 @@ def compare_title_path_embeddings(user_query, print_relevant_headers=False, matc
     cur = conn.cursor()
 
     cur.callproc('match_embedding_titles', ['{}'.format(embedding), match_threshold, match_count])
-    print("Fetching {} title_path sections with threshold {} for user_query:\n{}\n".format(match_count, match_threshold, user_query))
+    #print("Fetching {} title_path sections with threshold {} for user_query:\n{}\n".format(match_count, match_threshold, user_query))
     
     result = cur.fetchall()
     cur.close()
@@ -106,7 +106,7 @@ def format_sql_rows(list_of_rows, embedding_type="content"):
     # Match Function returns row format:
     #  0,          1,    2,        3,     4,    5,       6,       7,       8,       9,          10,        11             12                13
     # ID, Similarity, code, division, title, part, chapter, article, section, content, definitions, titlePath, contentTokens, definitionTokens
-    print("\nFormatting rows for type: {}".format(embedding_type))
+    #print("\nFormatting rows for type: {}".format(embedding_type))
     for row in list_of_rows:
         result += "\n*"
         content = row[9]
