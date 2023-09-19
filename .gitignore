@@ -18,3 +18,8 @@ scrapedData/
 /testQueries.txt
 intermediateParsingDicts/
 scrapingSourceFiles/law-stackexchange-questions-answers.json
+/definitionFromSections.txt
+/definitionWithRanges.txt
+/referenceDefinitions.txt
+/remaining.txt
+/testXML.txt
