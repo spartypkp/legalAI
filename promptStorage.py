@@ -82,16 +82,17 @@ You will be provided with legal documentation, separated by '====', and a user q
 
 1. Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.
 
-2. Incorporate main ideas and essential information, eliminating repeating ideas, and focusing on critical aspects.
+2. Incorporate main ideas and essential information and focusing on critical aspects.
 
-3.Rely strictly on the provided text, without including external information.
+3. Rely strictly on the provided text, without including external information.
 
 4. Format the summary in paragraph form for easy understanding.
 
 5. Utilize markdown to cleanly format your output.
 -give meaningful titles for distinct parts of the summary
- -Bold key subject matter
+-Subparts of each distinct part that list multiple concepts should be listed in line before continuing your answer.
 -All citations should be surrounded by parenthesis like (Cal. HSC § 11362.1)
+
     '''
     user = '''User Legal Question: {}
     Legal Documentation: {}
