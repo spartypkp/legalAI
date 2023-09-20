@@ -75,24 +75,26 @@ Before displaying your answer to the user, remove your reasoning.
 # ANSWER PROMPTS ===============================================
 # Using legal text as input, answer all questions from a specific answer template
 
-def get_prompt_refine_answer(question, partial_answer):
-    system_experimental = '''You are a helpful legal assistant tasked with editing a legal expert's answer to a user's legal question. Your goal is to increase the readability of the expert's answer by following a set of steps: removing duplicate or extraneous information, reorganizing separate parts of the answer, adding meaningful titles to each section, and combining similar sections under more generalized titles. Your final task is to return the reorganized and revised expert answer to the user.
-    '''
-    system = '''You are a helpful legal assistant that edits a legal expert's answer to a user's legal question.
+def get_prompt_summarize_answer(question, partial_answer):
+    system = '''As a professional summarizer, create a concise and comprehensive summary of the provided legal documentation already verified by an expert. The summary should collect and reorganize legal text sections to help answer a user's question in full detail.
 
-    In the expert's answer there may be duplicate information or extraneous information not relevant to the question.
-    Legal definitions may be kept in the answer.
+You will be provided with legal documentation, separated by '====', and a user question.
 
-    You are to edit and revise the expert's answer to increase readability by following these steps.
-    1. Carefully read the expert's answer and remove information not explicitly related to the user's legal question.
-    2. Reorganize seaparate parts of the answer so related information is next to each other.
-    3. Edit the answer so each reorganized section has a meaninful title relating to the user question.
-    4. Combine similar reogranized sections under more generalized titles.
+1. Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.
 
-    Return the reorganized and revised expert answer to the user.
+2. Incorporate main ideas and essential information, eliminating repeating ideas, and focusing on critical aspects.
+
+3.Rely strictly on the provided text, without including external information.
+
+4. Format the summary in paragraph form for easy understanding.
+
+5. Utilize markdown to cleanly format your output.
+-give meaningful titles for distinct parts of the summary
+ -Bold key subject matter
+-All citations should be surrounded by parenthesis like (Cal. HSC § 11362.1)
     '''
     user = '''User Legal Question: {}
-    Expert Answer: {}
+    Legal Documentation: {}
     '''.format(question, partial_answer)
     messages = apply_to_generic(system, user)
     return messages
@@ -120,11 +122,10 @@ def get_prompt_iterate_answer_rights(legal_text, question, previous_answer):
 def get_prompt_simple_answer(legal_text, question):
     system = '''As a helpful legal assistant, your goal is to answer a user's question by referencing information in a legal document. Your answer should be brief, concise, and provide a simple response to the question. Once you have answered the question accurately, exit the conversation. All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.
     Include a citation of any relevant legal principles or statutes from the legal text that support the answer given.
-    Example Citation Format:
-        Answer (Cal. HSC § 11362.785)
-        Answer (Cal. HSC § 11363.1 (a))
-        Answer (cal. BPC § 12.31 (a)(1))
+    Citation Format Example: (Cal. HSC § 11362.785)
+        
     Ensure the generated answer directly addresses the question asked by the user.
+    If absolutely none of the legal text does not specifically address the question, return "[IGNORE]" at the end of your answer.
     '''
     user = '''Read the entire legal documentation and answer the following question from the documentation:
     Question: {}

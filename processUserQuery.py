@@ -23,6 +23,10 @@ def processing_stage(user_query):
     similar_queries_list = []
     print("  - Converting query to list of questions using template")
     question_list = convert_query_to_question_list(user_query, used_model="gpt-3.5-turbo")
+    with open("questionList.txt","w") as write_file:
+        write_file.write(json.dumps(question_list))
+    write_file.close()
+    
     
     print("  - Generating similar search queries for questions")
     similar_queries_list = get_similar_queries(question_list, user_query)
@@ -58,8 +62,6 @@ def get_similar_queries(question_list, user_query):
     unlawful = " ".join(result_dct["queries"])
         
     similar_queries_list = [lawful, lawful, lawful, unlawful, unlawful]
-    print(similar_queries_list)
-    exit(1)
     return similar_queries_list
 
 def find_and_replace_definitions(user_query):

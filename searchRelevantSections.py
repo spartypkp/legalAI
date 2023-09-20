@@ -2,6 +2,7 @@ import json
 import openai
 import promptStorage as prompts
 import embeddingSimilarity
+import time
 
 def main():
     pass
@@ -11,15 +12,39 @@ def searching_stage(similar_queries_list):
     similar_content_rows = []
     legal_text_list = []
     legal_text_tokens_list = []
-    for i, similar_queries in enumerate(similar_queries_list):
-        print(f"  - Searching relevant sections for question # {i+1}")
-        similar_content = search_similar_content_sections(similar_queries, matches=10)
-        similar_content_rows.append(similar_content)
-        legal_text, legal_text_tokens = accumulate_legal_text_from_sections(similar_content, used_model="gpt-3.5-turbo-16k")
-        legal_text = embeddingSimilarity.format_sql_rows(legal_text)
-        legal_text_list.append(legal_text)
-        legal_text_tokens_list.append(legal_text_tokens)
-        
+
+    print("  - Searching relevant sections for lawful template")
+    begin = time.time()
+    lawful = search_similar_content_sections(similar_queries_list[0], matches=40)
+    legal_text, legal_text_tokens_l = accumulate_legal_text_from_sections(lawful, used_model="gpt-3.5-turbo-16k")
+    legal_text_lawful = embeddingSimilarity.format_sql_rows(legal_text)
+    end = time.time()
+    print("    * Total time for vector similarity: {}".format(round(end-begin, 2)))
+
+    print("  - Searching relevant sections for unlawful template")
+    begin = time.time()
+    unlawful = search_similar_content_sections(similar_queries_list[4], matches=40)
+    legal_text, legal_text_tokens_u = accumulate_legal_text_from_sections(unlawful, used_model="gpt-3.5-turbo-16k")
+    legal_text_unlawful = embeddingSimilarity.format_sql_rows(legal_text)
+    end = time.time()
+    print("    * Total time for vector similarity: {}".format(round(end-begin, 2)))
+
+
+    
+    print(legal_text_tokens_l)
+    with open("lawful.txt", "w") as write_file:
+        write_file.write(json.dumps(legal_text_lawful))
+    write_file.close()
+    with open("unlawful.txt", "w") as write_file:
+        write_file.write(json.dumps(legal_text_unlawful))
+    write_file.close()
+    
+    
+    legal_text_tokens_list = [legal_text_tokens_l, legal_text_tokens_l, legal_text_tokens_l, legal_text_tokens_u, legal_text_tokens_u]
+    similar_content_rows = [lawful, lawful, lawful, unlawful, unlawful]
+    legal_text_list = [legal_text_lawful,legal_text_lawful,legal_text_lawful,legal_text_unlawful,legal_text_unlawful]
+
+    exit(1)
     return similar_content_rows, legal_text_list, legal_text_tokens_list
 
 def search_similar_content_sections(modified_user_query, matches=20):
@@ -40,7 +65,7 @@ def accumulate_legal_text_from_sections(sections, used_model):
         max_tokens = 12000
     elif used_model == "gpt-3.5-turbo":
         max_tokens = 2000
-
+    max_tokens = 24000
     while current_tokens < max_tokens and row < len(sections):
         #print(sections[row])
         current_tokens += sections[row][12]

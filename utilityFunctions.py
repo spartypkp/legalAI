@@ -42,7 +42,7 @@ def gpt_wrapper(func):
             completion_tokens = returned_value.usage["completion_tokens"]
             total_tokens = returned_value.usage["total_tokens"]
             total_cost = calculate_prompt_cost(kwargs["used_model"], prompt_tokens, completion_tokens)
-            print("## After openAI create_chat_completion:\n## Total time in {}: {}, Prompt Tokens: {}, Completion Tokens: {}, Total Tokens: {}, Total Cost: ${},\n## GPT Output: {}".format(func.__name__, end-begin,prompt_tokens, completion_tokens, total_tokens, total_cost, returned_value.choices[0].message.content))
+            print("    * Total time in {}: {}, Total Tokens: {}, Total Cost: ${}".format(func.__name__, round(end-begin, 2), total_tokens, round(total_cost, 2)))
         return returned_value
     return inner
 
@@ -136,7 +136,7 @@ def create_chat_completion(used_model="gpt-3.5-turbo", api_key_choice="will", pr
 
 # Prompt cost calculations
 def calculate_prompt_cost(model, prompt_tokens, completion_tokens):
-    model_rates = {"gpt-3.5-turbo-16k":[0.003, 0.004], "gpt-3.5-turbo-4k":[0.0015, 0.002], "gpt-4":[0.03, 0.06], "gpt-4-32k":[0.06, 0.12]}
+    model_rates = {"gpt-3.5-turbo-16k":[0.003, 0.004], "gpt-3.5-turbo":[0.0015, 0.002], "gpt-4":[0.03, 0.06], "gpt-4-32k":[0.06, 0.12]}
     prompt_rate = model_rates[model][0]
     completion_rate = model_rates[model][1]
     cost = ((prompt_rate/1000)*prompt_tokens) + ((completion_rate/1000)*completion_tokens)
@@ -151,15 +151,16 @@ def calculate_prompt_cost(model, prompt_tokens, completion_tokens):
 
 
 class ProgressLog:
-    def __init__(self, total):
+    def __init__(self, total, model):
         self.total = total
         self.done = 0
+        self.model = model
 
     def increment(self):
         self.done = self.done + 1
 
     def __repr__(self):
-        return f"    * OpenAI ChatCompletion API calls {self.done}/{self.total}."
+        return f"    * OpenAI {self.model} API call {self.done}/{self.total}."
 
 @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(20), before_sleep=print, retry_error_callback=lambda _: None)
 async def get_completion(content, session, semaphore, progress_log, used_model):
@@ -176,11 +177,11 @@ async def get_completion(content, session, semaphore, progress_log, used_model):
             progress_log.increment()
             print(progress_log)
 
-            return response_json["choices"][0]['message']["content"]
+            return response_json
 
 async def get_completion_list(content_list, max_parallel_calls, used_model="gpt-3.5-turbo"):
     semaphore = asyncio.Semaphore(value=max_parallel_calls)
-    progress_log = ProgressLog(len(content_list))
+    progress_log = ProgressLog(len(content_list), used_model)
 
     async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(10)) as session:
         return await asyncio.gather(*[get_completion(content, session, semaphore, progress_log, used_model) for content in content_list])

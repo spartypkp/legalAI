@@ -36,7 +36,7 @@ def ask_abe(user_query, print_sections, do_testing):
     
     
     similar_content_list, legal_text_list, legal_text_tokens = search.searching_stage(similar_queries_list)
-    print(legal_text_list)
+    
     
 
     use_gpt_4 = True
