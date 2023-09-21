@@ -23,11 +23,7 @@ def processing_stage(user_query):
     similar_queries_list = []
     print("  - Converting query to list of questions using template")
     question_list = convert_query_to_question_list(user_query, used_model="gpt-3.5-turbo")
-    with open("questionList.txt","w") as write_file:
-        write_file.write(json.dumps(question_list))
-    write_file.close()
-    
-    
+   
     print("  - Generating similar search queries for questions")
     similar_queries_list = get_similar_queries(question_list, user_query)
     return similar_queries_list, question_list
@@ -38,10 +34,7 @@ def convert_query_to_question_list(user_query, used_model):
 
     chat_completion =  util.create_chat_completion(used_model, api_key_choice="will", prompt_messages=prompt_convert_question, temp=0)
     converted_questions = chat_completion.choices[0].message.content
-    
     converted_questions = converted_questions.split("\n")
-    #print(converted_questions)
-    #converted_questions.pop()
     return converted_questions
 
 
@@ -63,9 +56,6 @@ def get_similar_queries(question_list, user_query):
         
     similar_queries_list = [lawful, lawful, lawful, unlawful, unlawful]
     return similar_queries_list
-
-def find_and_replace_definitions(user_query):
-    pass
 
 if __name__ == "__main__":
     main()

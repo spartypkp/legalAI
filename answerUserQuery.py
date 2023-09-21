@@ -7,44 +7,24 @@ import asyncio
 import json
 
 def main():
-    
-    with open("questionList.txt","r") as question_read:
-        text = question_read.read()
-        question_list = json.loads(text)
-    question_read.close()
-    with open("lawful.txt", "r") as lawful_read:
-        text = lawful_read.read()
-        lawful = json.loads(text)
-    lawful_read.close()
-    with open("unlawful.txt","r") as unlawful_read:
-        text = unlawful_read.read()
-        unlawful = json.loads(text)
-    unlawful_read.close()
-    
+    pass
     # 15047 tokens
     #response_list = separate_answer(question_list[2], True, lawful[0:12], "gpt-3.5-turbo")
     #print(response_list)
     
-    responses_list = separate_answer(question_list[2], True, lawful, "gpt-3.5-turbo")
-    total_tokens = 0
-    with open("OUTPUTFILE.txt","w") as write_file:
-        for response in responses_list:
-            if "[IGNORE]" in response:
-                continue
-            total_tokens += util.num_tokens_from_string(response)
-            write_file.write(f"=====\n{response}\n")
-            
-    print(total_tokens)
-    write_file.close()
 
 
-def answering_stage(question_list, legal_text, use_gpt_4=True):
+def answering_stage(question_list, legal_text, user_query, use_gpt_4=True):
     print("Starting answering stage...")
-    
-    full_result, total_prompt_tokens, total_completion_tokens = answer_all_questions(question_list, use_gpt_4, legal_text)
-    return full_result, total_prompt_tokens, total_completion_tokens
+    responses_list = separate_answer(question_list[2], legal_text[2], "gpt-3.5-turbo")
+    summarized_response = summarize_responses(responses_list, question_list[2])
+    updated_answer = update_answer(user_query, summarize_responses)
+    summarized_response = updated_answer + "\n====\n" + summarized_response
+    final_answer = summarize_responses(user_query, summarize_responses)
+    return final_answer
 
-def separate_answer(question, use_gpt_4, legal_text, model):
+
+def separate_answer(question, legal_text, model):
     message_list = []
     response_list = []
     prompt_tokens = 0
@@ -64,69 +44,38 @@ def separate_answer(question, use_gpt_4, legal_text, model):
         total_tokens += completion["usage"]["total_tokens"]
         response_list.append(completion["choices"][0]["message"]["content"])
     total_cost = util.calculate_prompt_cost(model, prompt_tokens, completion_tokens)
+    
+    response_str = ""
+    for response in response_list:
+        if "[IGNORE]" in response:
+            continue
+        total_tokens += util.num_tokens_from_string(response)
+        response_str = response_str + "====\n" + response + "\n"
+    
     end = time.time()
     print("    * Total time: {}, Total Tokens: {}, Total Cost: ${}".format(round(end-begin, 2), total_tokens, round(total_cost, 2)))
-    return response_list
+        
+    return response_str
     #print(response_list)
-
-
-def answer_all_questions(question_list, use_gpt_4, legal_text):
-    final_result = []
-    total_prompt_tokens = 0
-    total_completion_tokens = 0
-    total_cost = 0
-    n_questions = len(question_list)
-    start_time = time.perf_counter()
+def summarize_responses(question, response):
+    prompt_summarize = prompts.get_prompt_summarize_answer(question, response)
+    chat_completion = util.create_chat_completion(used_model="gpt-4", prompt_messages=prompt_summarize, temp=0.69, api_key_choice="will", debug_print=True)
+    result_str = chat_completion.choices[0].message.content
+    return result_str
     
-
-    for i in range(2, n_questions):
-        
-        question = question_list[i]
-        full_result = "Question {}: {}\n".format(i+1, question)
-        print("  - Answering for question: ", question)
-
-        starting_sections = legal_text[i][0]
-        prompt = prompts.get_prompt_simple_answer(starting_sections, question)
-        partial_answer, prompt_tokens, completion_tokens, cost = answer_one_question(prompt, True)
-        #print("Starting answer: ", partial_answer)
-
-        #results = asyncio.run(util.get_completion_list(content_list, 100))
-        for j in range(1, len(legal_text[i])):
-            
-            section = legal_text[i][j]
-            print(section)
-            exit(1)
-            prompt = prompts.get_prompt_iterate_answer_rights(section, question, partial_answer)
-            partial_answer, prompt_tokens, completion_tokens, cost = answer_one_question(prompt, True)
-            
-            total_prompt_tokens += prompt_tokens
-            total_completion_tokens += completion_tokens
-            total_cost += cost
-            
-        #print("Current answer: ", partial_answer)
-        prompt = prompts.get_prompt_refine_answer(question, partial_answer)
-        chat_completion = util.create_chat_completion(used_model="gpt-4", prompt_messages=prompt, api_key_choice="sean")
-        revised_answer = chat_completion.choices[0].message.content
-        #print("Revised answer:", revised_answer)
-        full_result += revised_answer
-        full_result += "\n"
-        final_result.append(full_result)
-        print(final_result)
-        print(cost)
-        print("    * Time elapsed: ", round(time.perf_counter() - start_time, 3), "seconds.")
-        return final_result, total_prompt_tokens, total_completion_tokens
-        
-        
-        
-    return final_result, total_prompt_tokens, total_completion_tokens
+def update_answer(user_query, response):
+    prompt_update = prompts.get_prompt_update_answer(response, user_query)
+    chat_completion = util.create_chat_completion(used_model="gpt-4", prompt_messages=prompt_update, temp=0, api_key_choice="will", debug_print=True)
+    result_str = chat_completion.choices[0].message.content
+    return result_str
 
 
 def answer_one_question(prompt_final_answer, use_gpt_4):
     model = "gpt-3.5-turbo-16k"
-    who = "will"
     if use_gpt_4:
-        who = "sean"
-        model = "gpt-4"
+        model="gpt-4"
+    who = "will"
+    
 
     chat_completion = util.create_chat_completion(used_model=model, prompt_messages=prompt_final_answer, temp=0.2, api_key_choice=who)
     result_str = chat_completion.choices[0].message.content
@@ -135,9 +84,6 @@ def answer_one_question(prompt_final_answer, use_gpt_4):
     completion_tokens = chat_completion.usage["completion_tokens"]
     cost = util.calculate_prompt_cost(model, prompt_tokens, completion_tokens)
     return result_str, prompt_tokens, completion_tokens, cost
-
-
-
 
 if __name__ == "__main__":
     main()

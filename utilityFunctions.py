@@ -9,6 +9,7 @@ from config import config_psql
 import time
 import asyncio
 import aiohttp
+DIR = os.path.dirname(os.path.realpath(__file__))
 HEADERS = {
     "Content-Type": "application/json",
     "Authorization": f"Bearer {config.spartypkp_openai_key}"

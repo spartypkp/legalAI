@@ -12,6 +12,7 @@ import processUserQuery as process
 import searchRelevantSections as search
 import answerUserQuery as answer
 import testWithCurrentBuild as test
+import gui
 
 
 openai.api_key = config.spartypkp_openai_key
@@ -33,24 +34,14 @@ def ask_abe(user_query, print_sections, do_testing):
     print("  - Question 5: What are any penalties, punishments, or crimes which apply to violating restrictions of QUERY TOPICS?")
 
     similar_queries_list, question_list = process.processing_stage(user_query)
-    
-    
     similar_content_list, legal_text_list, legal_text_tokens = search.searching_stage(similar_queries_list)
-    
-    
+    final_answer = answer.answering_stage(question_list, legal_text_list, use_gpt_4= True)
 
-    use_gpt_4 = True
-    result, prompt_tokens, completion_tokens = answer.answering_stage(question_list, legal_text_list, use_gpt_4)
     print("================================\n")
-    
-       
-    #print(result)
-        
-    return legal_text_list, result
 
-def testing_stage():
-    pass
-
+    html_str = gui.markdown_to_html(final_answer)
+    gui.open_html_in_browser()
+    return html_str
 
 
 if __name__ == "__main__":

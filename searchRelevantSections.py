@@ -28,23 +28,11 @@ def searching_stage(similar_queries_list):
     legal_text_unlawful = embeddingSimilarity.format_sql_rows(legal_text)
     end = time.time()
     print("    * Total time for vector similarity: {}".format(round(end-begin, 2)))
-
-
-    
-    print(legal_text_tokens_l)
-    with open("lawful.txt", "w") as write_file:
-        write_file.write(json.dumps(legal_text_lawful))
-    write_file.close()
-    with open("unlawful.txt", "w") as write_file:
-        write_file.write(json.dumps(legal_text_unlawful))
-    write_file.close()
-    
     
     legal_text_tokens_list = [legal_text_tokens_l, legal_text_tokens_l, legal_text_tokens_l, legal_text_tokens_u, legal_text_tokens_u]
     similar_content_rows = [lawful, lawful, lawful, unlawful, unlawful]
     legal_text_list = [legal_text_lawful,legal_text_lawful,legal_text_lawful,legal_text_unlawful,legal_text_unlawful]
 
-    exit(1)
     return similar_content_rows, legal_text_list, legal_text_tokens_list
 
 def search_similar_content_sections(modified_user_query, matches=20):

@@ -3,12 +3,7 @@ import psycopg2
 import answerUserQuery as answer
 
 def main():
-    legal_text = "blah"
-    question = "QUESTION 1: What is the simplest answer to can I smoke cannabis?"
-    messages = get_prompt_final_answer(legal_text, question)
-    result, prompt_tokens, completion_tokens, cost = answer.answer_one_question(messages, True)
-    print(result)
-    print(cost)
+    pass
 
 # Apply prompts to generic chatCompletion with a system and user, returns chatCompletion.messages
 def apply_to_generic(system, user):
@@ -76,6 +71,7 @@ Before displaying your answer to the user, remove your reasoning.
 # Using legal text as input, answer all questions from a specific answer template
 
 def get_prompt_summarize_answer(question, partial_answer):
+    # 201 tokens in system message
     system = '''As a professional summarizer, create a concise and comprehensive summary of the provided legal documentation already verified by an expert. The summary should collect and reorganize legal text sections to help answer a user's question in full detail.
 
 You will be provided with legal documentation, separated by '====', and a user question.
@@ -92,7 +88,6 @@ You will be provided with legal documentation, separated by '====', and a user q
 -give meaningful titles for distinct parts of the summary
 -Subparts of each distinct part that list multiple concepts should be listed in line before continuing your answer.
 -All citations should be surrounded by parenthesis like (Cal. HSC § 11362.1)
-
     '''
     user = '''User Legal Question: {}
     Legal Documentation: {}
@@ -134,26 +129,18 @@ def get_prompt_simple_answer(legal_text, question):
     messages = apply_to_generic(system, user)
     return messages
 
-def get_prompt_final_answer(legal_text, question):
-    system = '''You are a helpful legal assistant that answers a user's question by referencing information in a legal document.
+def get_prompt_update_answer(legal_text, question):
+    system = '''As a helpful legal assistant, answer a legal question in a simple and concise manner. You will be provided with a legal question and accompanying legal documentation. 
 
-    You will be provided with a user question and legal documentation. 
+Follow these guidelines:
+1. Ensure the answer directly addresses the legal question and is easy to understand.
+2. Include a clear citation to the specific legal section that supports the answer.
+3. Keep the answer concise, and answer the question in 1 topic sentence.
+4. If you can answer yes or no to the question, include yes or no in your answer.
 
-    Output will be in the following format:
-    QUESTION #: Generated Answer. (Citation)
-
-    All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.'''
-    user = '''Carefully read the entire legal documentation and answer the following question from the documentation:
-    Question: {}
-
-    If your answer has multiple parts, list all of them to the user like the following format:
-    QUESTION #: Generated Answer which includes specific parts:
-    -specific part (citation).
-    -another specific part (citation).
-
-        
-    Legal documentation:{}
-    '''.format(question, legal_text)
+    '''
+    user = '''question: {}
+    documentation: {}'''.format(question, legal_text)
     messages = apply_to_generic(system, user)
     return messages
 
