@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style_sheet.css"> <!-- Link to your CSS stylesheet -->
+<title>Ask AI Abe</title>
+</head>
+<body>
+    <header>
+        <h1>Ask AI Abe</h1>
+    </header>
+    
+    <section class="capabilities">
+        <h2>Abe's Capabilities</h2>
+        <ul>
+            <li>Smart legal information search that provides comprehensive answers.</li>
+            <li>Simplifying the process of finding detailed legal information.</li>
+            <li>Transparent referencing with exact source text and citations.</li>
+            <li>Empowering users by removing barriers to accessing legal information.</li>
+        </ul>
+    </section>
+    
+    <section class="about-abe">
+        <div class="abe-info">
+            <h2>About Abe</h2>
+            <p>LegalAI is a passion project initiated by Will Diamond. The core of this project is an AI agent named Abe, which leverages advanced AI techniques to assist users in navigating the complex landscape of legal information. Abe is here to offer detailed answers to your legal questions, drawing from a vast repository of legal documents to provide not just answers, but also relevant citations and references for further exploration.</p>
+            <p>However, it is important to note that Abe is not a substitute for a licensed legal professional. It is designed to offer information and not legal advice or recommendations.</p>
+            <p>The goal is to make legal information accessible to all, fostering a society where everyone can understand the laws that govern them.</p>
+        </div>
+        <div class="abe-image">
+            <!-- Add a relevant image of Abraham Lincoln here -->
+            <img src="abe.jpg" alt="Abraham Lincoln">
+        </div>
+    </section>
+    <section class="question-input">
+
+        <label for="question">Ask Abe a question:</label>
+        <h1>
+            <strong>
+                Can I smoke cannabis?
+            </strong>
+        </h1>
+        <!--input type="text" id="question" name="question" -->
+    </section>
+    
+    <section class="answer-section">
+        <h2>Abe's answer:</h2>
+        <div id="answer-box">
+            {}
+        </div>
+    </section>
+    <footer>
+        <h2>How Abe Works</h2>
+        <p>Abe operates by leveraging a rich database that contains the full text of the California Legal Code, obtained through meticulous scraping of official government documentation. The data undergoes a rigorous cleaning process, with key features extracted and stored efficiently, facilitating rapid and accurate responses to user queries.</p>
+        <p>The backend relies on Python 3.8.9 and incorporates a range of technologies including PostgreSQL for database management and OpenAI for embedding text and facilitating intelligent search. As the project progresses, we aim to integrate the functionalities of GPT 3.5 Turbo or even GPT 4.0 to enhance Abe's capabilities further.</p>
+        <p>We are at the initial stages, but the roadmap is promising, and we are excited to continue developing Abe into a tool that stands by every citizen, offering them the legal information they seek efficiently and accurately.</p>
+    </footer>
+
+<script src="script.js"></script> <!-- Link to your JavaScript file -->
+
+</body>
+</html>
