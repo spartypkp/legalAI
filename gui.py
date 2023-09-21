@@ -68,8 +68,8 @@ Users also have the right to:
 
 In conclusion, while users have certain rights and privileges relating to smoking cannabis, there are also restrictions and limitations on these rights. These rights and privileges can also be regulated by local ordinances.
 '''
-    markdown_to_html(text)
-    open_html_in_browser("current.html")
+    #markdown_to_html(text)
+    open_html_in_browser("html_template.html")
     #open_html_in_browser("html_template.html")
     #html_to_markdown()
 
@@ -95,7 +95,7 @@ def html_to_markdown():
     md = markdownify.markdownify(text)
     #print(md)
 
-def open_html_in_browser(file_name):
+def open_html_in_browser(file_name="current.html"):
     new = 2 # open in a new tab, if possible
 
     # open a public URL, in this case, the webbrowser docs

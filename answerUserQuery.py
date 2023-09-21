@@ -13,14 +13,19 @@ def main():
     #print(response_list)
     
 
-
-def answering_stage(question_list, legal_text, user_query, use_gpt_4=True):
+def answering_stage(question_list, legal_text, user_query):
     print("Starting answering stage...")
     responses_list = separate_answer(question_list[2], legal_text[2], "gpt-3.5-turbo")
-    summarized_response = summarize_responses(responses_list, question_list[2])
-    updated_answer = update_answer(user_query, summarize_responses)
-    summarized_response = updated_answer + "\n====\n" + summarized_response
-    final_answer = summarize_responses(user_query, summarize_responses)
+    
+    
+    print("  - Refining answer with prompt voodoo")
+    begin = time.time()
+    summarized_response = summarize_responses(question_list[2], responses_list)
+    updated_answer = update_answer(user_query, summarized_response)
+   
+    final_answer =  '### {}\n#{}'.format(user_query, updated_answer) + "\n====\n" + summarized_response
+    end = time.time()
+    print("    * Total time: {}".format(round(end-begin, 2)))
     return final_answer
 
 

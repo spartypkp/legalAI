@@ -21,6 +21,7 @@ def searching_stage(similar_queries_list):
     end = time.time()
     print("    * Total time for vector similarity: {}".format(round(end-begin, 2)))
 
+    '''
     print("  - Searching relevant sections for unlawful template")
     begin = time.time()
     unlawful = search_similar_content_sections(similar_queries_list[4], matches=40)
@@ -28,10 +29,10 @@ def searching_stage(similar_queries_list):
     legal_text_unlawful = embeddingSimilarity.format_sql_rows(legal_text)
     end = time.time()
     print("    * Total time for vector similarity: {}".format(round(end-begin, 2)))
-    
-    legal_text_tokens_list = [legal_text_tokens_l, legal_text_tokens_l, legal_text_tokens_l, legal_text_tokens_u, legal_text_tokens_u]
-    similar_content_rows = [lawful, lawful, lawful, unlawful, unlawful]
-    legal_text_list = [legal_text_lawful,legal_text_lawful,legal_text_lawful,legal_text_unlawful,legal_text_unlawful]
+    '''
+    legal_text_tokens_list = [legal_text_tokens_l, legal_text_tokens_l, legal_text_tokens_l, legal_text_tokens_l, legal_text_tokens_l]
+    similar_content_rows = [lawful, lawful, lawful, None, None]
+    legal_text_list = [legal_text_lawful,legal_text_lawful,legal_text_lawful,None, None]
 
     return similar_content_rows, legal_text_list, legal_text_tokens_list
 
