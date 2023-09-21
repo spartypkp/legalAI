@@ -42,17 +42,18 @@ def get_similar_queries(question_list, user_query):
     
     content_list = []
     lawful = prompts.get_prompt_similar_queries_lawful(user_query)
-    unlawful = prompts.get_prompt_similar_queries_unlawful(user_query)
+    #unlawful = prompts.get_prompt_similar_queries_unlawful(user_query)
     
     chat_completion = util.create_chat_completion(used_model="gpt-4", prompt_messages=lawful, temp=0, debug_print=True)
     lawful_result = chat_completion.choices[0].message.content
-    chat_completion = util.create_chat_completion(used_model="gpt-4", prompt_messages=unlawful, temp=0, debug_print=True)
-    unlawful_result = chat_completion.choices[0].message.content
+    #chat_completion = util.create_chat_completion(used_model="gpt-4", prompt_messages=unlawful, temp=0, debug_print=True)
+    #unlawful_result = chat_completion.choices[0].message.content
 
     result_dct = json.loads(lawful_result)
     lawful = " ".join(result_dct["queries"])
-    result_dct = json.loads(unlawful_result)
-    unlawful = " ".join(result_dct["queries"])
+    #result_dct = json.loads(unlawful_result)
+    #unlawful = " ".join(result_dct["queries"])
+    unlawful = None
         
     similar_queries_list = [lawful, lawful, lawful, unlawful, unlawful]
     return similar_queries_list
