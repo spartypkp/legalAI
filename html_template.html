@@ -1,63 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style_sheet.css"> <!-- Link to your CSS stylesheet -->
-<title>Ask AI Abe</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style_sheet.css"> <!-- Link to your CSS stylesheet -->
+    <title>Ask AI Abe</title>
 </head>
 <body>
     <header>
-        <h1>Ask AI Abe</h1>
+        <div class="logo">
+            <h1>Ask AI Abe</h1>
+            <p>Accurately Answer Legal Questions with LLMs</p>
+        </div>
+        <nav> 
+            <ul>
+                <li><a href="#Capabilities">Capabilities</a></li>
+                <li><a href="#Playground">Playground</a></li>
+                <li><a href="#about-abe">About Abe</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </nav>
     </header>
-    
-    <section class="capabilities">
-        <h2>Abe's Capabilities</h2>
-        <ul>
-            <li>Smart legal information search that provides comprehensive answers.</li>
-            <li>Simplifying the process of finding detailed legal information.</li>
-            <li>Transparent referencing with exact source text and citations.</li>
-            <li>Empowering users by removing barriers to accessing legal information.</li>
-        </ul>
-    </section>
-    
-    <section class="about-abe">
-        <div class="abe-info">
-            <h2>About Abe</h2>
-            <p>LegalAI is a passion project initiated by Will Diamond. The core of this project is an AI agent named Abe, which leverages advanced AI techniques to assist users in navigating the complex landscape of legal information. Abe is here to offer detailed answers to your legal questions, drawing from a vast repository of legal documents to provide not just answers, but also relevant citations and references for further exploration.</p>
-            <p>However, it is important to note that Abe is not a substitute for a licensed legal professional. It is designed to offer information and not legal advice or recommendations.</p>
-            <p>The goal is to make legal information accessible to all, fostering a society where everyone can understand the laws that govern them.</p>
-        </div>
+    <main>
         <div class="abe-image">
-            <!-- Add a relevant image of Abraham Lincoln here -->
-            <img src="abe.jpg" alt="Abraham Lincoln">
+            <img src="abe.jpg" alt="Portrait of Abraham Lincoln">
         </div>
-    </section>
-    <section class="question-input">
+        <section class="project-overview">
+            <h1>=== Project Overview ===</h1>
+            <p>Welcome to Ask AI Abe, your digital legal assistant powered by state-of-the-art artificial intelligence. Abe is designed to simplify access to legal information, bridging the gap between complex legal jargon and everyday language.</p>
+            <p>Abe is grounded on GPT-4's advanced language model and is specialized in interpreting the California Legal Code. With Abe, you can ask any well-structured legal question and expect a comprehensible and accurate response rooted in the legal code. Abe's primary function is to provide legal information, making the vast world of laws and regulations more accessible to everyone.</p>
+            <p>To utilize this tool, simply head to the <a href="#Playground">playground</a>, pose your legal question, and let Abe assist you with relevant information. While Abe is powerful, it's essential to remember that he is not a replacement for professional legal advice. Abe serves as a gateway to legal knowledge, offering a first step in understanding legal matters.</p>
+        </section>
+        <section class="capabilities">
+            <h1>=== Project Goals of Ask AI Abe ===</h1>
+            <ul>
+                <li>Harness the power of GPT-4 and cutting edge prompt engineering techniques to revolutionize legal question answering for both law professionals and everyday citizens.</li>
+                <li>Improve legal question answering with generative AI by dynamically expanding user search queries, reducing the need for followup questions.</li>
+                <li>Optimize accuracy for high dimensional document search and summary using vector embeddings and adversarial LLM interactions to assist users in better defining their requests.</li>
+                <li>Legitimize the use of LLMs and generative AI in legal applications by including direct legal citations, statutory source text, and official weblinks in generated answers.</li>
+                <li>Empower citizens by eliminating monetary and technological barriers so they can access legal information and better understand the laws that govern them.</li>
+            </ul>
+        </section>
+        <section class="about-abe">
+            <h1> === How to Utilize Abe ===</h1>
+            <div class="abe-info">
+                <h3>How do I ask Abe a legal question?</h3>
+                <p>Visit the <a href="#Playground">playground</a> and pose any legal question. Abe will respond based on the relevant information in the California Legal Code.</p>
+                <h3>What type of legal questions can Abe answer?</h3>
+                <p>Abe is equipped to address any well-phrased legal question that is rooted in the legal code. For instance:</p>
+                <blockquote>Can I smoke cannabis?</blockquote>
+                <h3>Which legal documents is Abe familiar with?</h3>
+                <p>Abe comprehends the entire <a href="link-to-California-code">California State legal code</a>. Rather than being specifically trained or fine-tuned on this data, he utilizes underlying algorithms to reference relevant legal sections as guidelines for his responses.</p>
+                <p>While Abe operates under the assumption that all questions are within the jurisdiction of California, he can include references to specific local or federal legislation in his answers if they're part of the California legal code.</p>
+                <p>Plans are in place to soon incorporate all US States and Federal Code and Regulations. The priority is to enhance the accuracy, speed, utility, and authenticity of Abe's responses before broadening the covered jurisdictions.</p>
+            </div>
+        </section>
+        
+        <!-- ... [Previous sections remain unchanged] ... -->
 
-        <label for="question">Ask Abe a question:</label>
-        <h1>
-            <strong>
-                Can I smoke cannabis?
-            </strong>
-        </h1>
-        <!--input type="text" id="question" name="question" -->
-    </section>
-    
-    <section class="answer-section">
-        <h2>Abe's answer:</h2>
-        <div id="answer-box">
-            {}
-        </div>
-    </section>
+        <!-- Start of the "Examples" section -->
+        <section class="examples">
+            <h1>=== Example Question and Answer ===</h1>
+            <h3>Question: Can I smoke cannabis?</h3>
+            <strong>TLDR</strong>
+            <li>Adults aged 21 and older can smoke cannabis under specific conditions in California, per Cal. Health and Safety Code § 11362.1. This article outlines the obligations and restrictions on cannabis possession, cultivation, processing, employment rights, consumption, and local jurisdictional regulations enshrined in California state law.</li>
+            <h3>Rights Granted To Users </h3>
+            <strong>Possessing, Processing, And Transporting Cannabis</strong>
+            <p>  General Possession:</p>
+            <li>Per California Health and Safety Code § 11362.1, adults (21+) can possess, process, transport, purchase, or donate to others (of similar age) up to 28.5 grams of non-concentrated cannabis and up to eight grams in its concentrated form.</li>
+            <p>  Growing Your Own Cannabis:</p>
+            <li>Adults aged 21 and older are allowed to possess, plant, cultivate, harvest, dry, or process up to six living cannabis plants. They can concurrently possess the cannabis yield of these plants (Cal. HSC § 11362.1).</li>
+            <p>  Using Cannabis Accessories:</p>
+            <li>Under Cal. HSC § 11362.1, Californian adults can possess, transport, purchase, obtain, use, manufacture, or give marijuana accessories to others who are 21 years or older.</li>
+            <strong>Consuming Cannabis </strong>
+            <p>  Cannabis Consumption:</p>
+            <li>Users can smoke or ingest cannabis or cannabis products following state and local laws (Cal. HSC § 11362.1).</li>
+            <p>  Nonmedical Consumption:</p>
+            <li>Adult individuals are allowed to consume nonmedical marijuana if they comply with California law, local standards, and regulations (Cal. CIV § 1550.5).</li>
+            <h3>Cannabis Usage Restrictions</h3>
+            <strong>Restrictions on Public Consumption</strong>
+            <p>  Prohibited Public Spaces:</p>
+            <li>Smoking or ingestion of cannabis in public places prohibited areas for tobacco smoking is not allowed. This restriction extends to facilities, institutions, state or local government property, and within 1,000 feet of schools, daycare centers, or youth centers while children are present (Cal. HSC § 11362.3, § 11362.45).</li>
+            <p>  While Operating a Vehicle:</p>
+            <li>Smoking or ingesting cannabis while driving a motor vehicle, boat, vessel, or aircraft is prohibited. Similarly, possession of open containers of cannabis while operating a vehicle is unlawful (Cal. HSC § 11362.3, Cal. HSC § 11362.45).</li>
+            <strong>Workplace Restrictions</strong>
+            <p>  At Work:</p>
+            <li>Employers have the right to maintain a drug and alcohol-free workplace. They can prohibit the use of cannabis by employees and prospective employees (Cal. HSC § 11362.45, Cal. GOV § 12954).</li>
+            <p>  On Job Sites:</p>
+            <li>Smoking cannabis on the job or on the premises of a workplace during work hours is prohibited (Cal. HSC § 11362.785).</li>
+            <strong>Restrictions on Cultivations</strong>
+            <p>  Personal Cultivations :</p>
+            <li>A personal cannabis indoor/homegrow facility must be a locked space not visible from the public place where cultivation takes place (Cal. HSC § 11362.2).</li>
+            <strong>Other Restrictions</strong>
+            <p>  Cannabis Use in Healthcare Facilities:</p>
+            <li>Smoking or vaping cannabis in healthcare facilities is prohibited (Cal. HSC § 1649.2).</li>
+            <p>  Underage Restrictions:</p>
+            <li>Persons under the age of 21 are not allowed to purchase or possess cannabis or cannabis products (Cal. BPC § 26140).</li>
+            <h3>Exceptions to Restrictions</h3>
+            <strong>Medical Usage</strong>
+            <p>  Medical Exception:</p>
+            <li>Medical cannabis use exceptions exist. A parent or guardian to a qualified patient can administer medicinal cannabis at a school site under certain conditions (Cal. HSC § 49414.1). Also, qualified patients or their caregivers can transport, process, administer, deliver, or give medicinal cannabis (Cal. HSC § 11362.765).</li>
+            <p>  During Probation or Bail:</p>
+            <li>Users qualified for medical cannabis can request from the court for approval to use cannabis while on probation, bail, or parole (Cal. HSC § 11362.795).</li>
+            <h3>Local Jurisdictional Regulation</h3>
+            <strong>Local Rules</strong>
+            <li>Local jurisdictions can create and enforce ordinances to regulate the location, operation, or establishment of a medicinal cannabis cooperative or collective. Also, local jurisdictions can create rules to regulate businesses licensed under this division. The local jurisdiction can't prohibit the purchase and delivery of medicinal cannabis, but it can impose reasonable regulations relating to zoning requirements, security, public health and safety, licensing, and taxes (Cal. BPC § 26200, Cal. HSC § 11362.83, Cal. BPC § 26322).</li>
+            <li>#User Discrimination Protection</li>
+            <strong>Employment Discrimination</strong>
+            <li>California law protects users from discrimination in hiring, termination, or any term or condition of employment based on that use (Cal. GOV § 12954).</li>
+            <strong>Cannabis Testing</strong>
+            <p>  Quality Control:</p>
+            <li>Users have the right to have cannabis products tested for quality control purposes by a licensed testing laboratory (Cal. BPC § 26104).</li>
+            <strong>Accommodating Medical Needs</strong>
+            <p>  Medical Needs Exception :</p>
+            <li>If a physician recommends that the defined quantity does not meet the patient's needs, a patient may possess an amount of cannabis consistent with the patient's needs (Cal. HSC § 11362.77). Local counties may also have guidelines that allow patients or primary caregivers to exceed the state limits.</li>
+        </section>
+
+        <section class="limitations">
+            <h2>Project Limitations</h2>
+            <p><strong>Reminder:</strong> Abe doesn't replace a licensed legal professional.</p>
+            <p>Abe isn't designed to:</p>
+            <ul>
+                <li>Provide legal advice.</li>
+                <li>Recommend or suggest legal courses of action.</li>
+                <li>Be used as a legal defense.</li>
+                <li>Substitute a human lawyer, attorney, or any licensed legal professional.</li>
+                <li>Advise on conduct or speech in a legal court setting.</li>
+            </ul>
+            <p>Abe's primary function is as an informational tool. It's currently in its prototype phase, but we're enthusiastic about its development and the goals ahead.</p>
+        </section>
+    </main>
     <footer>
-        <h2>How Abe Works</h2>
-        <p>Abe operates by leveraging a rich database that contains the full text of the California Legal Code, obtained through meticulous scraping of official government documentation. The data undergoes a rigorous cleaning process, with key features extracted and stored efficiently, facilitating rapid and accurate responses to user queries.</p>
-        <p>The backend relies on Python 3.8.9 and incorporates a range of technologies including PostgreSQL for database management and OpenAI for embedding text and facilitating intelligent search. As the project progresses, we aim to integrate the functionalities of GPT 3.5 Turbo or even GPT 4.0 to enhance Abe's capabilities further.</p>
-        <p>We are at the initial stages, but the roadmap is promising, and we are excited to continue developing Abe into a tool that stands by every citizen, offering them the legal information they seek efficiently and accurately.</p>
+        <h2>Behind the Scenes: How Abe Operates</h2>
+        <p>By leveraging a comprehensive database that encompasses the full text of the California Legal Code, sourced from meticulous web scraping of official documents, Abe ensures accuracy. This data is subject to a detailed cleaning process, with pivotal features extracted and stored for quick and precise user query responses.</p>
+        <p>The infrastructure is grounded in Python 3.8.9 and encompasses technologies like PostgreSQL for database management and OpenAI for text embedding and smart search functions. As we advance, the goal is to incorporate functionalities from GPT 3.5 Turbo and potentially GPT 4.0 to further amplify Abe's capabilities.</p>
+        <p>The journey has just begun, but the roadmap is filled with promise. Our aim is to evolve Abe into a dependable tool for every citizen, granting them swift and accurate legal information.</p>
     </footer>
-
-<script src="script.js"></script> <!-- Link to your JavaScript file -->
-
+    <script src="script.js"></script>
 </body>
 </html>

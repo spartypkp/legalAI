@@ -8,83 +8,97 @@ DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def main():
-    text = '''# **Summary of User Rights and Privileges Relating to Smoking Cannabis**
+    text = '''
+# Understanding the Legality of Smoking Cannabis
 
-## **Rights and Privileges**
+## TLDR
+Adults aged 21 and older can smoke cannabis under specific conditions in California, per Cal. Health and Safety Code § 11362.1. This article outlines the obligations and restrictions on cannabis possession, cultivation, processing, employment rights, consumption, and local jurisdictional regulations enshrined in California state law.
 
-According to California law, a user who is 21 years or older has the **right** to:
+# Rights Granted To Users 
 
-- Possess, process, transport, purchase, obtain, or give away up to **28.5 grams** of cannabis (not in the form of concentrated cannabis).
-- Possess up to **eight grams** of cannabis in the form of concentrated cannabis.
-- Cultivate **up to six living cannabis plants** and possess the cannabis produced by those plants.
-- Smoke or ingest cannabis or cannabis products.
-- Possess, transport, purchase, obtain, use, manufacture, or give away cannabis accessories to persons **21 years of age or older** without any compensation (Cal. HSC § 11362.1).
+## Possessing, Processing, And Transporting Cannabis
+### General Possession
+Per California Health and Safety Code § 11362.1, adults (21+) can possess, process, transport, purchase, or donate to others (of similar age) up to 28.5 grams of non-concentrated cannabis and up to eight grams in its concentrated form.
 
-Users also have the right to consume nonmedical marijuana if they are over 21 years of age and in compliance with California law and any applicable local standards, requirements, and regulations (Cal. CIV § 1550.5). They have the right to use cannabis off the job and away from the workplace without facing discrimination in hiring, termination, or any term or condition of employment based on that use (Cal. GOV § 12954).
+### Growing Your Own Cannabis
+Adults aged 21 and older are allowed to possess, plant, cultivate, harvest, dry, or process up to six living cannabis plants. They can concurrently possess the cannabis yield of these plants (Cal. HSC § 11362.1).
 
-## **Restrictions**
+### Using Cannabis Accessories
+Under Cal. HSC § 11362.1, Californian adults can possess, transport, purchase, obtain, use, manufacture, or give marijuana accessories to others who are 21 years or older.
 
-However, there are restrictions on these rights. Users cannot:
+## Consuming Cannabis 
+### Cannabis Consumption
+Users can smoke or ingest cannabis or cannabis products following state and local laws (Cal. HSC § 11362.1).
 
-- Smoke or ingest cannabis in public places or where smoking tobacco is prohibited.
-- Smoke or ingest cannabis within **1,000 feet of a school, day care center, or youth center while children are present**, or on their grounds.
-- Possess an open container or package of cannabis or cannabis products while operating a vehicle or transportation vehicle.
-- Smoke or ingest cannabis or cannabis products while driving or riding in a vehicle used for transportation (Cal. HSC § 11362.3).
+### Nonmedical Consumption
+Adult individuals are allowed to consume nonmedical marijuana if they comply with California law, local standards, and regulations (Cal. CIV § 1550.5).
 
-Users also cannot smoke cannabis:
+# Cannabis Usage Restrictions
 
-- While driving or operating a vehicle, boat, vessel, or aircraft.
-- On the grounds of certain facilities or institutions.
-- On the property of a state or local government agency or on privately owned property where it is prohibited or restricted (Cal. HSC § 11362.45).
+## Restrictions on Public Consumption
+### Prohibited Public Spaces
+Smoking or ingestion of cannabis in public places prohibited areas for tobacco smoking is not allowed. This restriction extends to facilities, institutions, state or local government property, and within 1,000 feet of schools, daycare centers, or youth centers while children are present (Cal. HSC § 11362.3, § 11362.45).
 
-## **Local Jurisdiction Regulations**
+### While Operating a Vehicle
+Smoking or ingesting cannabis while driving a motor vehicle, boat, vessel, or aircraft is prohibited. Similarly, possession of open containers of cannabis while operating a vehicle is unlawful (Cal. HSC § 11362.3, Cal. HSC § 11362.45).
 
-User rights and privileges relating to smoking cannabis can also depend on the local jurisdiction's regulations. Local jurisdictions have the authority to adopt and enforce ordinances to regulate businesses licensed under this division, including regulations related to reducing exposure to secondhand smoke (Cal. BPC § 26200).
+## Workplace Restrictions
+### At Work
+Employers have the right to maintain a drug and alcohol-free workplace. They can prohibit the use of cannabis by employees and prospective employees (Cal. HSC § 11362.45, Cal. GOV § 12954).
 
-## **Medical Cannabis**
+### On Job Sites
+Smoking cannabis on the job or on the premises of a workplace during work hours is prohibited (Cal. HSC § 11362.785).
 
-For medical cannabis users, they have the right to:
+## Restrictions on Cultivations
+### Personal Cultivations 
+A personal cannabis indoor/homegrow facility must be a locked space not visible from the public place where cultivation takes place (Cal. HSC § 11362.2).
 
-- Transport, process, administer, deliver, or give away cannabis for medical purposes if they are a qualified patient, a person with an identification card, or a designated primary caregiver (Cal. HSC § 11362.765).
-- Request the court to confirm their right to use cannabis while on probation or released on bail (Cal. HSC § 11362.795).
+## Other Restrictions
+### Cannabis Use in Healthcare Facilities
+Smoking or vaping cannabis in healthcare facilities is prohibited (Cal. HSC § 1649.2).
 
-However, users do not have the right or privilege to smoke or vape cannabis in a health care facility (Cal. HSC § 1649.2). They also cannot smoke medicinal cannabis:
+### Underage Restrictions
+Persons under the age of 21 are not allowed to purchase or possess cannabis or cannabis products (Cal. BPC § 26140).
 
-- In a place where smoking is prohibited by law.
-- Within 1,000 feet of the grounds of a school, recreation center, or youth center, unless the medicinal use occurs within a residence, on a school bus, while in a motor vehicle that is being operated, or while operating a boat (Cal. HSC § 11362.79).
+# Exceptions to Restrictions
+## Medical Usage
+### Medical Exception
+Medical cannabis use exceptions exist. A parent or guardian to a qualified patient can administer medicinal cannabis at a school site under certain conditions (Cal. HSC § 49414.1). Also, qualified patients or their caregivers can transport, process, administer, deliver, or give medicinal cannabis (Cal. HSC § 11362.765).
 
-## **Cultivation**
+### During Probation or Bail
+Users qualified for medical cannabis can request from the court for approval to use cannabis while on probation, bail, or parole (Cal. HSC § 11362.795).
 
-Users also have the right to cultivate and possess cannabis for personal use, but there are certain restrictions that apply. The cultivation of cannabis must comply with local ordinances, if any, and must be done within the person's private residence or on the grounds of that private residence in a locked space that is not visible from a public place (Cal. HSC § 11362.2).
+# Local Jurisdictional Regulation
+## Local Rules
+Local jurisdictions can create and enforce ordinances to regulate the location, operation, or establishment of a medicinal cannabis cooperative or collective. Also, local jurisdictions can create rules to regulate businesses licensed under this division. The local jurisdiction can't prohibit the purchase and delivery of medicinal cannabis, but it can impose reasonable regulations relating to zoning requirements, security, public health and safety, licensing, and taxes (Cal. BPC § 26200, Cal. HSC § 11362.83, Cal. BPC § 26322).
 
-## **Other Rights**
+#User Discrimination Protection
+## Employment Discrimination
+California law protects users from discrimination in hiring, termination, or any term or condition of employment based on that use (Cal. GOV § 12954).
 
-Users also have the right to:
+## Cannabis Testing
+### Quality Control
+Users have the right to have cannabis products tested for quality control purposes by a licensed testing laboratory (Cal. BPC § 26104).
 
-- Have cannabis or cannabis products tested by a licensed testing laboratory for quality control purposes (Cal. BPC § 26104).
-- Purchase and possess cannabis or cannabis products if they are **21 years of age or older** (Cal. BPC § 26140).
+## Accommodating Medical Needs
+### Medical Needs Exception 
+If a physician recommends that the defined quantity does not meet the patient's needs, a patient may possess an amount of cannabis consistent with the patient's needs (Cal. HSC § 11362.77). Local counties may also have guidelines that allow patients or primary caregivers to exceed the state limits.
 
-## **Conclusion**
 
-In conclusion, while users have certain rights and privileges relating to smoking cannabis, there are also restrictions and limitations on these rights. These rights and privileges can also be regulated by local ordinances.
 '''
     #markdown_to_html(text)
+    #convert_markdown(text)
     open_html_in_browser("html_template.html")
     #open_html_in_browser("html_template.html")
     #html_to_markdown()
 
 def markdown_to_html(text):
-    print("HERE!")
-    html_string = markdown.markdown(text, extensions=['md_in_html'])
+    section = '''<section id="answer-box" markdown="block">
+    {}
+    </section>'''.format(text)
+    html_string = markdown.markdown(section, extensions=['md_in_html'])
     
-    with open("html_template.html", "r") as template_file:
-        template = template_file.read()
-    template_file.close()
-    
-    template = template.format(html_string)
-    with open("current.html", "w") as write_file:
-        write_file.write(template)
-    write_file.close()
+    print(html_string)
     
     #open_html_in_browser("sample.html")
 
@@ -103,6 +117,29 @@ def open_html_in_browser(file_name="current.html"):
     # open an HTML file on my own (Windows) computer
     url = "file://{}/{}".format(DIR, file_name)
     webbrowser.open(url,new=new)
+
+
+
+
+
+def convert_markdown(md_text):
+    split = md_text.split("\n")
+    full_string = ""
+    for line in split:
+        if line == "":
+            continue
+        space_index = line.index(" ")
+        start = line[0:space_index]
+        if start == "#":
+            result = "<h3>{}</h3>\n".format(line[space_index+1:])
+        elif start == "##":
+            result = "<strong>{}</strong>\n".format(line[space_index+1:])
+        elif start == "###":
+            result = "<p>  {}:</p>\n".format(line[space_index+1:])
+        else:
+            result = "<li>{}</li>\n".format(line)
+        full_string += result
+    print(full_string)
 
 if __name__ == "__main__":
     main()
