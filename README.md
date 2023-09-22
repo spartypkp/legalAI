@@ -3,55 +3,87 @@ created by Will Diamond
 
 ## 1. What is legalAI?
 LegalAI is a passion project which explores the applications of novel generative AI techniques to simplify the complexities of obtaining accurate legal information. I have created an AI program called Abe who is able to answer complex user legal questions. Abe will take in a user query, search for all relevant legal documentation, and create an in-depth answer which is returned to the user. Below is an example question answered by Abe.
-### Example Question: Can I smoke cannabis?
+## Example Question: Can I smoke cannabis?
 Abe's Answer:
-   **Rights to Possess, Use, and Distribute Cannabis and Cannabis Products**
-   
-   Under Cal. HSC § 11362.1, a user aged 21 years or older has the right to possess, process, transport, purchase, obtain, or give away not more than 28.5 grams of cannabis not in the form of concentrated cannabis, and not more than eight grams of cannabis in the form of concentrated cannabis. They can also possess, plant, cultivate, harvest, dry, or process not more than six living cannabis plants and possess the cannabis produced by the plants. Additionally, they can smoke or ingest cannabis or cannabis products, and possess, transport, purchase, obtain, use, manufacture, or give away cannabis accessories to persons 21 years of age or older without any compensation. (Cal. HSC § 11362.1)
-   
-   **Rights to Use Medical Cannabis**
-   
-   Under Cal. HSC § 1649.2, a health care facility must permit patient use of medical cannabis. The patient or a primary caregiver is responsible for acquiring, retrieving, administering, and removing medicinal cannabis. The medicinal cannabis must be stored securely at all times in a locked container in the patient’s room, other designated area, or with the patient’s primary caregiver. (Cal. HSC § 1649.2)
-   
-   **Rights to Possess, Use, and Distribute Cannabis Products**
-   
-   According to Cal. HSC § 11018.1, "cannabis products" are defined as cannabis that has undergone a process whereby the plant material has been transformed into a concentrate, including, but not limited to, concentrated cannabis, or an edible or topical product containing cannabis or concentrated cannabis and other ingredients. This means that users also have the right to possess, use, and give away these types of cannabis products as well. (Cal. HSC § 11018.1)
-   
-   **Rights Against Discrimination for Cannabis Use**
-   
-   Under Cal. GOV § 12954, it is unlawful for an employer to discriminate against a person in hiring, termination, or any term or condition of employment, or otherwise penalizing a person, based on the person’s use of cannabis off the job and away from the workplace. This includes discrimination based on an employer-required drug screening test that has found the person to have nonpsychoactive cannabis metabolites in their hair, blood, urine, or other bodily fluids. (Cal. GOV § 12954)
-   
-   **Rights to Use Cannabis for Animals**
-   
-   The Medicinal and Adult-Use Cannabis Regulation and Safety Act establishes a comprehensive system to control and regulate the cultivation, distribution, transport, storage, manufacturing, processing, and sale of both medicinal cannabis and adult-use cannabis for adults 21 years of age and over. This includes cannabis products intended for use on, or consumption by, animals. (Cal. BPC § 26000)
-   
-   **Rights to Have Cannabis Tested**
-   
-   A user also has the right to have their cannabis and cannabis products tested by a licensed testing laboratory. This includes cannabis grown by the user for their own use. However, the testing laboratory cannot certify samples for resale or transfer to another person or licensee. (Cal. BPC § 26104)
-   
-   **Rights to Possess, Use, and Distribute Cannabis Accessories**
-   
-   "Cannabis accessories" are defined as any equipment, products or materials of any kind which are used, intended for use, or designed for use in planting, propagating, cultivating, growing, harvesting, manufacturing, compounding, converting, producing, processing, preparing, testing, analyzing, packaging, repackaging, storing, smoking, vaporizing, or containing cannabis, or for ingesting, inhaling, or otherwise introducing cannabis or cannabis products into the human body. This means that users also have the right to possess, use, and give away these types of cannabis accessories as well. (Cal. HSC § 11018.2)
-   
-   **Rights to Administer Medicinal Cannabis at School**
-   
-   The governing board of a school district, a county board of education, or the governing body of a charter school may adopt a policy that allows a parent or guardian of a pupil to possess and administer medicinal cannabis at a schoolsite to the pupil who is a qualified patient. However, the parent or guardian must not administer the medicinal cannabis in a manner that disrupts the educational environment or exposes other pupils, and after administering the medicinal cannabis, the parent or guardian must remove any remaining medicinal cannabis from the schoolsite. (Cal. EDC § 49414.1)
-   
-   **Rights to Participate in Temporary Cannabis Events**
-   
-   A user aged 21 years or older has the right to participate in temporary events where onsite cannabis sales and consumption are authorized, provided that the activities comply with the regulations promulgated and adopted by the department governing state temporary event licenses. The user also has the right to reconcile unsold inventory of cannabis or cannabis products and return it to the licensee’s retail premises after the temporary event. (Cal. BPC § 26200)
-   
-   **Rights to Purchase Manufactured Cannabis Products**
-   
-   A user has the right to purchase manufactured cannabis products that have been produced and packaged under specific standards. These products must not be designed to be appealing to children or easily confused with commercially sold candy or foods that do not contain cannabis. They must also be produced and sold with a standardized concentration of cannabinoids not to exceed 10 milligrams tetrahydrocannabinol (THC) per serving. If the cannabis product is intended for therapeutic effect or health supplementation use on, or for consumption by, an animal, the cannabis product shall also conform with any additional relevant standards. (Cal. BPC § 26130)
-   
-   **Rights to Use Medicinal Cannabis While on Probation or Parole**
-   
-   A criminal defendant who is eligible to use cannabis may request that the court confirm that he or she is allowed to use medicinal cannabis while he or she is on probation or released on bail. If a physician recommends that the probationer or defendant use medicinal cannabis, the probationer or defendant may request a modification of the conditions of probation or bail to authorize the use of medicinal cannabis. Similarly, any person who is to be released on parole and who is eligible to use medicinal cannabis may request that he or she be allowed to use medicinal cannabis during the period he or she is released on parole. If a physician recommends that the parolee use medicinal cannabis, the parolee may request a modification of the conditions of the parole to authorize the use of medicinal cannabis. (Cal. HSC § 11362.795)
-   
-   **Rights to Possess Cannabis for Medical Needs**
-   
-   A qualified patient or primary caregiver may possess no more than eight ounces of dried cannabis per qualified patient. In addition, a qualified patient or primary caregiver may also maintain no more than six mature or 12 immature cannabis plants per qualified patient. If a qualified patient or primary caregiver has a physician’s recommendation that this quantity does not meet the qualified patient’s medical needs, the qualified patient or primary caregiver may possess an amount of cannabis consistent with the patient’s needs. Counties and cities may retain or enact medicinal cannabis guidelines allowing qualified patients or primary caregivers to exceed the state limits set forth in subdivision (a). Only the dried mature processed flowers of female cannabis plant or the plant conversion shall be considered when determining allowable quantities of cannabis under this section. A qualified patient or a person holding a valid identification card, or the designated primary caregiver of that qualified patient or person, may possess amounts of cannabis consistent with this article. (Cal. HSC § 11362.77)
+   ### Understanding the Legality of Smoking Cannabis
+   **TLDR**
+   > According to Cal. HSC § 11362.1, individuals aged 21 and older can smoke cannabis under specific conditions. However, applicable laws place numerous restrictions discussed below.
+
+   ### Rights Granted To Users
+
+   **Possessing, Processing, And Transporting Cannabis**
+   General Possession:
+   > According to Cal. HSC § 11362.1, you can possess, process, transport, purchase, or give away up to 28.5 grams of cannabis, and up to eight grams in its concentrated form under state and local law.
+
+   Growing Your Own Cannabis:
+   > Cal. HSC § 11362.1 also permits possessing, planting, cultivating, harvesting, drying, or processing up to six living cannabis plants and possessing the product of these plants.
+
+   Using Cannabis Accessories:
+   > Cal. HSC § 11362.1 also gives rights to individuals over 21 to possess, transport, purchase, obtain, use, manufacture, or give cannabis accessories to individuals 21 years of age or older.
+
+   **Consuming Cannabis**
+   Cannabis Consumption:
+   > Cannabis and cannabis products can be consumed under Cal. HSC § 11362.1.
+
+   Nonmedical Consumption:
+   > According to Cal. CIV § 1550.5, users over 21 years can consume nonmedical marijuana if they comply with California law, local standards, and regulations.
+
+   ### Cannabis Usage Restrictions
+
+   **Restrictions on Public Consumption**
+   Prohibited Public Spaces:
+   > Cal. HSC § 11362.3 & § 11362.45 restrict the smoking or ingestion of cannabis/ cannabis products in public places, where tobacco smoking is prohibited, within facilities or institutions, and on state or local government property.
+
+   Restricted Areas Near Children's Centers:
+   > According to Cal. HSC § 11362.3, cannabis cannot be consumed within 1,000 feet of a school, day care center, or youth center while children are present.
+
+   **Restrictions on Operating Vehicles**
+   While Operating a Vehicle:
+   > Cal. HSC § 11362.3 & Cal. HSC § 11362.45 prohibit smoking or ingesting cannabis or cannabis products while driving a vehicle, boat, vessel, or aircraft. A user also cannot possess an open container or package of cannabis or cannabis products while operating a vehicle.
+
+   **Workplace Restrictions**
+   At Work:
+   > As per Cal. HSC § 11362.45 & Cal. GOV § 12954, employers have the right to maintain a drug and alcohol-free workplace, and they can prohibit the use of cannabis by employees and prospective employees.
+
+   On Job Sites:
+   > According to Cal. HSC § 11362.785, a user cannot smoke cannabis on the job or on the premises of their place of employment during work hours.
+
+   **Restrictions on Cultivations**
+   Personal Cultivations:
+   > Per Cal. HSC § 11362.2, restrictions apply to cultivating cannabis within a person's private residence. Such cultivation must be done in a locked space not visible from a public place.
+
+   **Other Restrictions**
+   Cannabis Use in Healthcare Facilities:
+   > As per Cal. HSC § 1649.2, you cannot smoke or vape cannabis in a healthcare facility.
+
+   Underage Restrictions:
+   > According to Cal. BPC § 26140, no one under 21 years of age can purchase or possess cannabis or cannabis products.
+
+   ### Exceptions to Restrictions
+   **Medical Usage**
+   Medical Exception:
+   > Cal. HSC § 49414.1 allows a parent or guardian of a qualified patient to administer medicinal cannabis at a schoolsite, following certain conditions. Cal. HSC § 11362.765 lets qualified patients or their caregivers transport, process, administer, deliver, or give medicinal cannabis.
+
+   During Probation or Bail:
+   > As per Cal. HSC § 11362.795, a user who qualifies for medicinal cannabis use can request the court to confirm their right to use cannabis while on probation, bail, or released on parole.
+
+   ### Local Jurisdictional Regulation
+   **Local Rules**
+   > According to Cal. BPC § 26200 & Cal. HSC § 11362.83, local jurisdictions can enact ordinances to regulate the location, operation, or establishment of a medicinal cannabis cooperative or collective. Also, local jurisdictions can adopt rules to regulate businesses licensed under this division.
+   > According to Cal. BPC § 26322, local jurisdiction cannot prohibit the purchase and delivery of medicinal cannabis, but can enforce reasonable regulations related to zoning requirements, security, public health and safety, licensing, and taxes.
+
+   ### User Discrimination Protection
+   **Employment Discrimination**
+   > Cal. GOV § 12954 protects users from discrimination in hiring, termination, or any term or condition of employment based on that use.
+
+   **Cannabis Testing**
+   Quality Control:
+   > Under Cal. BPC § 26104, users may have cannabis products tested for quality control purposes by a licensed testing laboratory.
+      
+   **Accommodating Medical Needs**
+   Medical Needs Exception:
+   > Cal. HSC § 11362.77 states that if a physician recommends that the standard amount does not meet the patient's needs, they may possess an amount of cannabis consistent with the patient's needs. The local counties may also have guidelines allowing patients or primary caregivers to exceed the state limits.
+
 
 #### Project Goals
    1. Allow for smarter legal information search which includes more than just a simple answer to the question: "Is X legal?". Given a simple legal topic or question, legalAI will be able to provide all useful information about the topic, answered by GPT 4 following the format of a "Universal Question Answer". These universal questions are outlined in the universal answer document and will eliminate the need for followup queries of basic information. In one "run" of the program, a user should be able to ask a simple question and receive an answer which includes everything they want to know (even though they may not have directly asked for it).
