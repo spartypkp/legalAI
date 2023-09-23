@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_sheet.css') }}">
+    <title>Playground - Ask AI Abe</title>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            <h1>Ask AI Abe</h1>
+            <p>Accurately Answer Legal Questions with LLMs</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="#Capabilities">Capabilities</a></li>
+                <li><a href="{{ url_for('playground') }}">Playground</a></li>
+                <li><a href="#about-abe">About Abe</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="Playground" class="playground-section">
+            <h2>AI Abe's Playground</h2>
+            <div class="playground-content">
+                <form id="aiQueryForm">
+                    <label for="question">Enter your legal question:</label>
+                    <textarea id="question" rows="8" cols="80" placeholder="Enter your legal question here..."></textarea>
+                    <button type="submit" class="ask-button">Ask AI Abe</button>
+                </form>
+
+                <div id="aiResponse" class="response-section">
+                    <h3>AI Abe's Response:</h3>
+                    <p id="responseText"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById('aiQueryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const question = document.getElementById('question').value;
+
+            // Send the question to the server using a POST request
+            fetch('/ask_ai', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question: question })
+            })
+
+        });
+
+    </script>
+    
+
+</body>
+
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style_sheet.css">
+<title>Ask AI Abe</title>
+<style>
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        margin: 0;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+    header, section, footer {
+        margin: 0 auto;
+        max-width: 1200px;
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        border-radius: 10px;
+    }
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    header .logo h1 {
+        font-size: 2em;
+        margin: 0;
+    }
+    header nav a {
+        margin: 0 15px;
+        text-decoration: none;
+        color: #333;
+        font-size: 1em;
+        font-weight: bold;
+    }
+    .abe-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+    .capabilities ul, .faq ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    .capabilities li, .faq li {
+        margin-bottom: 10px;
+        font-size: 1em;
+    }
+    .intro, .capabilities, .faq, .how-abe-works, .contact h2, .testimonials h2 {
+        text-align: center;
+    }
+    .intro p, .capabilities ul, .faq ul {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-top: 10px;
+    }
+    .interactive-demo {
+        background-color: #f0f0f0;
+        padding: 20px;
+        border-radius: 10px;
+    }
+    h2 {
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+    }
+</style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Ask AI Abe</h1>
+            <p>Your legal assistant</p>
+        </div>
+        <nav> 
+            <a href="#capabilities">Capabilities</a>
+            <a href="#demo">Demo</a>
+            <a href="#about-abe">About Abe</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contact">Contact Us</a>
+        </nav>
+    </header>
+    
+    <section class="intro">
+        <h2>Welcome to Ask AI Abe</h2>
+        <p>Your go-to platform for all your legal queries.</p>
+    </section>
+
+    <section class="capabilities" id="capabilities">
+        <h2>Abe's Capabilities</h2>
+        <ul>
+            <li>Smart legal information search...</li>
+            <!-- Keep the rest of the list items as they were -->
+        </ul>
+    </section>
+
+    <section class="demo" id="demo">
+        <h2>Demo</h2>
+        <div class="interactive-demo">
+            <label for="question">Ask Abe a question:</label>
+            <input type="text" id="question" name="question">
+        </div>
+        <div class="case-studies">
+            <!-- Add case studies showcasing how the tool can be beneficial -->
+        </div>
+    </section>
+
+    <section class="about-abe" id="about-abe">
+        <div class="abe-info">
+            <h2>About Abe</h2>
+            <p>LegalAI is a passion project initiated by Will Diamond...</p>
+        </div>
+        <div class="abe-image">
+            <img src="abe.jpg" alt="Abraham Lincoln">
+        </div>
+    </section>
+
+    <section class="faq" id="faq">
+        <h2>Frequently Asked Questions</h2>
+        <ul>
+            <li>Question 1?</li>
+            <li>Question 2?</li>
+        </ul>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2>Contact Us</h2>
+        <form>
+            <!-- Add a contact form here -->
+        </form>
+    </section>
+
+    <section class="testimonials">
+        <h2>Testimonials</h2>
+        <div class="testimonials-content">
+            <!-- Add testimonials content here -->
+        </div>
+    </section>
+
+    <footer>
+        <div class="how-abe-works">
+            <h2>How Abe Works</h2>
+            <p>Abe operates by leveraging a rich database...</p>
+        </div>
+        <div class="footer-nav">
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <form>
+                <label for="newsletter">Subscribe to our newsletter:</label>
+                <input type="email" id="newsletter" name="newsletter">
+            </form>
+        </div>
+    </footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>

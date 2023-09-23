@@ -1,15 +1,48 @@
-from flask import Flask, render_template
-
+from flask import Flask, render_template, stream_with_context, Response, request, jsonify
+from flask_cors import CORS  # You'll need to install this module: pip install Flask-CORS
+import json
+import createAbe
+CURRENT_ANSWER = ["","",""]
 app = Flask(__name__)
+CORS(app)  # Allows all domains (not safe for production)
 
 @app.route('/')
-def index():
-    # Data that you want to display on the webpage
-    page_title = "Dynamic Webpage"
-    content_text = "This content is generated dynamically with Python and Flask."
-    footer_text = "© 2023 Your Website"
-    
-    return render_template('index.html', title=page_title, content=content_text, footer=footer_text)
+def home():
+    return render_template('index.html')
 
-if __name__ == '__main__':
+@app.route('/playground')
+def playground():
+    return render_template('playground.html')
+
+@app.route('/ask_ai', methods=['GET','POST'])
+def ask_ai():
+    question = request.get_json()['question']
+    
+    # This is a mockup. Replace this with code that sends the question to your model.
+    # For example, call createAbe.ask_abe() here without streaming.
+    # Just get the answer and return it.
+    # Store the result somewhere for the next request to pick it up.
+    print("I am here!")
+    print(question)
+    summary_template, legal_documentation, question = createAbe.ask_abe(question, False, False, True)
+    CURRENT_ANSWER = [summary_template, legal_documentation, question]
+    return jsonify({'result': 'success'})
+
+@app.route('/ask_ai_stream', methods=['GET'])
+@stream_with_context
+def ask_ai_stream():
+    # Here, instead of getting the question again, you'll fetch the previously stored result
+    # and stream it back.
+    # Modify as needed for your logic.
+    template = CURRENT_ANSWER[0]
+    documentation = CURRENT_ANSWER[1]
+    question = CURRENT_ANSWER[2]
+
+    def generate(template, documentation, question):
+        for message in createAbe.stream_answer(template, documentation, question):  # This is a mockup. Replace with the right logic.
+            yield f"data: {message}\n\n"
+            
+    return Response(generate(template, documentation, question), mimetype="text/event-stream")
+
+if __name__ == "__main__":
     app.run(debug=True)

@@ -70,30 +70,68 @@ Before displaying your answer to the user, remove your reasoning.
 # ANSWER PROMPTS ===============================================
 # Using legal text as input, answer all questions from a specific answer template
 
-def get_prompt_summarize_answer(question, partial_answer):
+def get_prompt_summary_template(question, legal_documentation):
     # 201 tokens in system message
-    system = '''As a professional summarizer, create a concise and comprehensive summary of the provided legal documentation already verified by an expert. The summary should collect and reorganize legal text sections to help answer a user's question in full detail.
+    system = '''Using the supplied legal question and its corresponding legal documentation, produce a markdown structure that outlines the essential themes and ideas. This structure will guide a legal expert in answering the posed question.
 
-You will be provided with legal documentation, separated by '====', and a user question.
+**Input Description:**
 
-1. Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.
+- **Question**: A distinct legal query needing expert interpretation.
+- **Legal Documentation**: The reference material that a legal expert will use to formulate an answer.
 
-2. Incorporate main ideas and essential information and focusing on critical aspects.
+**Instructions:**
 
-3. Rely strictly on the provided text, without including external information.
+1. Start by dissecting the question to understand its primary themes and key concerns.
+2. Delve into the legal documentation, extracting the principal ideas and related concepts that will aid in answering the question.
+3. While structuring the markdown:
+   - Use "#" for principal ideas taken from the legal documentation.
+   - For each main idea, establish secondary points and label them using "##".
+   - Beneath each secondary point, highlight any tertiary points with "###". 
+   - For each detail or specific concept which applies to an idea, write ">" and guidance to the legal expert on how to answer the legal question, as well as legal citations from where this answer may come from.
+4. Keep the guidance concise, especially for the ">" level. Avoid placeholders or lengthy notes. The emphasis should be on clear headers and brief guidance.
 
-4. Format the summary in paragraph form for easy understanding.
+The first main idea should always be a rephrasing of the question followed by a sub-idea called TLDR, which has guidance on giving a simple and short answer to the user question.
 
-5. Utilize markdown to cleanly format your output.
--give meaningful titles for distinct parts of the summary
--Subparts of each distinct part that list multiple concepts should be listed in line before continuing your answer.
--All citations should be surrounded by parenthesis like (Cal. HSC § 11362.1)
+**Output:**
+
+A carefully curated markdown blueprint with clear titles, headers, and succinct guidance. This blueprint should seamlessly guide a legal expert in their endeavor to comprehensively address the posed question using the supplied legal documentation. 
     '''
     user = '''User Legal Question: {}
     Legal Documentation: {}
-    '''.format(question, partial_answer)
+    '''.format(question, legal_documentation)
     messages = apply_to_generic(system, user)
     return messages
+
+def get_prompt_populate_summary_template(question, template, legal_documentation):
+    user = '''Template: {}, Legal Documentation: {}, Question: {}'''.format(template, legal_documentation, question)
+    system = '''Using the provided markdown template and the associated legal documentation, substitute the guidance from the legal expert with pertinent details while retaining the ">" symbol to indicate where content has been added.
+
+**Input Description:**
+
+- **Template**: A structured markdown outline utilizing various levels of headers (#, ##, ###, ####). The ">" symbol in the template signifies guidance from a legal expert, which should be replaced by content from the legal documentation.
+  
+- **Legal Documentation**: Your primary reference material containing all necessary information to address the legal question. Use this document to derive content to replace the guidance after the ">" in the template.
+  
+- **Question**: The specific legal inquiry that will be answered using the populated template and the legal documentation.
+
+**Instructions:**
+
+1. Thoroughly acquaint yourself with the template. Note areas marked by the ">" symbol; these are pointers from the legal expert that should be substituted with corresponding content.
+  
+2. Delve into the legal documentation, sourcing information that aligns with the ">" pointers and the related headers.
+  
+3. In the sections with ">", substitute the expert's guidance with relevant content from the legal documentation, ensuring to include legal citations at the end of each substitution.
+  
+4. Emphasize accuracy and integrity, ensuring that the content reflects the essence and specifics of the original legal documentation.
+
+**Output:**
+
+A refined markdown template where guidance after the ">" symbol has been seamlessly substituted with content from the legal documentation, resulting in a well-structured response to the legal inquiry.
+    '''
+    messages = apply_to_generic(system, user)
+    return messages
+
+
 
 def get_prompt_iterate_answer_rights(legal_text, question, previous_answer):
     system = '''As a helpful legal assistant, your goal is to answer a legal question by improving a partial answer provided by an expert. You will also have access to a new section of legal text that may help enhance the partial answer. Your task is to carefully read the legal text and modify the partial answer by correcting mistakes, adding new relevant information, or doing nothing if the section isn't relevant. If you add new information, make sure to cite the current section. Your final response should provide an improved partial answer to the user's question.

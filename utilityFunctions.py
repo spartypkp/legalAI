@@ -134,6 +134,17 @@ def create_chat_completion(used_model="gpt-3.5-turbo", api_key_choice="will", pr
         print(e)
         raise e
 
+@retry(wait=wait_random_exponential(min=1, max=2), stop=stop_after_attempt(6))
+def stream_chat_completion(used_model="gpt-3.5-turbo", api_key_choice="will", prompt_messages=None, temp=0.4, top_p_val=1, n_responses=1, do_stream=True, stop_conditions=None, presence_p=0, frequency_p=0):
+    openai.api_key = config.get_api_key(api_key_choice)
+    try:
+        chat_completion = openai.ChatCompletion.create(model=used_model,messages=prompt_messages, temperature=temp, n=n_responses, top_p=top_p_val, stream=do_stream, stop=stop_conditions, presence_penalty=presence_p, frequency_penalty=frequency_p)
+        for message in chat_completion:
+            yield message
+    except Exception as e:
+        print("***** Failed calling create_chat_completion!")
+        print(e)
+        raise e
 
 # Prompt cost calculations
 def calculate_prompt_cost(model, prompt_tokens, completion_tokens):
@@ -144,12 +155,6 @@ def calculate_prompt_cost(model, prompt_tokens, completion_tokens):
     #print("Prompt Tokens: {}, Completion Tokens: {}".format(prompt_tokens, completion_tokens))
     #print("Total cost of using {}: ${}".format(model, cost))
     return cost
-
-
-
-
-
-
 
 class ProgressLog:
     def __init__(self, total, model):

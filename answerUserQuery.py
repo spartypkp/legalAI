@@ -5,6 +5,7 @@ import promptStorage as prompts
 import time
 import asyncio
 import json
+import app
 
 def main():
     pass
@@ -17,16 +18,15 @@ def answering_stage(question_list, legal_text, user_query):
     print("Starting answering stage...")
     responses_list = separate_answer(question_list[2], legal_text[2], "gpt-3.5-turbo")
     
-    
-    print("  - Refining answer with prompt voodoo")
     begin = time.time()
-    summarized_response = summarize_responses(question_list[2], responses_list)
-    updated_answer = update_answer(user_query, summarized_response)
+    print("  - Creating answer template with GPT 4")
+    summaryTemplate = create_summary_template(question_list[2], responses_list)
    
-    final_answer =  '### {}\n#{}'.format(user_query, updated_answer) + "\n====\n" + summarized_response
+
     end = time.time()
     print("    * Total time: {}".format(round(end-begin, 2)))
-    return final_answer
+    return summaryTemplate, responses_list, question_list[2]
+    
 
 
 def separate_answer(question, legal_text, model):
@@ -62,15 +62,16 @@ def separate_answer(question, legal_text, model):
         
     return response_str
     #print(response_list)
-def summarize_responses(question, response):
-    prompt_summarize = prompts.get_prompt_summarize_answer(question, response)
-    chat_completion = util.create_chat_completion(used_model="gpt-4", prompt_messages=prompt_summarize, temp=0.69, api_key_choice="will", debug_print=True)
+
+def create_summary_template(question, legal_documentation):
+    prompt_summarize = prompts.get_prompt_summary_template(question, legal_documentation)
+    chat_completion = util.create_chat_completion(used_model="gpt-4", prompt_messages=prompt_summarize, temp=1, api_key_choice="will", debug_print=True)
     result_str = chat_completion.choices[0].message.content
     return result_str
     
-def update_answer(user_query, response):
-    prompt_update = prompts.get_prompt_update_answer(response, user_query)
-    chat_completion = util.create_chat_completion(used_model="gpt-4", prompt_messages=prompt_update, temp=0, api_key_choice="will", debug_print=True)
+def populate_summary_template(question, legal_documentation, template):
+    prompt_update = prompts.get_prompt_populate_summary_template(question, template, legal_documentation)
+    chat_completion = util.create_chat_completion(used_model="gpt-3.5-turbo-16k", prompt_messages=prompt_update, temp=0, api_key_choice="will", debug_print=True)
     result_str = chat_completion.choices[0].message.content
     return result_str
 

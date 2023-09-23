@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style_sheet.css"> <!-- Link to your CSS stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_sheet.css') }}">
+
     <title>Ask AI Abe</title>
 </head>
 <body>
@@ -15,7 +16,7 @@
         <nav> 
             <ul>
                 <li><a href="#Capabilities">Capabilities</a></li>
-                <li><a href="#Playground">Playground</a></li>
+                <li><a href="{{ url_for('playground') }}">Playground</a></li>
                 <li><a href="#about-abe">About Abe</a></li>
                 <li><a href="#faq">FAQ</a></li>
                 <li><a href="#contact">Contact Us</a></li>
@@ -24,7 +25,7 @@
     </header>
     <main>
         <div class="abe-image">
-            <img src="abe.jpg" alt="Portrait of Abraham Lincoln">
+            <img src="{{ url_for('static', filename='abe.jpg') }}" alt="Portrait of Abraham Lincoln">
         </div>
         <section class="project-overview">
             <h1>=== Project Overview ===</h1>
