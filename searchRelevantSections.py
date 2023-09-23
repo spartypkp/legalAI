@@ -17,7 +17,7 @@ def searching_stage(similar_queries_list):
     begin = time.time()
     lawful = search_similar_content_sections(similar_queries_list[0], matches=40)
     legal_text, legal_text_tokens_l = accumulate_legal_text_from_sections(lawful, used_model="gpt-3.5-turbo-16k")
-    legal_text_lawful = embeddingSimilarity.format_sql_rows(legal_text)
+    legal_text_lawful, citation_list = embeddingSimilarity.format_sql_rows(legal_text)
     end = time.time()
     print("    * Total time for vector similarity: {}".format(round(end-begin, 2)))
 
@@ -34,7 +34,7 @@ def searching_stage(similar_queries_list):
     similar_content_rows = [lawful, lawful, lawful, None, None]
     legal_text_list = [legal_text_lawful,legal_text_lawful,legal_text_lawful,None, None]
 
-    return similar_content_rows, legal_text_list, legal_text_tokens_list
+    return similar_content_rows, legal_text_list, legal_text_tokens_list, citation_list
 
 def search_similar_content_sections(modified_user_query, matches=20):
     

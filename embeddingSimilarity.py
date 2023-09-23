@@ -107,6 +107,7 @@ def format_sql_rows(list_of_rows, embedding_type="content"):
     #  0,          1,    2,        3,     4,    5,       6,       7,       8,       9,          10,        11             12                13
     # ID, Similarity, code, division, title, part, chapter, article, section, content, definitions, titlePath, contentTokens, definitionTokens
     #print("\nFormatting rows for type: {}".format(embedding_type))
+    citation_list = []
     for row in list_of_rows:
         result += "\n*"
         content = row[9]
@@ -114,11 +115,14 @@ def format_sql_rows(list_of_rows, embedding_type="content"):
             content = row[10]
         elif embedding_type == "title_path":
             content = row[11]
-        result += "Cal. {} § {}:\n{}\n".format(row[2], row[8], content)
+        citation = "Cal. {} § {}".format(row[2],row[8])
+        link = row[14]
+        citation_list.append(citation, link)
+        result += "{}:\n{}\n".format(citation, content)
     result += "\n"
     result_list = result.split("*")
     result_list = result_list[1:]
-    return result_list
+    return result_list, citation_list
 
 
 
