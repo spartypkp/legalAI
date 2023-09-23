@@ -55,5 +55,15 @@ def ask_abe(user_query, print_sections, do_testing, do_stream):
     #for message in util.stream_chat_completion("gpt-3.5-turbo-16k", prompt_messages=prompt_update, do_stream=True):
         #yield message
 
+def find_sections_cited(legal_text_list, final_answer):
+    cited_sections = []
+    for section_full in legal_text_list:
+        index = section_full.index("\n")
+        citation = section_full[0:index]
+        content = section_full[index+1:]
+        if citation in final_answer:
+            cited_sections.append((citation, content))
+    return cited_sections
+
 if __name__ == "__main__":
     main()
