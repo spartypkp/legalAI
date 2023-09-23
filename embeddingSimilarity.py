@@ -117,7 +117,7 @@ def format_sql_rows(list_of_rows, embedding_type="content"):
             content = row[11]
         citation = "Cal. {} § {}".format(row[2],row[8])
         link = row[14]
-        citation_list.append(citation, link)
+        citation_list.append((citation, content, link))
         result += "{}:\n{}\n".format(citation, content)
     result += "\n"
     result_list = result.split("*")

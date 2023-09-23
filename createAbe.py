@@ -45,8 +45,9 @@ def ask_abe(user_query, print_sections, do_testing, do_stream):
         #for message in stream_answer(question, summary_template, legal_documentation):
             #yield message
     #else:
-    cited_sections = find_sections_cited(citation_list, final_answer)
+    
     final_answer = answer.populate_summary_template(question, legal_documentation, summary_template)
+    cited_sections = find_sections_cited(citation_list, final_answer)
     print(final_answer)
     print("================================\n")
     print(cited_sections)

@@ -22,11 +22,10 @@ def ask_ai():
     # For example, call createAbe.ask_abe() here without streaming.
     # Just get the answer and return it.
     # Store the result somewhere for the next request to pick it up.
-    print("I am here!")
-    print(question)
-    summary_template, legal_documentation, question = createAbe.ask_abe(question, False, False, True)
-    CURRENT_ANSWER = [summary_template, legal_documentation, question]
-    return jsonify({'result': 'success'})
+    
+    final_answer, citations = createAbe.ask_abe(question, False, False, True)
+    CURRENT_ANSWER = [final_answer, citations]
+    return jsonify({'final_answer': final_answer, 'citations': citations})
 
 @app.route('/ask_ai_stream', methods=['GET'])
 @stream_with_context
