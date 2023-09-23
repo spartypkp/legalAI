@@ -45,10 +45,14 @@ def ask_abe(user_query, print_sections, do_testing, do_stream):
         #for message in stream_answer(question, summary_template, legal_documentation):
             #yield message
     #else:
+    cited_sections = find_sections_cited(citation_list, final_answer)
     final_answer = answer.populate_summary_template(question, legal_documentation, summary_template)
     print(final_answer)
-    return final_answer
     print("================================\n")
+    print(cited_sections)
+    
+    return final_answer, cited_sections
+    
 
 #def stream_answer(question, summary_template, legal_documentation):
     #prompt_update = prompts.get_prompt_populate_summary_template(question, summary_template, legal_documentation)
