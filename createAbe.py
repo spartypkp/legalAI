@@ -18,8 +18,7 @@ import gui
 openai.api_key = config.spartypkp_openai_key
 
 def main():
-    print("Here")
-    answer = ask_abe("what company can sponsor h1b?", False, False, False)
+    answer = ask_abe("what are the aspects of the warrant of habitability for an apartment in california?", False, False, False)
     
 # Starts one "run" of the project    
 def ask_abe(user_query, print_sections, do_testing, do_stream):
@@ -34,11 +33,14 @@ def ask_abe(user_query, print_sections, do_testing, do_stream):
     #print("  - Question 3: What rights and privileges does a user have relating to QUERY TOPICS?")
     #print("  - Question 4: What are restrictions, caveats, and conditions to QUERY TOPICS?")
     #print("  - Question 5: What are any penalties, punishments, or crimes which apply to violating restrictions of QUERY TOPICS?")
-    print("here")
-    similar_queries_list, question_list = process.processing_stage(user_query)
-    similar_content_list, legal_text_list, legal_text_tokens, citation_list = search.searching_stage(similar_queries_list)
     
-
+    similar_queries_list, question_list_raw = process.processing_stage(user_query)
+    question_list = []
+    for question in question_list_raw:
+        if question != "":
+            question_list.append(question)
+    
+    similar_content_list, legal_text_list, legal_text_tokens, citation_list = search.searching_stage(similar_queries_list)
     summary_template, legal_documentation, question = answer.answering_stage(question_list, legal_text_list, user_query)
     
     #if do_stream:
@@ -49,9 +51,14 @@ def ask_abe(user_query, print_sections, do_testing, do_stream):
     final_answer = answer.populate_summary_template(question, legal_documentation, summary_template)
     cited_sections = find_sections_cited(citation_list, final_answer)
     print(final_answer)
+    print()
+    print()
     print("================================\n")
+    print()
+    print()
     print(cited_sections)
-    
+    #final_answer = gui.markdown_to_html(final_answer)
+    #cited_sections = gui.markdown_to_html(cited_sections)
     return final_answer, cited_sections
     
 
@@ -61,13 +68,15 @@ def ask_abe(user_query, print_sections, do_testing, do_stream):
         #yield message
 
 def find_sections_cited(citation_list, final_answer):
-    cited_sections = []
+    cited_sections = ""
+    
     for tup in citation_list:
         citation = tup[0]
         content = tup[1]
         link = tup[2]
         if citation in final_answer:
-            cited_sections.append((citation, content, link))
+            result = "{}: {}\n{}".format(citation, link, content)
+            cited_sections = cited_sections + result + "\n"
     return cited_sections
 
 if __name__ == "__main__":

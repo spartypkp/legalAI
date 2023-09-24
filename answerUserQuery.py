@@ -16,7 +16,7 @@ def main():
 
 def answering_stage(question_list, legal_text, user_query):
     print("Starting answering stage...")
-    responses_list = separate_answer(question_list[2], legal_text[2], "gpt-3.5-turbo")
+    responses_list = separate_answer(question_list[2], legal_text[2], "gpt-3.5-turbo-16k")
     
     begin = time.time()
     print("  - Creating answer template with GPT 4")
@@ -36,6 +36,7 @@ def separate_answer(question, legal_text, model):
     completion_tokens = 0
     total_tokens = 0
     for section in legal_text:
+
         message_list.append(prompts.get_prompt_simple_answer(section, question))
     
     begin = time.time()
@@ -44,11 +45,11 @@ def separate_answer(question, legal_text, model):
     
     for completion in results:
         #print(completion)
-        prompt_tokens += completion["usage"]["prompt_tokens"]
-        completion_tokens += completion["usage"]["completion_tokens"]
-        total_tokens += completion["usage"]["total_tokens"]
+        #prompt_tokens += completion["usage"]["prompt_tokens"]
+        #completion_tokens += completion["usage"]["completion_tokens"]
+        #total_tokens += completion["usage"]["total_tokens"]
         response_list.append(completion["choices"][0]["message"]["content"])
-    total_cost = util.calculate_prompt_cost(model, prompt_tokens, completion_tokens)
+    #total_cost = util.calculate_prompt_cost(model, prompt_tokens, completion_tokens)
     
     response_str = ""
     for response in response_list:
@@ -58,7 +59,7 @@ def separate_answer(question, legal_text, model):
         response_str = response_str + "====\n" + response + "\n"
     
     end = time.time()
-    print("    * Total time: {}, Total Tokens: {}, Total Cost: ${}".format(round(end-begin, 2), total_tokens, round(total_cost, 2)))
+    #print("    * Total time: {}, Total Tokens: {}, Total Cost: ${}".format(round(end-begin, 2), total_tokens, round(total_cost, 2)))
         
     return response_str
     #print(response_list)

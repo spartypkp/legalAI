@@ -25,8 +25,10 @@ def ask_ai():
     
     final_answer, citations = createAbe.ask_abe(question, False, False, True)
     CURRENT_ANSWER = [final_answer, citations]
+    
     return jsonify({'final_answer': final_answer, 'citations': citations})
 
+'''
 @app.route('/ask_ai_stream', methods=['GET'])
 @stream_with_context
 def ask_ai_stream():
@@ -42,6 +44,7 @@ def ask_ai_stream():
             yield f"data: {message}\n\n"
             
     return Response(generate(template, documentation, question), mimetype="text/event-stream")
+'''
 
 if __name__ == "__main__":
     app.run(debug=True)

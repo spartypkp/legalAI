@@ -37,20 +37,35 @@
                     <button type="submit" class="ask-button">Ask AI Abe</button>
                 </form>
 
-                <div id="aiResponse" class="response-section">
-                    <h3>AI Abe's Response:</h3>
-                    <p id="responseText"></p>
+                <div class="responses-container">
+                    <!-- Existing Response Section -->
+                    <div id="response-section" class="aiResponse">
+                        <h3>AI Abe's Response:</h3>
+                        <p id="responseText">Please be patient as openAI API calls take some time.</p>
+                    </div>
+    
+                    <!-- New Citation Section -->
+                    <div id="citation-section" class="citation-section">
+                        <h3>Citations:</h3>
+                        <p>Your citation content goes here...</p>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
+    <!-- <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> -->
+
     <script>
+        let htmlContent = null;
+        let htmlCitations = null;
+
         document.getElementById('aiQueryForm').addEventListener('submit', function(event) {
             event.preventDefault();
-
+            
+    
             const question = document.getElementById('question').value;
-
+    
             // Send the question to the server using a POST request
             fetch('/ask_ai', {
                 method: 'POST',
@@ -59,10 +74,21 @@
                 },
                 body: JSON.stringify({ question: question })
             })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                htmlContent = data.final_answer;  // Convert markdown to HTML
+                document.getElementById('response-section').innerHTML = htmlContent;
 
+                // Similarly, for citations or any other markdown content
+                htmlCitations = data.citations;
+                document.getElementById('citation-section').innerHTML = htmlCitations;
+            })
+            .catch(error => console.error('Error:', error));
         });
 
     </script>
+    
     
 
 </body>
