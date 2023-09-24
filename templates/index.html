@@ -31,7 +31,7 @@
             <h1>=== Project Overview ===</h1>
             <p>Welcome to Ask AI Abe, your digital legal assistant powered by state-of-the-art artificial intelligence. Abe is designed to simplify access to legal information, bridging the gap between complex legal jargon and everyday language.</p>
             <p>Abe is grounded on GPT-4's advanced language model and is specialized in interpreting the California Legal Code. With Abe, you can ask any well-structured legal question and expect a comprehensible and accurate response rooted in the legal code. Abe's primary function is to provide legal information, making the vast world of laws and regulations more accessible to everyone.</p>
-            <p>To utilize this tool, simply head to the <a href="#Playground">playground</a>, pose your legal question, and let Abe assist you with relevant information. While Abe is powerful, it's essential to remember that he is not a replacement for professional legal advice. Abe serves as a gateway to legal knowledge, offering a first step in understanding legal matters.</p>
+            <p>To utilize this tool, simply head to the <a href="{{ url_for('playground') }}">playground</a>, pose your legal question, and let Abe assist you with relevant information. While Abe is powerful, it's essential to remember that he is not a replacement for professional legal advice. Abe serves as a gateway to legal knowledge, offering a first step in understanding legal matters.</p>
         </section>
         <section class="capabilities">
             <h1>=== Project Goals of Ask AI Abe ===</h1>
@@ -47,12 +47,12 @@
             <h1> === How to Utilize Abe ===</h1>
             <div class="abe-info">
                 <h3>How do I ask Abe a legal question?</h3>
-                <p>Visit the <a href="#Playground">playground</a> and pose any legal question. Abe will respond based on the relevant information in the California Legal Code.</p>
+                <p>Visit the <a href="{{ url_for('playground') }}">playground</a> and pose any legal question. Abe will respond based on the relevant information in the California Legal Code.</p>
                 <h3>What type of legal questions can Abe answer?</h3>
                 <p>Abe is equipped to address any well-phrased legal question that is rooted in the legal code. For instance:</p>
                 <blockquote>Can I smoke cannabis?</blockquote>
                 <h3>Which legal documents is Abe familiar with?</h3>
-                <p>Abe comprehends the entire <a href="link-to-California-code">California State legal code</a>. Rather than being specifically trained or fine-tuned on this data, he utilizes underlying algorithms to reference relevant legal sections as guidelines for his responses.</p>
+                <p>Abe comprehends the entire <a href="https://leginfo.legislature.ca.gov/faces/codes.xhtml">California State legal code</a>. Rather than being specifically trained or fine-tuned on this data, he utilizes underlying algorithms to reference relevant legal sections as guidelines for his responses.</p>
                 <p>While Abe operates under the assumption that all questions are within the jurisdiction of California, he can include references to specific local or federal legislation in his answers if they're part of the California legal code.</p>
                 <p>Plans are in place to soon incorporate all US States and Federal Code and Regulations. The priority is to enhance the accuracy, speed, utility, and authenticity of Abe's responses before broadening the covered jurisdictions.</p>
             </div>
@@ -61,256 +61,82 @@
         <!-- ... [Previous sections remain unchanged] ... -->
 
         <!-- Start of the "Examples" section -->
-        <h1>Plaintext Question: What legal actions do I have if my landlord sells my lease 3 months before my current lease ends and is evicting?</h1>
-        <md-block id="responseText" class="examples">
-            <h1 id="users-rights-and-privileges-when-tenant-sells-lease-and-proceeds-with-eviction">
-                User’s Rights and Privileges when Tenant Sells Lease and Proceeds with Eviction
-            </h1>
-            <h2 id="tldr">
-                TLDR
-            </h2><p>As a tenant, you hold various rights when faced with an eviction following the sale of your lease by the landlord. These rights, as prescribed by the California Civil, Financial, and Code of Civil Procedure, allow for the entitlement of contract damages due to the landlord’s breach, notice of termination requirements, right to file claim for damages, among others.</p>
+        <h2>Example Question: What legal actions do I have if my landlord sells my lease 3 months before my current lease ends and is evicting?</h2>
+        <section class="examples">
+            <md-block id="exampleResponse">
+                # Rights and privileges of a tenant when the landlord sells their lease 3 months before it ends and is evicting them
 
-            <h1 id="right-to-contract-damages-due-to-tenants-breach-cal-civ-§-1995320">
-                Right to Contract Damages Due to Tenant’s Breach (Cal. CIV § 1995.320)
-            </h1>
-            <h2 id="specifics-about-contract-damages">
-                Specifics about Contract Damages
-            </h2><p>Contractual damages can result from the tenant’s breach of lease agreement. You can seek these damages as a remedy. (Cal. CIV § 1995.320)</p>
+                ## TLDR 
+                If your landlord sells your lease 3 months before it ends and is evicting you, you have the right to receive a written notice of termination, the right to stay until the end of the lease term, the right to file a claim for damages, the right to purchase the property, and the right to reclaim any left personal property among other things. The specific rights and privileges are subject to the terms of your lease agreement and the notice given by the landlord.
 
-            <h1 id="notice-of-termination-cal-civ-§-1946">
-                Notice of Termination (Cal. CIV § 1946)
-            </h1>
-            <h2 id="advanced-notice-requirement">
-                Advanced Notice Requirement
-            </h2><p>You must receive a written notice of termination at least 30 days prior to eviction. This notification could be through certified or registered mail. (Cal. CIV § 1946)</p>
+                # Right to receive a written notice of termination
+                ## Cal. CIV § 1946
+                ### Right to receive a notice of termination
+                According to Cal. CIV § 1946, if your landlord sells your lease 3 months before your current lease ends and is evicting you, you have the right to receive a notice of termination. The notice must be given at least 30 days before the termination date. The notice can be given in the manner prescribed in Section 1162 of the Code of Civil Procedure or by sending a copy by certified or registered mail addressed to the other party. (Cal. CIV § 1946)
 
-            <h2 id="requirement-for-notice-delivery">
-                Requirement for Notice Delivery
-            </h2><p>The legal documentation provides a guideline on how this notice will be delivered. (Cal. CIV § 1946)</p>
+                # Right to stay until the end of lease term
+                ## Cal. CCP § 1161
+                ### Tenant's right to keep possession until lease ends 
+                According to Cal. CCP § 1161, if your landlord sells your lease 3 months before your current lease ends and is evicting you, you have the right to continue in possession of the property until the expiration of your lease term. The new owner of the property must honor the terms of your lease agreement. (Cal. CCP § 1161)
 
-            <h1 id="restriction-on-transfer-cal-civ-§-1995310">
-                Restriction on Transfer (Cal. CIV § 1995.310)
-            </h1>
-            <h2 id="right-to-seek-contract-damages-due-to-landlords-breach">
-                Right to seek Contract Damages Due to Landlord’s Breach
-            </h2><p>If your lease restricts transfer without your consent, and the landlord denies this consent, then you can again seek contract damages due to the landlord’s breach. (Cal. CIV § 1995.310)</p>
+                # Right to file a claim for damages
+                ## Cal. FIN § 673
+                ### Right to claim damages 
+                According to Cal. FIN § 673, if your landlord sells your lease 3 months before it ends and is evicting you, you have the right to file a claim for damages resulting from the termination of the lease. However, the claim of the landlord for damages resulting from the rejection of the lease cannot exceed the rent reserved by the lease for the year succeeding the surrender of the premises, plus any unpaid accrued rent. You must file the claim within 30 days of the termination or within the time specified in Section 680 for filing claims, whichever is longer.
 
-            <h1 id="claim-for-damages-resulting-from-termination-cal-fin-§-673">
-                Claim for Damages Resulting from Termination (Cal. FIN § 673)
-            </h1>
-            <h2 id="right-to-file-a-claim-for-damages">
-                Right to File a Claim for Damages
-            </h2><p>Following the termination of a lease, you have a right to file a claim for damages. Details regarding the value of this claim are provided in the documentation. (Cal. FIN § 673)</p>
+                # Right to purchase the property
+                ## Cal. GOV § 50305
+                ### Opportunity to buy or lease the property
+                According to Cal. GOV § 50305, if you have been a lawful tenant of the local agency for at least 24 months during the 36 months prior to the sale or lease, you have the right to be given an opportunity to buy or lease the property at a reasonable price or rental. However, this right does not apply if you are an employee of the public agency.
 
-            <h1 id="notice-to-quit-duration-cal-ccp-§-1161b">
-                Notice to Quit Duration (Cal. CCP § 1161b)
-            </h1>
-            <h2 id="90-day-notice-before-property-removal">
-                90-day Notice before Property Removal
-            </h2><p>You should receive a 90-day notice before being removed from the property. Potential exceptions to this rule do exist. (Cal. CCP § 1161b)</p>
+                # Right to reclaim left personal property
+                ## Cal. CIV § 1993.03 and Cal. CIV § 1993.04
+                ### Notice requirement for abandoned property
+                According to Cal. CIV § 1993.03, if your landlord sells your lease 3 months before your current lease ends and is evicting you, the landlord must give you written notice and describe the property in a manner that allows you to identify it. The notice should also inform you of any reasonable costs of storage that may be charged before the property is returned, where the property may be claimed, and the deadline for making a claim. The notice must be personally delivered or sent by first-class mail to your last known address, and if there is reason to believe that the notice sent to that address will not be received, it should also be sent to any other address known to the landlord where you may reasonably be expected to receive the notice. (Cal. CIV § 1993.03)
+                ### Right to reclaim abandoned property
+                According to Cal. CIV § 1993.04, if your landlord sells your lease 3 months before your current lease ends and is evicting you, you have the right to reclaim any personal property that you left behind in the premises. The landlord must provide you with a notice of right to reclaim abandoned property, which should include a description of the property and the address where it can be claimed. If you fail to reclaim the property within the specified time, the landlord may dispose of it according to the law. (Cal. CIV § 1993.04)
 
-            <h1 id="waiver-and-estoppel-cal-civ-§-1995300">
-                Waiver and Estoppel (Cal. CIV § 1995.300)
-            </h1>
-            <h2 id="influential-factors">
-                Influential Factors
-            </h2><p>Rights and privileges can be subject to applicable defense. Terms of the lease agreement may play a pivotal role. (Cal. CIV § 1995.300)</p>
+                # Other rights
+                ## Rights tied to lease agreement and terms of notice   
+                ### Cal. CIV § 827
+                According to Cal. CIV § 827, if your landlord sells your lease 3 months before your current lease ends and is evicting you, your rights and privileges will depend on the terms of your lease agreement and the notice given by the landlord. Generally, the landlord can change the terms of the lease with proper written notice, which must be delivered personally or by mail. If the proposed rent increase is 10% or less, the notice must be delivered at least 30 days before the effective date of the increase. If the proposed rent increase is greater than 10%, the notice must be delivered at least 90 days before the effective date of the increase. However, if the rent increase is caused by a change in the tenant's income or family composition, the notice must be delivered at least 30 days before the effective date of the increase. It is important to review your lease agreement and consult with a legal professional for specific advice in your situation. (Cal. CIV § 827)
 
-            <h1 id="right-to-notice-of-termination-from-owner-cal-civ-§-19461">
-                Right to Notice of Termination from Owner (Cal. CIV § 1946.1)
-            </h1>
-            <h2 id="60-days-notice-requirement">
-                60 Days’ Notice Requirement
-            </h2><p>You should receive a 60 days’ notice from the owner before lease termination. A different requirement is needed for less than a year of residence and for cases where the owner intends to sell the dwelling to a purchaser. (Cal. CIV § 1946.1)</p>
+                ## Rights against landlord's conduct violating quiet enjoyment  
+                ### Cal. CIV § 1940.2
+                According to Cal. CIV § 1940.2, a landlord is prohibited from engaging in conduct that violates the tenant's quiet enjoyment of the premises or committing a significant and intentional violation of Section 1954. If the landlord sells your lease and is evicting you three months before your current lease ends, it may be considered a violation of your rights. You may have the right to take legal action and potentially receive a civil penalty of up to $2,000 for each violation if you prevail in a civil action. However, it is important to note that this section does not enlarge or diminish a landlord's right to terminate a tenancy pursuant to existing state or local law. (Cal. CIV § 1940.2)
 
-            <h1 id="recovery-from-lessee-cal-civ-§-3308">
-                Recovery from Lessee (Cal. CIV § 3308)
-            </h1>
-            <h2 id="right-to-excess-of-amount-of-rent">
-                Right to Excess of Amount of Rent
-            </h2><p>You can recover excess rent after termination. This rule can affect your decision on seeking other remedies. (Cal. CIV § 3308)</p>
+                ## Rights for service members
+                ### Cal. MVC § 406
+                According to Cal. MVC § 406, if you are a service member and your landlord sells your lease 3 months before it ends and is evicting you, no eviction or distress can be made until 120 days after you are released from active service or duty. The court may grant a stay of proceedings or require the tenant to make regular partial payments during the service member's period of military service. The court may also make any other order it finds to be just. Violating this section can result in liability for damages, attorney's fees, and costs, and can be punishable as a misdemeanor.
 
-            <h1 id="right-to-continue-possession-cal-ccp-§-1161">
-                Right to Continue Possession (Cal. CCP § 1161)
-            </h1>
-            <h2 id="right-to-continue-occupation-until-lease-end">
-                Right to Continue Occupation until Lease End
-            </h2><p>You have the right to continue occupying the property until the end of the lease term. (Cal. CCP § 1161)</p>
+                ## Right to terminate the lease contract early
+                ### Cal. CIV § 2987
+                According to Cal. CIV § 2987, if your landlord sells your lease 3 months before your current lease ends and is evicting you, you have the right to terminate the lease contract at any time prior to the scheduled expiration date specified in the lease contract. Your liability as a lessee shall not exceed the sum of all unpaid periodic lease payments that have accrued up to the date of termination, all other amounts due and unpaid under the lease contract, any charges assessed in connection with termination, and the difference between the adjusted capitalized cost and the sum of all depreciation and other amortized amounts accrued through the date of early termination. The realized value of the vehicle used to calculate your liability will depend on the circumstances, such as insurance coverage, appraisal, or wholesale value. However, if you terminate the lease and purchase the vehicle or trade it in for another vehicle before the scheduled expiration date, you will be relieved of any further liability under the lease contract. (Cal. CIV § 2987)
 
-            <h1 id="legal-action-against-landlord-cal-civ-§-19402">
-                Legal Action against Landlord (Cal. CIV § 1940.2)
-            </h1>
-            <h2 id="right-to-legal-action">
-                Right to Legal Action
-            </h2><p>If there are any violations of your rights, you have the right to take legal action against the landlord. (Cal. CIV § 1940.2)</p>
+                ## Right to submit a request to the local public agency
+                ### Cal. GOV § 50308
+                According to Cal. GOV § 50308, if your landlord sells the leased property before your current lease ends and is evicting you, you have the right to submit a written request to the local public agency at least 30 days prior to the date of the public auction, asking for the leased property to be sold at a public auction.
 
-            <h1 id="termination-of-lease-contract-cal-civ-§-2987">
-                Termination of Lease Contract (Cal. CIV § 2987)
-            </h1>
-            <h2 id="right-to-lease-termination">
-                Right to Lease Termination
-            </h2><p>You can terminate the lease contract anytime before the scheduled expiration date. Various liabilities may apply in such a case. (Cal. CIV § 2987)</p>
+                ## Right to repair the premises and deduct the costs from the rent
+                ### Cal. CIV § 1942
+                According to Cal. CIV § 1942, if your landlord neglects to repair dilapidations rendering the premises untenantable, you have the right to repair the premises yourself and deduct the expenses from the rent when due. Alternatively, you may choose to vacate the premises and be discharged from further payment of rent or performance of other conditions. This remedy is available to the tenant twice in any 12-month period. However, this remedy is not available if the condition was caused by the violation of Section 1929 or 1941.2. (Cal. CIV § 1942)
 
-            <h1 id="right-to-possess-property-cal-ccp-§-326">
-                Right to Possess Property (Cal. CCP § 326)
-            </h1>
-            <h2 id="right-to-continue-property-possession">
-                Right to Continue Property Possession
-            </h2><p>You can continue having the right to possess the property until the expiration of the five-year period following the termination of the tenancy. (Cal. CCP § 326)</p>
+                ## Rights to nullify the eviction
+                ### Cal. CCP § 1161.5
+                According to Cal. CCP § 1161.5, if your landlord sells your lease 3 months before your current lease ends and is evicting you, you have the right to nullify the declaration of forfeiture and have your lease or rental agreement remain in effect if you perform within three days after receiving the notice or if the breach is waived by the lessor or landlord after receiving the notice.
 
-            <h1 id="joint-and-several-liability-cal-civ-§-1995330">
-                Joint and Several Liability (Cal. CIV § 1995.330)
-            </h1>
-            <h2 id="liabilities-of-assignee">
-                Liabilities of Assignee
-            </h2><p>You can jointly sue the tenant and the assignee in case of violation of restriction transfer. (Cal. CIV § 1995.330)</p>
+                ## Right to receive a written statement from the seller
+                ### Cal. CIV § 1103.3
+                According to Cal. CIV § 1103.3, if your landlord sells your lease 3 months before it ends and is evicting you, you have the right to receive a written statement from the seller regarding the sale. The seller is required to provide this statement as soon as practicable before the transfer of title or before your execution of the contract. If the disclosure is delivered after you have already made an offer to purchase, you have three days after delivery to terminate your offer in writing.
 
-            <h1 id="consent-for-the-transfer-of-lease-cal-civ-§-1995250">
-                Consent for the Transfer of Lease (Cal. CIV § 1995.250)
-            </h1>
-            <h2 id="requirement-for-landlords-consent">
-                Requirement for Landlord’s Consent
-            </h2><p>Landlord’s consent may be required for the transfer of your interest in the lease. (Cal. CIV § 1995.250)</p>
+                ## Right to receive a notice of termination for mobilehome park tenancy
+                ### Cal. CIV § 798.55
+                According to Cal. CIV § 798.55, if your landlord sells your lease 3 months before it ends and is evicting you, they must provide you with a written notice to sell or remove the mobilehome from the park within a period of not less than 60 days. You have the option to either sell or remove the mobilehome within that specified period. The notice must also be sent to the legal owner, junior lienholders, and the registered owner of the mobilehome, if different from the homeowner. Additionally, if you have any past due rent and utilities, you are required to pay them upon the sale of the mobilehome. (Cal. CIV § 798.55(b)(1)(2))
 
-            <h1 id="compliance-with-eviction-or-displacement-laws-cal-civ-§-2924n">
-                Compliance with Eviction or Displacement Laws (Cal. CIV § 2924n)
-            </h1>
-            <h2 id="owners-legal-duties">
-                Owner’s Legal Duties
-            </h2><p>As an owner, the tenant needs to comply with applicable laws regarding eviction or displacement. (Cal. CIV § 2924n)</p>
-
-            <h1 id="recovery-of-damages-from-lessee-cal-com-§-10527b">
-                Recovery of Damages from Lessee (Cal. COM § 10527(b))
-            </h1>
-            <h2 id="right-to-accrued-and-unpaid-rent">
-                Right to Accrued and Unpaid Rent
-            </h2><p>A lessee holds the right to accrued and unpaid rent, among other things. (Cal. COM § 10527(b))</p>
-
-            <h1 id="notice-of-disposition-of-personal-property-cal-civ-§-199303">
-                Notice of Disposition of Personal Property (Cal. CIV § 1993.03)
-            </h1>
-            <h2 id="notice-requirement-details">
-                Notice Requirement Details
-            </h2><p>Then tenant should receive a written notice describing the remaining property and where to claim it. (Cal. CIV § 1993.03)</p>
-
-            <h1 id="rights-or-remedies-for-the-tenants-default-cal-com-§-10505">
-                Rights or Remedies for the Tenant’s Default (Cal. COM § 10505)
-            </h1>
-            <h2 id="right-to-pursue-remedies">
-                Right to Pursue Remedies
-            </h2><p>Users may seek damages or other remedies for the tenant’s default. (Cal. COM § 10505)</p>
-
-            <h1 id="right-to-reasonable-access-to-property-cal-civ-§-7893">
-                Right to Reasonable Access to Property (Cal. CIV § 789.3)
-            </h1>
-            <h2 id="right-to-access-the-leased-property">
-                Right to Access the Leased Property
-            </h2><p>You have a right to access the property. The landlord cannot prevent such access with measures like changing the locks. (Cal. CIV § 789.3)</p>
-
-            <h1 id="right-to-not-be-evicted-without-reasonable-cause-cal-hsc-§-34331">
-                Right to Not be Evicted Without Reasonable Cause (Cal. HSC § 34331)
-            </h1>
-            <h2 id="right-to-written-statement-of-cause">
-                Right to Written Statement of Cause
-            </h2><p>You have the right to a written statement explaining the reason for eviction. (Cal. HSC § 34331)</p>
-
-            <h1 id="exercise-other-rights-provided-in-lease-contract-cal-com-§-10523">
-                Exercise Other Rights Provided in Lease Contract (Cal. COM § 10523)
-            </h1>
-            <h2 id="right-to-pursue-remedies-in-lease-contract">
-                Right to Pursue Remedies in Lease Contract
-            </h2><p>You can exercise rights and pursue remedies provided in the lease contract. (Cal. COM § 10523)</p>
-
-            <h1 id="recovery-of-certain-forms-of-damages-following-breach-cal-civ-§-19512">
-                Recovery of Certain Forms of Damages Following Breach (Cal. CIV § 1951.2)
-            </h1>
-            <h2 id="potential-damages-due-to-lessees-breach">
-                Potential Damages Due to Lessee’s Breach
-            </h2><p>Damages that you can recover from the lessee following a breach and abandonment of property are outlined in the documentation. (Cal. CIV § 1951.2)</p>
-
-            <h1 id="right-to-protections-and-remedies-cal-civ-§-1953">
-                Right to Protections and Remedies (Cal. CIV § 1953)
-            </h1>
-            <h2 id="various-rights-and-remedies-as-a-tenant">
-                Various Rights and Remedies As a Tenant
-            </h2><p>You hold various rights to protections and remedies as a tenant. (Cal. CIV § 1953)</p>
-
-            <h1 id="right-to-vacate-the-premises-cal-civ-§-1942a">
-                Right to Vacate the Premises (Cal. CIV § 1942(a))
-            </h1>
-            <h2 id="right-to-leave-the-premises">
-                Right to Leave the Premises
-            </h2><p>You can vacate the premises following the landlord’s neglect to repair certain dilapidations. (Cal. CIV § 1942(a))</p>
-
-            <h1 id="right-to-reclaim-abandoned-property-cal-civ-§-199304">
-                Right to Reclaim Abandoned Property (Cal. CIV § 1993.04)
-            </h1>
-            <h2 id="post-eviction-rights">
-                Post-Eviction Rights
-            </h2><p>You may reclaim personal property left behind in the premises post-eviction. (Cal. CIV § 1993.04)</p>
-
-            <h1 id="right-to-exercise-certain-acts-without-retaliation-cal-hsc-§-170315">
-                Right to Exercise Certain Acts without Retaliation (Cal. HSC § 17031.5)
-            </h1>
-            <h2 id="exercise-of-legal-rights">
-                Exercise of Legal Rights
-            </h2><p>You hold the right to exercise certain actions without facing retaliation from the landlord. (Cal. HSC § 17031.5)</p>
-
-            <h1 id="right-to-nullify-the-declaration-of-forfeiture-cal-ccp-§-11615">
-                Right to Nullify the Declaration of Forfeiture (Cal. CCP § 1161.5)
-            </h1>
-            <h2 id="details-of-nullification">
-                Details of Nullification
-            </h2><p>You can nullify the lease forfeiture by performing specified actions within three days after receiving a notice. (Cal. CCP § 1161.5)</p>
-
-            <h1 id="recovery-of-damages-following-disaffirmance-of-lease-cal-fin-§-17641">
-                Recovery of Damages Following Disaffirmance of Lease (Cal. FIN § 17641)
-            </h1>
-            <h2 id="right-to-file-a-claim-for-damages-1">
-                Right to File a Claim for Damages
-            </h2><p>Following the disaffirmance of a lease, you can file a claim for damages. (Cal. FIN § 17641)</p>
-
-            <h1 id="right-to-present-a-defense-in-an-unlawful-detainer-proceeding-cal-gov-§-70606">
-                Right to Present a Defense in an Unlawful Detainer Proceeding (Cal. GOV § 7060.6)
-            </h1>
-            <h2 id="right-to-present-defense">
-                Right to Present Defense
-            </h2><p>In an unlawful detainer proceeding, you have the right to present a defense against the eviction. (Cal. GOV § 7060.6)</p>
-
-            <h1 id="sale-of-mobilehome-within-the-park-cal-civ-§-79856a">
-                Sale of Mobilehome within the Park (Cal. CIV § 798.56a)
-            </h1>
-            <h2 id="notice-of-intention-to-dispose">
-                Notice of Intention to Dispose
-            </h2><p>If the property in question is a mobilehome, you have specific rights regarding its sale and disposition, including the right to continue leasing the site until it is resold. (Cal. CIV § 798.56a)</p>
-
-            <h1 id="lease-continuation-cal-civ-§-19514">
-                Lease Continuation (Cal. CIV § 1951.4)
-            </h1>
-            <h2 id="lease-status-with-subletting-or-assignment">
-                Lease Status with Subletting or Assignment
-            </h2><p>If the lease allows for subletting or assignment, it continues to be in effect as long as the lessor does not terminate your right to possession. (Cal. CIV § 1951.4)</p>
-
-            <h1 id="relief-against-forfeiture-of-the-lease-cal-ccp-§-1179">
-                Relief Against Forfeiture of the Lease (Cal. CCP § 1179)
-            </h1>
-            <h2 id="possibility-for-relief-against-lease-forfeiture">
-                Possibility for Relief Against Lease Forfeiture
-            </h2><p>You could petition the court to restore you to your former estate or tenancy by showcasing hardship. The court has discretionary power to grant relief against forfeiture. (Cal. CCP § 1179)</p>
-        </md-block>
-
-        <section class="limitations">
-            <h2>Project Limitations</h2>
-            <p><strong>Reminder:</strong> Abe doesn't replace a licensed legal professional.</p>
-            <p>Abe isn't designed to:</p>
-            <ul>
-                <li>Provide legal advice.</li>
-                <li>Recommend or suggest legal courses of action.</li>
-                <li>Be used as a legal defense.</li>
-                <li>Substitute a human lawyer, attorney, or any licensed legal professional.</li>
-                <li>Advise on conduct or speech in a legal court setting.</li>
-            </ul>
-            <p>Abe's primary function is as an informational tool. It's currently in its prototype phase, but we're enthusiastic about its development and the goals ahead.</p>
+                ## Right to receive a notice of termination for mobilehome park tenancy from legal owner or junior lienholder
+                ### Cal. CIV § 798.56a
+                According to Cal. CIV § 798.56a, if your landlord sells your lease 3 months before it ends and is evicting you, you have the right to receive a notice of termination of tenancy. Within 60 days of receiving this notice, the legal owner or junior lienholder must notify the management in writing of their offer to sell the obligation secured by the mobilehome to the management, their intention to foreclose on their security interest in the mobilehome, or their request that the management pursue the termination of tenancy against you. If the legal owner or junior lienholder chooses to pursue termination of tenancy, they must reimburse the management for reasonable attorney's fees and court costs. If the legal owner or junior lienholder does not notify the management or perform as agreed, the management may remove the mobilehome from the premises and place it in storage, and they will have a warehouse lien against the mobilehome for the costs of dismantling, moving, and storage. (Cal. CIV § 798.56a)
+            </md-block>
         </section>
     </main>
     <footer>
@@ -319,7 +145,6 @@
         <p>The infrastructure is grounded in Python 3.8.9 and encompasses technologies like PostgreSQL for database management and OpenAI for text embedding and smart search functions. As we advance, the goal is to incorporate functionalities from GPT 3.5 Turbo and potentially GPT 4.0 to further amplify Abe's capabilities.</p>
         <p>The journey has just begun, but the roadmap is filled with promise. Our aim is to evolve Abe into a dependable tool for every citizen, granting them swift and accurate legal information.</p>
     </footer>
-    <script src="script.js"></script>
     <script type="module" src="https://md-block.verou.me/md-block.js"></script>
 </body>
 </html>

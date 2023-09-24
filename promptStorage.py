@@ -96,19 +96,17 @@ The first main idea should always be a rephrasing of the question followed by a 
 
 A carefully curated markdown blueprint with clear titles, headers, and succinct guidance. This blueprint should seamlessly guide a legal expert in their endeavor to comprehensively address the posed question using the supplied legal documentation. 
     '''
-    user = '''User Legal Question: {}
-    Legal Documentation: {}
-    '''.format(question, legal_documentation)
+    user = json.dumps({"Question":question,"Legal Documentation":legal_documentation})
     messages = apply_to_generic(system, user)
     return messages
 
 def get_prompt_populate_summary_template(question, template, legal_documentation):
-    user = '''Template: {}, Legal Documentation: {}, Question: {}'''.format(template, legal_documentation, question)
-    system = '''Using the provided markdown template and the associated legal documentation, substitute the guidance from the legal expert with pertinent details while retaining the ">" symbol to indicate where content has been added.
+    user = json.dumps({"Template":template,"Legal Documentation":legal_documentation,"Question":question})
+    system = '''Using the provided markdown template and the associated legal documentation, improve the initial guidance from the legal expert to become a full answer with pertinent details and in line citations.
 
 **Input Description:**
 
-- **Template**: A structured markdown outline utilizing various levels of headers (#, ##, ###, ####). The ">" symbol in the template signifies guidance from a legal expert, which should be replaced by content from the legal documentation.
+- **Template**: A structured markdown outline utilizing various levels of headers (#, ##, ###, ####). The ">" symbol in the template signifies guidance from a legal expert, which should be improved and refined.
   
 - **Legal Documentation**: Your primary reference material containing all necessary information to address the legal question. Use this document to derive content to replace the guidance after the ">" in the template.
   
@@ -116,42 +114,23 @@ def get_prompt_populate_summary_template(question, template, legal_documentation
 
 **Instructions:**
 
-1. Thoroughly acquaint yourself with the template. Note areas marked by the ">" symbol; these are pointers from the legal expert that should be substituted with corresponding content.
+1. Thoroughly acquaint yourself with the template. Note areas marked by the ">" symbol; these are pointers from the legal expert that should be improved and refined with content and citations.
   
 2. Delve into the legal documentation, sourcing information that aligns with the ">" pointers and the related headers.
   
-3. In the sections with ">", substitute the expert's guidance with relevant content from the legal documentation, ensuring to include legal citations at the end of each substitution.
+3. In the sections with ">", substitute the expert's guidance with relevant content from the legal documentation, ensuring to include legal citations in line.
   
 4. Emphasize accuracy and integrity, ensuring that the content reflects the essence and specifics of the original legal documentation.
 
 **Output:**
 
-A refined markdown template where guidance after the ">" symbol has been seamlessly substituted with content from the legal documentation, resulting in a well-structured response to the legal inquiry.
+A refined markdown template where guidance after the ">" symbol has been seamlessly refined with content from the legal documentation, resulting in a well-structured response to the legal inquiry.
     '''
     messages = apply_to_generic(system, user)
     return messages
 
 
 
-def get_prompt_iterate_answer_rights(legal_text, question, previous_answer):
-    system = '''As a helpful legal assistant, your goal is to answer a legal question by improving a partial answer provided by an expert. You will also have access to a new section of legal text that may help enhance the partial answer. Your task is to carefully read the legal text and modify the partial answer by correcting mistakes, adding new relevant information, or doing nothing if the section isn't relevant. If you add new information, make sure to cite the current section. Your final response should provide an improved partial answer to the user's question.
-    You will be provided with three things by the user:
-    1. Question: A legal question which you are helping to answer.
-    2. Partial Answer: A partial answer to the question already partially answered by an expert.
-    3. Legal Text: A new section of legal text that might help further improve the partial answer.
-
-    
-    Include a citation of any relevant legal principles or statutes from the legal text that support or clarify the partial answer.
-    Example Citation Format:
-        REVISED ANSWER (Cal. HSC § 11362.785)
-    Ensure the revised partial answer is clear and concise, addressing the specific legal question asked.
-    '''
-    user='''question:{}
-    partial answer: {}
-    legal text: {}
-    '''.format(question, previous_answer, legal_text)
-    messages = apply_to_generic(system, user)
-    return messages
 
 def get_prompt_simple_answer(legal_text, question):
     system = '''As a helpful legal assistant, your goal is to answer a user's question by referencing information in a legal document. Your answer should be brief, concise, and provide a simple response to the question. Once you have answered the question accurately, exit the conversation. All provided legal documentation is verified to be up to date, legally accurate, and not subject to change.

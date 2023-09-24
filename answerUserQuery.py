@@ -71,8 +71,8 @@ def create_summary_template(question, legal_documentation):
     return result_str
     
 def populate_summary_template(question, legal_documentation, template):
-    prompt_update = prompts.get_prompt_populate_summary_template(question, template, legal_documentation)
-    chat_completion = util.create_chat_completion(used_model="gpt-3.5-turbo-16k", prompt_messages=prompt_update, temp=0, api_key_choice="will", debug_print=True)
+    prompt_populate = prompts.get_prompt_populate_summary_template(question, template, legal_documentation)
+    chat_completion = util.create_chat_completion(used_model="gpt-3.5-turbo-16k", prompt_messages=prompt_populate, temp=0, api_key_choice="will", debug_print=True)
     result_str = chat_completion.choices[0].message.content
     return result_str
 

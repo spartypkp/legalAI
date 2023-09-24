@@ -112,3 +112,64 @@ footer h2 {
     border-bottom: 2px solid #DAD2C3;
     padding-bottom: 10px;
 }
+
+.playground-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.playground-content {
+    width: 100%;
+    max-width: 800px; /* This helps on wider screens */
+    padding: 20px;
+    background-color: #FFF;
+    border: 1px solid #DAD2C3;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#aiQueryForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; 
+}
+
+#aiQueryForm textarea {
+    width: 100%;
+    border: 1px solid #DAD2C3;
+    padding: 10px;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.ask-button {
+    padding: 10px 20px;
+    background-color: #3B3B3B;
+    color: #FAF5E6;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.ask-button:hover {
+    background-color: #928779;
+}
+
+.responses-container {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.aiResponse, .citation-section {
+    background-color: #FAF5E6;
+    padding: 15px;
+    border: 1px solid #DAD2C3;
+    border-radius: 5px;
+}
+
+.citation-section {
+    margin-top: 20px;
+}
