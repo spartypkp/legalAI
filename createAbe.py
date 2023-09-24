@@ -50,13 +50,18 @@ def ask_abe(user_query, print_sections, do_testing, do_stream):
     
     final_answer = answer.populate_summary_template(question, legal_documentation, summary_template)
     cited_sections = find_sections_cited(citation_list, final_answer)
-    print(final_answer)
-    print()
+    #with open("response.md","w") as response_md:
+        #response_md.write(final_answer)
+    #response_md.close()
+    #with open("citations.md","w") as citations_md:
+        #citations_md.write(cited_sections)
+    #citations_md.close()
+
+   
     print()
     print("================================\n")
     print()
-    print()
-    print(cited_sections)
+    
     #final_answer = gui.markdown_to_html(final_answer)
     #cited_sections = gui.markdown_to_html(cited_sections)
     return final_answer, cited_sections

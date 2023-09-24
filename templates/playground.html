@@ -41,13 +41,17 @@
                     <!-- Existing Response Section -->
                     <div id="response-section" class="aiResponse">
                         <h3>AI Abe's Response:</h3>
-                        <p id="responseText">Please be patient as openAI API calls take some time.</p>
+                        <md-block id ="responseText">
+                            Please be patient as openAI API calls take some time.
+                        </md-block>
                     </div>
     
                     <!-- New Citation Section -->
                     <div id="citation-section" class="citation-section">
                         <h3>Citations:</h3>
-                        <p>Your citation content goes here...</p>
+                        <md-block id ="citationText">
+                            Well-formed citations for text included in your answer.
+                        </md-block>
                     </div>
                 </div>
             </div>
@@ -77,18 +81,18 @@
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                htmlContent = data.final_answer;  // Convert markdown to HTML
-                document.getElementById('response-section').innerHTML = htmlContent;
+                final_answer = data.final_answer;  // Convert markdown to HTML
+                document.getElementById('responseText').mdContent = final_answer;
 
                 // Similarly, for citations or any other markdown content
-                htmlCitations = data.citations;
-                document.getElementById('citation-section').innerHTML = htmlCitations;
+                citations = data.citations;
+                document.getElementById('citationText').mdContent = citations;
             })
             .catch(error => console.error('Error:', error));
         });
 
     </script>
-    
+    <script type="module" src="https://md-block.verou.me/md-block.js"></script>
     
 
 </body>
