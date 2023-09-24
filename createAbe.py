@@ -41,6 +41,12 @@ def ask_abe(user_query, print_sections, do_testing, do_stream):
     
     final_answer = answer.populate_summary_template(question, legal_documentation, summary_template)
     cited_sections = find_sections_cited(citation_list, final_answer)
+    with open("debugFinalAnswer.txt","w") as debugFinalAnswer:
+        debugFinalAnswer.write(final_answer)
+    debugFinalAnswer.close()
+    with open("debugCitations.txt","w") as debugCitations:
+        debugCitations.write(cited_sections)
+    debugCitations.close()
 
     print()
     print("================================\n")
@@ -52,11 +58,12 @@ def find_sections_cited(citation_list, final_answer):
     
     for tup in citation_list:
         citation = tup[0]
+        if citation not in final_answer:
+            continue
         content = tup[1]
         link = tup[2]
-        if citation in final_answer:
-            result = "{}: {}\n{}".format(citation, link, content)
-            cited_sections = cited_sections + result + "\n"
+        section_citation = "<a href=\"{}\" target=\"_blank\" id=\"{}\">{}</a>\n<p>{}</p>\n".format(link, citation, citation, content)
+        cited_sections += section_citation
     return cited_sections
 
 if __name__ == "__main__":
