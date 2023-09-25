@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style_sheet.css') }}">
+      
     <title>Playground - Ask AI Abe</title>
 </head>
 
@@ -39,19 +40,14 @@
 
                 <div class="responses-container">
                     <!-- Existing Response Section -->
-                    <div id="response-section" class="aiResponse">
-                        <h3>AI Abe's Response:</h3>
-                        <md-block id ="responseText">
-                            Please be patient as openAI API calls take some time.
-                        </md-block>
-                    </div>
-    
+                        <h3>Answer:</h3>
+                        <div  id="response-section" class="aiResponse">
+                            <p>Please have patience as Abe works. (~60 seconds)</p>
+                        </div>
                     <!-- New Citation Section -->
+                    <h3>Citations:</h3>
                     <div id="citation-section" class="citation-section">
-                        <h3>Citations:</h3>
-                        <md-block id ="citationText">
-                            Well-formed citations for text included in your answer.
-                        </md-block>
+                        <p>Well-formed citations for text included in your answer.</p>
                     </div>
                 </div>
             </div>
@@ -81,18 +77,16 @@
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                final_answer = data.final_answer;  // Convert markdown to HTML
-                document.getElementById('responseText').mdContent = final_answer;
-
+                // Convert markdown to HTML
+                document.getElementById("response-section").innerHTML = data.final_answer;
                 // Similarly, for citations or any other markdown content
-                citations = data.citations;
-                document.getElementById('citationText').mdContent = citations;
+                document.getElementById('citation-section').innerHTML = data.citations;
             })
             .catch(error => console.error('Error:', error));
         });
 
     </script>
-    <script type="module" src="https://md-block.verou.me/md-block.js"></script>
+    
     
 
 </body>

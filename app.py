@@ -25,7 +25,7 @@ def ask_ai():
     
     final_answer, citations = createAbe.ask_abe(question, False, False, True)
     CURRENT_ANSWER = [final_answer, citations]
-    
+
     return jsonify({'final_answer': final_answer, 'citations': citations})
 
 '''
