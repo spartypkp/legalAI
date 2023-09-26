@@ -42,15 +42,19 @@ def ask_abe(user_query, print_sections, do_testing, do_stream):
     
     
     final_answer = answer.populate_summary_template(question, legal_documentation, summary_template)
-    final_answer = gui.markdown_to_html(final_answer)
-    
-    cited_sections, final_answer = find_sections_cited(citation_list, final_answer)
     with open("debugFinalAnswer.txt","w") as debugFinalAnswer:
         debugFinalAnswer.write(final_answer)
     debugFinalAnswer.close()
     with open("debugCitations.txt","w") as debugCitations:
-        debugCitations.write(cited_sections)
+        debugCitations.write(str(citation_list))
     debugCitations.close()
+    cited_sections, final_answer = find_sections_cited(citation_list, final_answer)
+    
+    final_answer = gui.markdown_to_html(final_answer)
+    final_answer = link_answer_to_citations(citation_list, final_answer)
+    print(type(final_answer))
+
+    
 
     print()
     print("================================\n")
@@ -65,13 +69,20 @@ def find_sections_cited(citation_list, final_answer):
         if citation not in final_answer:
             continue
         
-        new_citation ="<a href=\"#{}\">{}</a>".format(citation, citation)
-        final_answer = final_answer.replace(citation, new_citation)
         content = tup[1]
         link = tup[2]
         section_citation = "<a href=\"{}\" target=\"_blank\" id=\"{}\">{}</a>\n<p>{}</p>\n".format(link, citation, citation, content)
         cited_sections += section_citation
     return cited_sections, final_answer
+
+def link_answer_to_citations(citation_list, final_answer):
+    for tup in citation_list:
+        citation = tup[0]
+        if citation not in final_answer:
+            continue
+        new_citation ="<a href=\"#{}\">{}</a>".format(citation, citation)
+        final_answer = final_answer.replace(citation, new_citation)
+    return final_answer
 
 
 '''

@@ -97,8 +97,7 @@ If a physician recommends that the defined quantity does not meet the patient's 
 def markdown_to_html(text):
     section = '''{}'''.format(text)
     html_string = markdown.markdown(section, extensions=['md_in_html'])
-    
-    print(html_string)
+    return html_string
     
     #open_html_in_browser("sample.html")
 
